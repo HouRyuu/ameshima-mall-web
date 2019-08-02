@@ -23,8 +23,10 @@ class Index extends Component {
                 <IndexSearch />
               </Header>
               <Content>
-                <IndexGoodsNav />
-                <IndexBanner />
+                <div>
+                  <IndexGoodsNav />
+                  <IndexBanner />
+                </div>
               </Content>
             </Layout>
           </Content>

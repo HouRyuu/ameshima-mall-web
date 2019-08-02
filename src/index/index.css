@@ -2,17 +2,34 @@
   background-color: #a9180a;
   height: 32px;
   line-height: 32px;
-  padding: 0 160px;
+}
+
+.site-nav .sn-bd,
+.search-warp > .ant-row-flex,
+.goods-nav-warp,
+.index-banner-warp > .ant-carousel {
+  min-width: 1024px;
+  max-width: 75%;
+  margin: auto;
 }
 
 .site-nav .sn-bd {
   color: #fff;
-  height: 32px;
+  height: 100%;
   font-size: 12px;
 }
 
+.site-nav a {
+  color: #fff;
+}
+
+.site-nav a:hover,
+.site-nav a:active {
+  color: #fff;
+}
+
 .site-nav .sn-bd .ant-row-flex {
-  height: 32px;
+  height: 100%;
 }
 
 .sn-login,
@@ -26,26 +43,24 @@
 
 .search-warp {
   background: #f0f2f5;
-  padding: 0 160px;
   height: auto;
 }
 
-.goods-nav-warp {
+.goods-nav-warp > .ant-list {
   width: 200px;
-  margin: 0 0 0 180px;
-  position: relative;
   z-index: 1;
+  margin-left: 60px;
+}
+
+.goods-nav-warp .ant-list {
+  color: #fff;
 }
 
 .goods-nav-warp .ant-list-header {
   background-color: #ff0036;
   font-size: 16px;
   font-weight: 700;
-  padding-left: 8px;
-}
-
-.goods-nav-warp .ant-list {
-  color: #fff;
+  padding: 6px 0 6px 8px;
 }
 
 .goods-nav-warp .ant-spin-container {
@@ -53,12 +68,12 @@
 }
 
 .goods-nav-warp .ant-list-sm .ant-list-item {
-  padding-bottom: 0;
-  padding-left: 8px;
+  padding: 4px 0 4px 8px;
 }
 
-.goods-nav-warp .ant-list-sm .ant-list-item:last-child {
-  padding-bottom: 8px;
+.goods-nav-warp .ant-list-sm .ant-list-item:hover {
+  color: #ff0036;
+  background-color: #fff;
 }
 
 .goods-nav-warp .anticon {
@@ -67,15 +82,14 @@
 
 .index-banner-warp {
   position: relative;
-  top: -471px;
+  top: -466px;
   border-top: 2px solid #ff0036;
   text-align: center;
-  height: 472px;
+  height: 466px;
   background-color: #a9180a;
 }
 
 .index-banner-warp .bannerImg {
   margin: auto;
-  width: 1158px;
-  height: 470px;
+  height: 464px;
 }

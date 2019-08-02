@@ -10,28 +10,28 @@ export default class IndexBanner extends Component {
             <img
               className="bannerImg"
               alt="banner"
-              src="https://img.alicdn.com/tfs/TB11I_7bND1gK0jSZFKXXcJrVXa-990-400.jpg_1080x1800Q90s50.jpg"
+              src="https://img.alicdn.com/imgextra/i2/29/O1CN01eI9T9x1C5K2AkG6Yo_!!29-0-luban.jpg_q100.jpg_.webp"
             />
           </div>
           <div>
             <img
               className="bannerImg"
               alt="banner"
-              src="https://img.alicdn.com/tfs/TB11I_7bND1gK0jSZFKXXcJrVXa-990-400.jpg_1080x1800Q90s50.jpg"
+              src="https://img.alicdn.com/imgextra/i2/29/O1CN01eI9T9x1C5K2AkG6Yo_!!29-0-luban.jpg_q100.jpg_.webp"
             />
           </div>
           <div>
             <img
               className="bannerImg"
               alt="banner"
-              src="https://img.alicdn.com/tfs/TB11I_7bND1gK0jSZFKXXcJrVXa-990-400.jpg_1080x1800Q90s50.jpg"
+              src="https://img.alicdn.com/imgextra/i2/29/O1CN01eI9T9x1C5K2AkG6Yo_!!29-0-luban.jpg_q100.jpg_.webp"
             />
           </div>
           <div>
             <img
               className="bannerImg"
               alt="banner"
-              src="https://img.alicdn.com/tfs/TB11I_7bND1gK0jSZFKXXcJrVXa-990-400.jpg_1080x1800Q90s50.jpg"
+              src="https://img.alicdn.com/imgextra/i2/29/O1CN01eI9T9x1C5K2AkG6Yo_!!29-0-luban.jpg_q100.jpg_.webp"
             />
           </div>
         </Carousel>

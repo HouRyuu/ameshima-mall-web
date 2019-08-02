@@ -5,6 +5,7 @@ import Index from "./index/";
 import Login from "./login/";
 import AliPayLogin from "./login/alipay";
 import Register from "./register/";
+import './index.css';
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
