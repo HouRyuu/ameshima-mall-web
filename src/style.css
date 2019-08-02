@@ -1,0 +1,15 @@
+em, i {
+	font-style: normal;
+}
+
+a {
+	color: #fff;
+}
+
+a:hover, a:active  {
+	color: #fff;
+}
+
+li {
+	list-style: none;
+}
