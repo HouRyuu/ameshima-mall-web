@@ -4,6 +4,7 @@ import IndexHead from "./indexHead";
 import IndexSearch from "./indexSearch";
 import IndexGoodsNav from "./indexGoodsNav";
 import IndexBanner from "./indexBanner";
+import BrandPromote from "./BrandPromote";
 import "antd/dist/antd.css";
 import "../style.css";
 import "./index.css";
@@ -26,6 +27,7 @@ class Index extends Component {
                 <div>
                   <IndexGoodsNav />
                   <IndexBanner />
+                  <BrandPromote />
                 </div>
               </Content>
             </Layout>

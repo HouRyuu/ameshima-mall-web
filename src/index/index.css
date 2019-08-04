@@ -2,14 +2,16 @@
   background-color: #a9180a;
   height: 32px;
   line-height: 32px;
+  padding: 0;
 }
 
 .site-nav .sn-bd,
 .search-warp > .ant-row-flex,
 .goods-nav-warp,
-.index-banner-warp > .ant-carousel {
+.index-banner-warp > .ant-carousel,
+.brandPromote-warp {
   min-width: 1024px;
-  max-width: 75%;
+  max-width: 70%;
   margin: auto;
 }
 
@@ -44,12 +46,12 @@
 .search-warp {
   background: #f0f2f5;
   height: auto;
+  padding: 0;
 }
 
 .goods-nav-warp > .ant-list {
   width: 200px;
   z-index: 1;
-  margin-left: 60px;
 }
 
 .goods-nav-warp .ant-list {
@@ -82,7 +84,7 @@
 
 .index-banner-warp {
   position: relative;
-  top: -466px;
+  margin-top: -466px;
   border-top: 2px solid #ff0036;
   text-align: center;
   height: 466px;
