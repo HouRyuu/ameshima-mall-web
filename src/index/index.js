@@ -5,6 +5,8 @@ import IndexSearch from "./indexSearch";
 import IndexGoodsNav from "./indexGoodsNav";
 import IndexBanner from "./indexBanner";
 import BrandPromote from "./BrandPromote";
+import GoodsPromote from "./GoodsPromote";
+import GuessLike from "./GuessLike";
 import "antd/dist/antd.css";
 import "../style.css";
 import "./index.css";
@@ -27,13 +29,16 @@ class Index extends Component {
                 <div>
                   <IndexGoodsNav />
                   <IndexBanner />
+                </div>
+                <div className="main-warp">
                   <BrandPromote />
+                  <GoodsPromote />
+                  <GuessLike />
                 </div>
               </Content>
             </Layout>
           </Content>
         </Layout>
-        <Footer>Footer</Footer>
       </Layout>
     );
   }

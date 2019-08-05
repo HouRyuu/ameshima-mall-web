@@ -1,7 +1,17 @@
-em, i {
-	font-style: normal;
+em,
+i {
+  font-style: normal;
 }
 
 li {
-	list-style: none;
+  list-style: none;
+}
+
+img,
+input {
+  vertical-align: middle;
+}
+
+img {
+  border: none;
 }

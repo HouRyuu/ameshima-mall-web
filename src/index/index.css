@@ -9,9 +9,9 @@
 .search-warp > .ant-row-flex,
 .goods-nav-warp,
 .index-banner-warp > .ant-carousel,
-.brandPromote-warp {
+.main-warp {
   min-width: 1024px;
-  max-width: 70%;
+  max-width: 1230px;
   margin: auto;
 }
 
@@ -94,4 +94,189 @@
 .index-banner-warp .bannerImg {
   margin: auto;
   height: 464px;
+}
+
+.brandPromote-warp .brand-item {
+  width: 10%;
+  text-align: center;
+  height: 108px;
+  position: relative;
+  padding: 0;
+}
+
+.brandPromote-warp .brand-item .brand-img {
+  height: 108px;
+  line-height: 108px;
+}
+
+.brandPromote-warp .brand-item img {
+  width: 82%;
+  height: 50px;
+}
+
+.brandPromote-warp .brand-item .brand-mask {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease-out;
+  opacity: 0;
+  color: #fff;
+  font-size: 12px;
+}
+
+.brandPromote-warp .brand-item:hover .brand-mask {
+  opacity: 1;
+}
+
+.brandPromote-warp .brand-item .brand-mask .brandName {
+  line-height: 90px;
+  height: 60px;
+}
+
+.brandPromote-warp .brand-item .brand-mask .brandName span {
+  display: block;
+  padding: 0 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brandPromote-warp .brand-item .brand-mask .enter {
+  width: 63px;
+  height: 18px;
+  margin: auto;
+  line-height: 15px;
+  background-color: #ff0036;
+  border-radius: 9px;
+}
+
+.brandPromote-warp .refresh-btn {
+  padding-top: 30px;
+  cursor: pointer;
+}
+
+.brandPromote-warp .refresh-btn:hover {
+  color: #fff;
+  background-color: #ff0036;
+}
+
+.brandPromote-warp .refresh-btn > * {
+  display: block;
+}
+
+.brandPromote-warp .refresh-btn > i {
+  font-size: 30px;
+}
+
+.brandPromote-warp .refresh-btn:hover > i {
+  transform: rotate(360deg);
+  transition: transform 0.5s linear;
+}
+
+.brandPromote-warp,
+.goodsPromote-warp,
+.guessLike-warp {
+  margin-top: 30px;
+}
+
+.goodsPromote-warp .floor-title {
+  font-size: 18px;
+  color: #000;
+}
+
+.goodsPromote-warp .floor-title .color-mark {
+  display: inline-block;
+  background-color: #333;
+  width: 5px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 15px;
+}
+
+.goodsPromote-warp .floor-sub-name {
+  display: inline-block;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.goodsPromote-warp .floor-main {
+  display: flex;
+}
+
+.goodsPromote-warp .floor-banner {
+  min-width: 235px;
+  width: 235px;
+  height: 618px;
+}
+
+.floor-column-warp {
+  width: 100%;
+}
+
+.goodsPromote-warp .floor-banner > img {
+  width: 100%;
+  height: 100%;
+}
+
+.goodsPromote-warp .goodsGrid-link {
+  width: 23.6%;
+  height: 317px;
+  margin-left: 13px;
+  border-bottom: 13px solid transparent;
+}
+
+.guessLike-warp .wonderful-title {
+  text-align: center;
+  font-weight: 100;
+  color: #979797;
+}
+
+.guessLike-warp .wonderful-title .anticon {
+  margin-right: 4px;
+  color: #ff0036;
+}
+
+.guessLike-warp .wonderful-title > span {
+  position: relative;
+}
+
+.guessLike-warp .wonderful-title > span:after,
+.guessLike-warp .wonderful-title > span:before {
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 2px;
+  background-color: #979797;
+  top: 14px;
+  right: -36px;
+}
+
+.guessLike-warp .wonderful-title > span:before {
+  left: -38px;
+}
+
+.guessLike-warp .wonderful-line {
+  padding: 0;
+  display: flex;
+}
+
+.guessLike-warp .wonderful-item {
+  margin-right: 13px;
+}
+
+.guessLike-warp .wonderful-item:last-child {
+  margin-right: 0;
+}
+
+.guessLike-warp .wonderful-end {
+  background: url(//img.alicdn.com/tps/TB1wQDAPXXXXXXgaFXXXXXXXXXX-62-35.png)
+    no-repeat;
+  width: 80px;
+  height: 45px;
+  margin: 0 auto 10px;
+  background-size: cover;
 }
