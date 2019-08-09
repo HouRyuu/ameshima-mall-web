@@ -13,7 +13,7 @@ export default class GoodsPromoteList extends Component {
     return (
       <div>
         <p className="floor-title">
-          <i class="color-mark"></i>
+          <i className="color-mark"></i>
           {title}
           <span className="floor-sub-name">{subName}</span>
         </p>

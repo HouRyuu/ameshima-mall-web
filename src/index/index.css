@@ -7,7 +7,6 @@
 
 .site-nav .sn-bd,
 .search-warp > .ant-row-flex,
-.goods-nav-warp,
 .index-banner-warp > .ant-carousel,
 .main-warp {
   min-width: 1024px;
@@ -44,25 +43,43 @@
 }
 
 .search-warp {
-  background: #f0f2f5;
-  height: auto;
+  background: #fff;
+  height: 164px;
   padding: 0;
 }
 
-.goods-nav-warp > .ant-list {
-  width: 200px;
+.search-warp > .ant-row-flex {
+  height: 100%;
+}
+
+.goods-nav-warp {
+  position: absolute;
   z-index: 1;
+  top: 32px;
+  left: 155px;
+}
+
+.goods-nav-warp .goods-nav-head,
+.goods-nav-warp .ant-list {
+  color: #fff;
+  width: 240px;
 }
 
 .goods-nav-warp .ant-list {
-  color: #fff;
+  z-index: 1;
+  height: 492px;
 }
 
-.goods-nav-warp .ant-list-header {
+.goods-nav-warp .goods-nav-head {
+  width: 240px;
   background-color: #ff0036;
   font-size: 16px;
   font-weight: 700;
-  padding: 6px 0 6px 8px;
+  padding: 6px 0 6px 10px;
+}
+
+.goods-nav-warp .goods-nav-head .anticon {
+  margin: 2px 8px 0 0;
 }
 
 .goods-nav-warp .ant-spin-container {
@@ -70,7 +87,7 @@
 }
 
 .goods-nav-warp .ant-list-sm .ant-list-item {
-  padding: 4px 0 4px 8px;
+  padding: 5px 0 5px 10px;
 }
 
 .goods-nav-warp .ant-list-sm .ant-list-item:hover {
@@ -78,22 +95,70 @@
   background-color: #fff;
 }
 
-.goods-nav-warp .anticon {
-  margin-right: 8px;
+.goods-nav-warp .category-warp {
+  position: relative;
+  height: 0;
+}
+
+.goods-nav-warp .category-content {
+  position: relative;
+  top: -492px;
+  left: -10px;
+  z-index: 0;
+}
+
+.goods-nav-warp .category-pannel {
+  height: 494px;
+  width: 852px;
+  background-color: #fff;
+  margin-left: 250px;
+  padding: 19px 30px;
+}
+
+.goods-nav-warp .hot-word-line {
+  margin-bottom: 10px;
+}
+
+.goods-nav-warp .hot-word-line:last-child {
+  margin-bottom: 0;
+}
+
+.goods-nav-warp .category-pannel .line-title {
+  font-weight: 700;
+  text-align: right;
+  padding-right: 10px;
+}
+
+.goods-nav-warp .category-pannel .line-con {
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+  padding-bottom: 10px;
+}
+
+.goods-nav-warp .hot-word-line:last-child .line-con {
+  border: none;
+}
+
+.goods-nav-warp .category-pannel .line-con > a {
+  margin-left: 13px;
+  color: #666;
+  display: inline-block;
+}
+
+.goods-nav-warp .category-pannel .line-con > a:hover {
+  color: #e54077;
 }
 
 .index-banner-warp {
-  position: relative;
-  margin-top: -466px;
   border-top: 2px solid #ff0036;
   text-align: center;
-  height: 466px;
-  background-color: #a9180a;
+  height: 490px;
+  /* background-color: #a9180a; */
+  box-sizing: content-box;
 }
 
 .index-banner-warp .bannerImg {
   margin: auto;
-  height: 464px;
+  height: 492px;
 }
 
 .brandPromote-warp .brand-item {

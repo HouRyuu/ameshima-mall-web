@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from 'react-router';
 import { Row, Col, Menu, Dropdown, Icon, message } from "antd";
 import { fetchUtil } from "../utils/FetchUtil";
 
@@ -79,12 +80,12 @@ export default class IndexHead extends Component {
       return (
         <p className="sn-login-info">
           <em>喵，欢迎来天猫</em>
-          <a className="sn-login" rel="noopener noreferrer" href="/login">
+          <Link className="sn-login" to="/login">
             请登录
-          </a>
-          <a className="sn-register" rel="noopener noreferrer" href="/register">
+          </Link>
+          <Link className="sn-register" to="/register">
             免费注册
-          </a>
+          </Link>
         </p>
       );
     }

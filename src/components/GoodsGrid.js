@@ -12,7 +12,7 @@ export default class GoodsGrid extends Component {
       }
     } = this.props;
     return (
-      <a className="goodsGrid-link" rel="noopener noreferrer" href={`/goods/detail?id=${id}`}>
+      <a className="goodsGrid-link" rel="noopener noreferrer" href={`/goods/detail/${id}`}>
         <div className="goodsGrid-warp">
           <img className="goodsGrid-img" src={imgUrl} />
           <div className="goodsGrid-title">{title}</div>

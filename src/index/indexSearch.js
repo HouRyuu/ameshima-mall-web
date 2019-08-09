@@ -12,10 +12,7 @@ import {
 export default class IndexSearch extends Component {
 	render() {
 		return (
-			<Row type="flex" align="middle">
-				<Col span={7}>
-					<img alt="理想生活上天猫" src="https://img.alicdn.com/tfs/TB1MaLKRXXXXXaWXFXXXXXXXXXX-480-260.png" width="240" height="130"/>
-				</Col>
+			<Row type="flex" align="middle" justify="center">
 				<Col span={10}>
 					<AutoComplete
 					  className="global-search"

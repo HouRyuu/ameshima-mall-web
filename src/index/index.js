@@ -26,10 +26,8 @@ class Index extends Component {
                 <IndexSearch />
               </Header>
               <Content>
-                <div>
-                  <IndexGoodsNav />
-                  <IndexBanner />
-                </div>
+                <IndexGoodsNav />
+                <IndexBanner />
                 <div className="main-warp">
                   <BrandPromote />
                   <GoodsPromote />

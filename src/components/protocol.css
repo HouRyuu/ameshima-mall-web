@@ -1,0 +1,18 @@
+.agreement-modal .ant-modal-body {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.agreement-cont {
+  line-height: 24px;
+  color: #6b6b6b;
+}
+
+.agreement-cont p {
+  text-indent: 2em;
+  font-size: 12px;
+}
+
+.agreement-cont h4 {
+  margin: 1.5em 0;
+}

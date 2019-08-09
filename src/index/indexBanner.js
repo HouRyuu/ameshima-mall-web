@@ -5,7 +5,7 @@ export default class IndexBanner extends Component {
   render() {
     return (
       <div className="index-banner-warp">
-        <Carousel autoplay>
+        <Carousel autoplay effect="fade">
           <div>
             <img
               className="bannerImg"

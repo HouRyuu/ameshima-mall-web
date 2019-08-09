@@ -1,72 +1,80 @@
 .login-page {
-	min-height: 100vh;
-	background-color: #f1f1f1;
+  min-height: 100vh;
+  background-color: #f1f1f1;
 }
 
-.login-page .other-link-warp a {
-	color: #6c6c6c;
-	font-size: 12px;
+.login-page .other-link-warp a,
+.login-page .toLogin-link {
+  color: #6c6c6c;
+  font-size: 12px;
 }
 
-.login-page .other-link-warp a:hover,.login-page .other-link-warp a:active {
-	color: #ff0036 !important;
+.login-page .other-link-warp a:hover,
+.login-page .toLogin-link:hover,
+.login-page .other-link-warp a:active {
+  color: #ff0036 !important;
 }
 
 .login-page .login-logo-row {
-	padding-top: 50px;
+  padding-top: 50px;
 }
 
 .login-page .login-logo-row img {
-	width: 190px;
-	height: 27px;
+  width: 190px;
+  height: 27px;
 }
 
 .login-page .login-warp {
-		background-color: #fff;
-		border: 1px solid #ddd;
-    padding: 40px 72px;
-    border-radius: 4px;
-    box-shadow: 0 0 8px rgba(0,0,0,.1);
-    margin-top: 50px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 40px 72px;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  margin-top: 50px;
 }
 
 .login-page .login-warp h2 {
-	color: rgba(0, 0, 0, .55);
+  color: rgba(0, 0, 0, 0.55);
 }
 
 .login-page .login-button {
-	width: 100%;
+  width: 100%;
 }
 
 .login-page .more-sign h6 {
-    position: relative;
-    margin: 10px 0;
-    font-size: 12px;
-    color: #6c6c6c;
-    text-align: center;
+  position: relative;
+  margin: 10px 0;
+  font-size: 12px;
+  color: #6c6c6c;
+  text-align: center;
 }
 
-.login-page  .more-sign h6:after, .login-page .more-sign h6:before {
-    content: "";
-    border-top: 1px solid #b5b5b5;
-    display: block;
-    position: absolute;
-    width: 60px;
-    top: 10px;
+.login-page .more-sign h6:after,
+.login-page .more-sign h6:before {
+  content: "";
+  border-top: 1px solid #b5b5b5;
+  display: block;
+  position: absolute;
+  width: 60px;
+  top: 10px;
 }
 
 .login-page .more-sign h6:after {
-    right: 0;
+  right: 0;
 }
 
 .login-page .more-sign ul {
-	padding: 0;
-	margin: 0;
-	font-size: 32px;
-	text-align: center;
+  padding: 0;
+  margin: 0;
+  font-size: 32px;
+  text-align: center;
 }
 
-.login-page .more-sign li{
-	display: inline-block;
-	margin: 0 12px;
+.login-page .more-sign li {
+  display: inline-block;
+  margin: 0 12px;
+}
+
+.login-page .toLogin-link {
+  margin-left: 42px;
 }

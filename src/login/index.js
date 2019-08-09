@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router";
 import { Row, Col, Form, Icon, Input, Button, message } from "antd";
 import { fetchUtil } from "../utils/FetchUtil";
 import "./login.css";
@@ -20,8 +21,7 @@ export default class Login extends Component {
           method: "POST",
           body: values,
           sendBefore: () => this.setState({ loginBtnDis: true }),
-          callback: result => {
-            const { errCode, errMsg, data } = result;
+          callback: ({ errCode, errMsg, data }) => {
             if (errCode === 0) {
               sessionStorage.setItem("token", data);
               window.location.href = "/";
@@ -41,12 +41,12 @@ export default class Login extends Component {
       <div className="login-page">
         <Row className="login-logo-row">
           <Col span={6} offset={4}>
-            <a rel="noopener noreferrer" href="/">
+            <Link to="/">
               <img
                 alt="首页"
                 src="//img.alicdn.com/tfs/TB1_Gn8RXXXXXXqaFXXXXXXXXXX-380-54.png"
               />
-            </a>
+            </Link>
           </Col>
         </Row>
         <Row>
@@ -94,7 +94,7 @@ export default class Login extends Component {
                   <a rel="noopener noreferrer">忘记密码</a>
                 </Col>
                 <Col span={6}>
-                  <a rel="noopener noreferrer" href="/register">免费注册</a>
+                  <Link to="/register">免费注册</Link>
                 </Col>
               </Row>
               <div className="more-sign">
