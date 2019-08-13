@@ -151,7 +151,7 @@
 .index-banner-warp {
   border-top: 2px solid #ff0036;
   text-align: center;
-  height: 490px;
+  height: 492px;
   /* background-color: #a9180a; */
   box-sizing: content-box;
 }
@@ -159,6 +159,11 @@
 .index-banner-warp .bannerImg {
   margin: auto;
   height: 492px;
+}
+
+.index-banner-warp .slick-dots li button {
+  width: 25px;
+  height: 5px;
 }
 
 .brandPromote-warp .brand-item {
