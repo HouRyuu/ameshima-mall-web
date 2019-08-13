@@ -166,6 +166,11 @@
   height: 5px;
 }
 
+.brandPromote-warp.flip .brand-item{
+  transition: all 1s;
+  transform: rotateY(360deg);
+}
+
 .brandPromote-warp .brand-item {
   width: 10%;
   text-align: center;

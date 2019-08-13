@@ -19,7 +19,7 @@ export default class IndexBanner extends Component {
     this.findBanners();
   }
   render() {
-    const { banners = [] } = this.state;
+    const { banners = [{}] } = this.state;
     return (
       <div id="index-banner-warp" className="index-banner-warp">
         <Carousel
@@ -28,11 +28,12 @@ export default class IndexBanner extends Component {
           beforeChange={(
             from,
             to // 异步事件会导致无法手动切换banner
-          ) =>
-            (document.getElementById(
+          ) => {
+            const { bannerColor = "" } = banners[to];
+            document.getElementById(
               "index-banner-warp"
-            ).style.backgroundColor = `#${banners[to].bannerColor}`)
-          }
+            ).style.backgroundColor = `#${bannerColor}`;
+          }}
         >
           {banners.map(({ storeId, bannerImg }) => (
             <div key={storeId}>

@@ -1,36 +1,56 @@
 import React, { Component } from "react";
+import { Link } from "react-router";
 import { Card, Icon } from "antd";
+import { fetchUtil } from "../utils/FetchUtil";
 
-const brandList = [
-  {
-    id: 1,
-    name: "鬼冢虎",
-    imgUrl:
-      "//img.alicdn.com/i2/2/TB1TNGdmv2H8KJjy1zkXXXr7pXa?abtest=&pos=70&abbucket=&acm=09042.1003.1.1200415&scm=1007.13029.131809.100200300000000_125x125q100.jpg_.webp"
-  }
-];
 export default class BrandPromote extends Component {
+  state = {};
+  findBrands() {
+    fetchUtil({
+      url: "/goods/brand/index",
+      callback: ({ data: brands }) => {
+        if (brands) {
+          this.setState({ brands });
+        }
+      }
+    });
+  }
+  changeBrands(brands, curPage) {
+    const count = brands.length;
+    const totalPage = Math.ceil(brands.length / 29);
+    curPage++;
+    if (curPage > totalPage) {
+      curPage = 1;
+    }
+    this.setState({ curPage, changeStyle: "flip" });
+  }
+  componentWillMount() {
+    this.findBrands();
+  }
   render() {
+    const { brands = [{}], curPage = 1, changeStyle = null } = this.state;
     return (
-      <Card className="brandPromote-warp">
-        {brandList.map(item => (
-          <Card.Grid key={item.id} className="brand-item">
-            <div className="brand-img">
-              <img src={item.imgUrl} />
-            </div>
-            <a
-              className="brand-mask"
-              rel="noopener noreferrer"
-              href={`/brand/index?id=${item.id}`}
-            >
-              <div className="brandName">
-                <span>{item.name}</span>
+      <Card className={`brandPromote-warp ${changeStyle}`}>
+        {brands.map(({ storeId, brandName, logoUrl }, index) => {
+          if (index < (curPage - 1) * 29 || index >= curPage * 29) return;
+          return (
+            <Card.Grid key={brandName} className="brand-item">
+              <div className="brand-img">
+                <img src={logoUrl} />
               </div>
-              <div className="enter">点击进入</div>
-            </a>
-          </Card.Grid>
-        ))}
-        <Card.Grid className="brand-item refresh-btn">
+              <Link className="brand-mask" to={`/store/${storeId}`}>
+                <div className="brandName">
+                  <span>{brandName}</span>
+                </div>
+                <div className="enter">点击进入</div>
+              </Link>
+            </Card.Grid>
+          );
+        })}
+        <Card.Grid
+          className="brand-item refresh-btn"
+          onClick={() => this.changeBrands(brands, curPage)}
+        >
           <Icon type="sync" />
           <span>换一批</span>
         </Card.Grid>
