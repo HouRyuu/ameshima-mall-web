@@ -43,3 +43,14 @@ export const fetchUtil = (params = {}) => {
 		complete();
 	}
 }
+
+class A {
+	get() {
+		alert('get')
+	}
+	post() {
+		alert('post')
+	}
+}
+
+export default A=new A();

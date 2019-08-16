@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Link } from 'react-router';
+import { Link } from "react-router";
 import { Row, Col, Menu, Dropdown, Icon, message } from "antd";
-import { fetchUtil } from "../utils/FetchUtil";
+import A, { fetchUtil } from "../utils/FetchUtil";
 
 const myTmallMenu = (
   <Menu className="head-menu">
@@ -46,6 +46,7 @@ export default class IndexHead extends Component {
     };
   }
   loginInfo() {
+    A.get();
     fetchUtil({
       url: "/user/loginInfo",
       callback: result => {
@@ -54,13 +55,12 @@ export default class IndexHead extends Component {
           this.setState({
             loginInfo: data
           });
-					return;
+          return;
         }
-				const token = sessionStorage.getItem('token');
-				if (token) {
-					message.warning(errMsg);
-					sessionStorage.removeItem('token');
-				}
+        if (sessionStorage.getItem("token")) {
+          message.warning(errMsg);
+          sessionStorage.removeItem("token");
+        }
       }
     });
   }
@@ -68,6 +68,7 @@ export default class IndexHead extends Component {
     fetchUtil({
       url: "/user/logout",
       callback: result => {
+        sessionStorage.removeItem("token");
         this.setState({
           loginInfo: null
         });

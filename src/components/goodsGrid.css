@@ -15,6 +15,7 @@
 
 .goodsGrid-warp .goodsGrid-img {
   width: 100%;
+  max-height: 172.81px;
 }
 
 .goodsGrid-warp:hover .goodsGrid-img {
