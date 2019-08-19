@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import GoodsPromoteList from "./GoodsPromoteList";
-import { fetchUtil } from "../utils/FetchUtil";
+import FetchUtil from "../utils/FetchUtil";
 
 export default class GoodsPromote extends Component {
   state = {};
   findPromoteList() {
-    fetchUtil({
+    FetchUtil.get({
       url: "/goods/indexPromotePlate",
-      callback: ({ data: promoList }) => {
+      success: ({ data: promoList }) => {
         if (promoList) {
           this.setState({ promoList });
         }

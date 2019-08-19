@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 import { Row, Col, Menu, Dropdown, Icon, message } from "antd";
-import A, { fetchUtil } from "../utils/FetchUtil";
+import FetchUtil from "../utils/FetchUtil";
 
 const myTmallMenu = (
   <Menu className="head-menu">
@@ -46,10 +46,9 @@ export default class IndexHead extends Component {
     };
   }
   loginInfo() {
-    A.get();
-    fetchUtil({
+    FetchUtil.get({
       url: "/user/loginInfo",
-      callback: result => {
+      success: result => {
         const { errCode, errMsg, data } = result;
         if (errCode === 0) {
           this.setState({
@@ -57,18 +56,18 @@ export default class IndexHead extends Component {
           });
           return;
         }
-        if (sessionStorage.getItem("token")) {
+        if (localStorage.getItem("token")) {
           message.warning(errMsg);
-          sessionStorage.removeItem("token");
+          localStorage.removeItem("token");
         }
       }
     });
   }
   logout() {
-    fetchUtil({
+    FetchUtil.get({
       url: "/user/logout",
-      callback: result => {
-        sessionStorage.removeItem("token");
+      success: result => {
+        localStorage.removeItem("token");
         this.setState({
           loginInfo: null
         });
@@ -93,15 +92,14 @@ export default class IndexHead extends Component {
     return (
       <p className="sn-login-info">
         <em>Hi，{loginInfo.nickName}</em>
-        <a
+        <Link
           className="sn-login"
-          rel="noopener noreferrer"
           onClick={() => {
             this.logout();
           }}
         >
           退出
-        </a>
+        </Link>
       </p>
     );
   }
@@ -115,20 +113,20 @@ export default class IndexHead extends Component {
           <Col span={5}>{this.renderLoginInfo()}</Col>
           <Col span={5}>
             <Dropdown overlay={myTmallMenu}>
-              <a className="ant-dropdown-link" href="#">
+              <Link className="ant-dropdown-link">
                 我的天猫
                 <Icon type="down" />
-              </a>
+              </Link>
             </Dropdown>
-            <a className="sn-cart-link">
+            <Link className="sn-cart-link">
               <Icon type="shopping-cart" />
               购物车0件
-            </a>
+            </Link>
             <Dropdown overlay={favoritesMenu}>
-              <a className="ant-dropdown-link" href="#">
+              <Link className="ant-dropdown-link">
                 收藏夹
                 <Icon type="down" />
-              </a>
+              </Link>
             </Dropdown>
           </Col>
         </Row>

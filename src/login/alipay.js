@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Result, Button } from "antd";
-import { fetchUtil } from "../utils/FetchUtil";
+import FetchUtil from "../utils/FetchUtil";
 
 export default class AliPayLogin extends Component {
   constructor(props) {
@@ -10,12 +10,11 @@ export default class AliPayLogin extends Component {
     };
   }
   componentWillMount() {
-    fetchUtil({
+    FetchUtil.get({
       url: "/user/alipay/auth" + window.location.search,
-      callback: result => {
-        const { errCode, data } = result;
+      success: ({ errCode, data }) => {
         if (errCode === 0) {
-          sessionStorage.setItem("token", data);
+          localStorage.setItem("token", data);
           this.setState({
             loginStatus: 1
           });

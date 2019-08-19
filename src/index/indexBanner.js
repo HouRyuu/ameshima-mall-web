@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 import { Carousel } from "antd";
-import { fetchUtil } from "../utils/FetchUtil";
+import FetchUtil from "../utils/FetchUtil";
 
 export default class IndexBanner extends Component {
   state = {};
   findBanners() {
-    fetchUtil({
+    FetchUtil.get({
       url: "/store/index/banner",
-      callback: ({ data: banners }) => {
+      success: ({ data: banners }) => {
         if (banners) {
           this.setState({ banners });
         }
@@ -22,24 +22,17 @@ export default class IndexBanner extends Component {
     const { banners = [{}] } = this.state;
     return (
       <div id="index-banner-warp" className="index-banner-warp">
-        <Carousel
-          autoplay
-          effect="fade"
-          beforeChange={(
-            from,
-            to // 异步事件会导致无法手动切换banner
-          ) => {
-            const { bannerColor = "" } = banners[to];
-            document.getElementById(
-              "index-banner-warp"
-            ).style.backgroundColor = `#${bannerColor}`;
-          }}
-        >
-          {banners.map(({ storeId, bannerImg }) => (
+        <Carousel autoplay effect="fade">
+          {banners.map(({ storeId, bannerImg, bannerColor }) => (
             <div key={storeId}>
-              <Link to={`/store/${storeId}`}>
-                <img className="bannerImg" alt="banner" src={bannerImg} />
-              </Link>
+              <div style={{ backgroundColor: `#${bannerColor}` }}>
+                <Link
+                  to={`/store/${storeId}`}
+                  style={{ display: "inline-block" }}
+                >
+                  <img className="bannerImg" alt="" src={bannerImg} />
+                </Link>
+              </div>
             </div>
           ))}
         </Carousel>

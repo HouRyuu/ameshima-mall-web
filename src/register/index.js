@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 import { Row, Col, Form, Icon, Input, Button, message, Checkbox } from "antd";
 import Protocol from "../components/Protocol";
-import { fetchUtil } from "../utils/FetchUtil";
+import FetchUtil from "../utils/FetchUtil";
 import "../login/login.css";
 
 class RegisterForm extends Component {
@@ -11,13 +11,7 @@ class RegisterForm extends Component {
     this.state = {
       protocolVisible: false,
       captchaBtnText: "获取验证码",
-      captchaBtnDis: false,
-      regInfo: {
-        account: "",
-        password: "",
-        nickName: "",
-        captcha: ""
-      }
+      captchaBtnDis: false
     };
   }
   sendCaptcha = () => {
@@ -25,14 +19,17 @@ class RegisterForm extends Component {
     form.validateFields(["account"]);
     const account = form.getFieldValue("account");
     if (!form.getFieldError("account")) {
-      fetchUtil({
+      FetchUtil.get({
         url: "/user/sendRegisterCaptcha",
-        body: { account },
+        data: { account },
         sendBefore: () => this.setState({ captchaBtnDis: true }),
-        callback: ({ errCode, data }) => {
+        success: ({ errCode, errMsg, data }) => {
+          if (errMsg) {
+            return message.error(errMsg);
+          }
           const countDown = setInterval(() => {
             this.setState({ captchaBtnText: `${--data}s` });
-            if (data == 0) {
+            if (data === 0) {
               this.setState({
                 captchaBtnText: "获取验证码",
                 captchaBtnDis: false
@@ -40,7 +37,8 @@ class RegisterForm extends Component {
               clearInterval(countDown);
             }
           }, 1000);
-        }
+        },
+        complete: () => this.setState({ captchaBtnDis: false })
       });
     }
   };
@@ -48,23 +46,21 @@ class RegisterForm extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log("Received values of form: ", values);
-        fetchUtil({
+        FetchUtil.post({
           url: "/user/register",
-          method: "post",
-          body: values,
+          data: values,
           sendBefore: () => this.setState({ regBtnDis: true }),
-          callback: ({ errCode, errMsg, data }) => {
-            if (!errCode) {
-              sessionStorage.setItem("token", data);
-              message.success(
-                "注册成功啦！快去购物吧^_^",
-                () => (window.location.href = "/")
-              );
-              return;
+          success: ({ errCode, errMsg, data }) => {
+            if (errMsg) {
+              return message.error(errMsg);
             }
-            message.error(errMsg);
-          }
+            localStorage.setItem("token", data);
+            message.success(
+              "注册成功啦！快去购物吧^_^",
+              () => (window.location.href = "/")
+            );
+          },
+          complete: () => this.setState({ regBtnDis: false })
         });
       }
     });
@@ -74,8 +70,7 @@ class RegisterForm extends Component {
     const {
       protocolVisible,
       captchaBtnText,
-      captchaBtnDis,
-      regInfo: { account, password, nickName, captcha }
+      captchaBtnDis
     } = this.state;
     return (
       <div className="login-page">

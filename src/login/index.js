@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 import { Row, Col, Form, Icon, Input, Button, message } from "antd";
-import { fetchUtil } from "../utils/FetchUtil";
+import FetchUtil from "../utils/FetchUtil";
 import "./login.css";
 
 export default class Login extends Component {
@@ -15,15 +15,13 @@ export default class Login extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log("Received values of form: ", values);
-        fetchUtil({
+        FetchUtil.post({
           url: "/user/login",
-          method: "POST",
-          body: values,
+          data: values,
           sendBefore: () => this.setState({ loginBtnDis: true }),
-          callback: ({ errCode, errMsg, data }) => {
+          success: ({ errCode, errMsg, data }) => {
             if (errCode === 0) {
-              sessionStorage.setItem("token", data);
+              localStorage.setItem("token", data);
               window.location.href = "/";
               return;
             }
@@ -91,7 +89,7 @@ export default class Login extends Component {
               </Form>
               <Row type="flex" justify="end" className="other-link-warp">
                 <Col span={6}>
-                  <a rel="noopener noreferrer">忘记密码</a>
+                  <Link>忘记密码</Link>
                 </Col>
                 <Col span={6}>
                   <Link to="/register">免费注册</Link>

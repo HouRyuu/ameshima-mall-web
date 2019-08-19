@@ -7,6 +7,7 @@
   text-align: center;
   background-color: #fff;
   border: 1px solid transparent;
+  max-width: 236px;
 }
 
 .goodsGrid-warp:hover {

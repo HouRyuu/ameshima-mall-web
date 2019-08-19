@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Row, Col, List, Icon } from "antd";
-import { fetchUtil } from "../utils/FetchUtil";
+import FetchUtil from "../utils/FetchUtil";
 
 export default class IndexGoodsNav extends Component {
   state = {};
   findSecondCategories() {
-    fetchUtil({
+    FetchUtil.get({
       url: "/goods/findSecondCategories",
-      callback: result => {
+      success: result => {
         const { data: secondCategories } = result;
         this.setState({ secondCategories });
       }
@@ -19,9 +19,9 @@ export default class IndexGoodsNav extends Component {
       this.setState({ childrenCategories: category.children });
       return;
     }
-    fetchUtil({
+    FetchUtil.get({
       url: `/goods/${category.id}/findCategories`,
-      callback: result => {
+      success: result => {
         const { data: childrenCategories } = result;
         category.children = childrenCategories;
         this.setState({ childrenCategories });
@@ -76,16 +76,23 @@ export default class IndexGoodsNav extends Component {
             style={!showChildren ? { display: "none" } : null}
           >
             <div className="category-pannel">
-              {childrenCategories.map(({id, name, categoryList = [] }) => {
+              {childrenCategories.map(({ id, name, categoryList = [] }) => {
                 return (
-                  <Row key={id} type="flex" justify="start" className="hot-word-line">
+                  <Row
+                    key={id}
+                    type="flex"
+                    justify="start"
+                    className="hot-word-line"
+                  >
                     <Col span={3} className="line-title">
                       {name}
                       <Icon type="right" style={{ margin: 3 }} />
                     </Col>
                     <Col span={21} className="line-con">
                       {categoryList.map(({ id, name }) => (
-                        <a key={id} href={`/goods/category/${id}`}>{name}</a>
+                        <a key={id} href={`/goods/category/${id}`}>
+                          {name}
+                        </a>
                       ))}
                     </Col>
                   </Row>

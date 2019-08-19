@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 import { Card, Icon } from "antd";
-import { fetchUtil } from "../utils/FetchUtil";
+import FetchUtil from "../utils/FetchUtil";
 
 export default class BrandPromote extends Component {
   state = {};
   findBrands() {
-    fetchUtil({
+    FetchUtil.get({
       url: "/goods/brand/index",
-      callback: ({ data: brands }) => {
+      success: ({ data: brands }) => {
         if (brands) {
           this.setState({ brands });
         }
@@ -16,7 +16,6 @@ export default class BrandPromote extends Component {
     });
   }
   changeBrands(brands, curPage) {
-    const count = brands.length;
     const totalPage = Math.ceil(brands.length / 29);
     curPage++;
     if (curPage > totalPage) {
@@ -32,11 +31,11 @@ export default class BrandPromote extends Component {
     return (
       <Card className={`brandPromote-warp ${changeStyle}`}>
         {brands.map(({ storeId, brandName, logoUrl }, index) => {
-          if (index < (curPage - 1) * 29 || index >= curPage * 29) return;
+          if (index < (curPage - 1) * 29 || index >= curPage * 29) return null;
           return (
             <Card.Grid key={brandName} className="brand-item">
               <div className="brand-img">
-                <img src={logoUrl} />
+                <img alt="" src={logoUrl} />
               </div>
               <Link className="brand-mask" to={`/store/${storeId}`}>
                 <div className="brandName">

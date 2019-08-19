@@ -7,7 +7,6 @@
 
 .site-nav .sn-bd,
 .search-warp > .ant-row-flex,
-.index-banner-warp > .ant-carousel,
 .main-warp {
   min-width: 1024px;
   max-width: 1230px;
@@ -149,10 +148,9 @@
 }
 
 .index-banner-warp {
-  border-top: 2px solid #ff0036;
+  border-top: 1.5px solid #ff0036;
   text-align: center;
   height: 492px;
-  /* background-color: #a9180a; */
   box-sizing: content-box;
 }
 
@@ -161,12 +159,16 @@
   height: 492px;
 }
 
+.index-banner-warp .slick-list {
+  height: 492px;
+}
+
 .index-banner-warp .slick-dots li button {
   width: 25px;
   height: 5px;
 }
 
-.brandPromote-warp.flip .brand-item{
+.brandPromote-warp.flip .brand-item {
   transition: all 1s;
   transform: rotateY(360deg);
 }
