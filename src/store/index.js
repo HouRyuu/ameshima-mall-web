@@ -1,22 +1,20 @@
 import React, { Component } from "react";
 import { Layout } from "antd";
-import IndexHead from "./indexHead";
-import IndexSearch from "./indexSearch";
-import IndexGoodsNav from "./indexGoodsNav";
-import IndexBanner from "./indexBanner";
-import BrandPromote from "./BrandPromote";
+import IndexHead from "../index/indexHead";
+import StoreSearch from "./StoreSearch";
+import GoodsBanner from "./GoodsBanner";
 import GoodsPromote from "./GoodsPromote";
-import GuessLike from "./GuessLike";
 import TmallFooter from "../components/TmallFooter";
 import "antd/dist/antd.css";
 import "../style.css";
-import "./index.css";
+import "../index/index.css";
+import "./store.css";
 
 const { Header, Footer, Content } = Layout;
-class Index extends Component {
+export default class StoreIndex extends Component {
   render() {
     return (
-      <Layout>
+      <Layout className="store-warp">
         <Header className="site-nav">
           <IndexHead />
         </Header>
@@ -24,16 +22,11 @@ class Index extends Component {
           <Content>
             <Layout>
               <Header className="search-warp">
-                <IndexSearch />
+                <StoreSearch />
               </Header>
               <Content>
-                <IndexGoodsNav />
-                <IndexBanner />
-                <div className="main-warp">
-                  <BrandPromote />
-                  <GoodsPromote />
-                  <GuessLike />
-                </div>
+                <GoodsBanner />
+                <GoodsPromote />
               </Content>
             </Layout>
           </Content>
@@ -45,5 +38,3 @@ class Index extends Component {
     );
   }
 }
-
-export default Index;

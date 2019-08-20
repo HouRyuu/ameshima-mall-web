@@ -11,7 +11,7 @@
 }
 
 .goodsGrid-warp:hover {
-  border: 1px solid #ff0036;
+  border: 1px solid #ff0036 !important;
 }
 
 .goodsGrid-warp .goodsGrid-img {

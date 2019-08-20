@@ -37,7 +37,11 @@ export default class BrandPromote extends Component {
               <div className="brand-img">
                 <img alt="" src={logoUrl} />
               </div>
-              <Link className="brand-mask" to={`/store/${storeId}`}>
+              <Link
+                className="brand-mask"
+                target="_blank"
+                to={`/store?id=${storeId}`}
+              >
                 <div className="brandName">
                   <span>{brandName}</span>
                 </div>

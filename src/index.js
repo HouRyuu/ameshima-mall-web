@@ -5,12 +5,13 @@ import Index from "./index/";
 import Login from "./login/";
 import AliPayLogin from "./login/alipay";
 import Register from "./register/";
-import './index.css';
+import StoreIndex from "./store/";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   <Router history={browserHistory}>
     <Route path="/" component={Index} />
+    <Route path="/store" component={StoreIndex} />
     <Route path="/login" component={Login} />
     <Route path="/alipayLogin" component={AliPayLogin} />
     <Route path="/register" component={Register} />

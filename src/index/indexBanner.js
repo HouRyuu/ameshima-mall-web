@@ -27,7 +27,8 @@ export default class IndexBanner extends Component {
             <div key={storeId}>
               <div style={{ backgroundColor: `#${bannerColor}` }}>
                 <Link
-                  to={`/store/${storeId}`}
+                  to={`/store?id=${storeId}`}
+                  target="_blank"
                   style={{ display: "inline-block" }}
                 >
                   <img className="bannerImg" alt="" src={bannerImg} />

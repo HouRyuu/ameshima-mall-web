@@ -4,10 +4,11 @@ import "./goodsGrid.css";
 
 export default class GoodsGrid extends Component {
   addLikeCategory(categoryId) {
+    if (!categoryId) return;
     // 向本地缓存添加浏览商品类型，最多10个，超出时移除最老的类型
     const likeCategory = localStorage.getItem("likeCategory");
     const likeArray = likeCategory ? likeCategory.split(",") : [];
-    if (categoryId && likeArray.indexOf(categoryId + "") < 0) {
+    if (likeArray.indexOf(categoryId + "") < 0) {
       if (likeArray.length === 10) {
         likeArray.shift();
       }
@@ -27,7 +28,7 @@ export default class GoodsGrid extends Component {
       <Link
         className="goodsGrid-link"
         target="_blank"
-        to={`/goods/detail/${id}`}
+        to={`/goods/detail?id=${id}`}
         onClick={() => {
           this.addLikeCategory(categoryId);
         }}

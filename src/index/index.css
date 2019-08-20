@@ -7,7 +7,8 @@
 
 .site-nav .sn-bd,
 .search-warp > .ant-row-flex,
-.main-warp {
+.main-warp,
+.promoteList-panel {
   min-width: 1024px;
   max-width: 1230px;
   margin: auto;
@@ -163,9 +164,9 @@
   height: 492px;
 }
 
-.index-banner-warp .slick-dots li button {
-  width: 25px;
-  height: 5px;
+.ant-carousel .slick-dots li button {
+  width: 28px;
+  height: 8px;
 }
 
 .brandPromote-warp.flip .brand-item {
@@ -350,7 +351,7 @@
   margin-right: 0;
 }
 
-.guessLike-warp .wonderful-end {
+.wonderful-end {
   background: url(//img.alicdn.com/tps/TB1wQDAPXXXXXXgaFXXXXXXXXXX-62-35.png)
     no-repeat;
   width: 80px;

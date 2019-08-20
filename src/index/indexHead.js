@@ -46,6 +46,8 @@ export default class IndexHead extends Component {
     };
   }
   loginInfo() {
+    const token = localStorage.getItem("token");
+    if (!token) return;
     FetchUtil.get({
       url: "/user/loginInfo",
       success: result => {
@@ -56,10 +58,8 @@ export default class IndexHead extends Component {
           });
           return;
         }
-        if (localStorage.getItem("token")) {
-          message.warning(errMsg);
-          localStorage.removeItem("token");
-        }
+        message.warning(errMsg);
+        localStorage.removeItem("token");
       }
     });
   }

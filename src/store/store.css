@@ -1,0 +1,65 @@
+.store-warp .search-warp {
+  height: 114px;
+  border-bottom: 1px solid #c8baaa;
+}
+
+.storeHead-warp .storeInfo-warp {
+  padding: 10px;
+}
+
+.storeHead-warp .storeInfo-warp > div {
+  border-left: 1px solid #f0f0f0;
+  padding-left: 28px;
+}
+
+.storeHead-warp .storeInfo-warp > div > h2 {
+  margin: 0;
+  height: 46px;
+  line-height: 46px;
+}
+
+.store-warp .ant-layout {
+  background-color: #fff;
+}
+
+.store-warp .storeBanner-warp .slick-track,
+.store-warp .storeBanner-warp .bannerImg {
+  height: 690px;
+}
+
+.store-warp .storePromote-warp {
+  background-color: #fff;
+}
+
+.store-warp .promote-line {
+  height: 140px;
+  background: url(https://gdp.alicdn.com/imgextra/i2/1806053478/O1CN01GnZ7Ha1bYy2jD8PVk_!!1806053478.jpg)
+    no-repeat 50% 5%;
+}
+
+.store-warp .promoteList-panel {
+  width: 920px;
+}
+
+.store-warp .goodsGrid-warp {
+  max-width: 320px;
+  border: 1px solid #ccc;
+}
+
+.store-warp .goodsGrid-warp .goodsGrid-img {
+  max-height: 258px;
+}
+
+.store-warp .promoteList-line {
+  padding: 0;
+  display: flex;
+  margin-bottom: 32px;
+}
+
+.store-warp .promoteList-line li {
+  margin-right: 32px;
+}
+
+.store-warp .promoteList-line li:last-child {
+  margin: 0;
+}
