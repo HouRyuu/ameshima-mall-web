@@ -14,5 +14,4 @@ export default class UrlUtil {
       this.searchParam = JSON.parse(`{${search}"}`);
     }
   }
-  setSearchParam() {}
 }

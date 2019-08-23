@@ -28,7 +28,7 @@ export default class GoodsGrid extends Component {
       <Link
         className="goodsGrid-link"
         target="_blank"
-        to={`/goods/detail?id=${id}`}
+        to={`/goods?id=${id}`}
         onClick={() => {
           this.addLikeCategory(categoryId);
         }}
