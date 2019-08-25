@@ -170,11 +170,6 @@
   height: 8px;
 }
 
-.brandPromote-warp.flip .brand-item {
-  transition: all 1s;
-  transform: rotateY(360deg);
-}
-
 .brandPromote-warp .brand-item {
   width: 10%;
   text-align: center;
@@ -183,9 +178,26 @@
   padding: 0;
 }
 
+@keyframes IDENT {
+  0% {
+    width: 100%;
+  }
+
+  50% {
+    width: 0%;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
 .brandPromote-warp .brand-item .brand-img {
   height: 108px;
   line-height: 108px;
+  width: 100%;
+  margin: auto;
+  animation: IDENT 1s;
 }
 
 .brandPromote-warp .brand-item img {

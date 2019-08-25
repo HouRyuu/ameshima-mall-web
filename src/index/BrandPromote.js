@@ -21,15 +21,15 @@ export default class BrandPromote extends Component {
     if (curPage > totalPage) {
       curPage = 1;
     }
-    this.setState({ curPage, changeStyle: "flip" });
+    this.setState({ curPage });
   }
   componentWillMount() {
     this.findBrands();
   }
   render() {
-    const { brands = [{}], curPage = 1, changeStyle = null } = this.state;
+    const { brands = [{}], curPage = 1 } = this.state;
     return (
-      <Card className={`brandPromote-warp ${changeStyle}`}>
+      <Card className="brandPromote-warp">
         {brands.map(({ storeId, brandName, logoUrl }, index) => {
           if (index < (curPage - 1) * 29 || index >= curPage * 29) return null;
           return (
