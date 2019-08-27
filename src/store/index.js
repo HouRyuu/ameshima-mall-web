@@ -15,10 +15,6 @@ import "./store.css";
 const { Header, Footer, Content } = Layout;
 export default class StoreIndex extends Component {
   state = {};
-  constructor(props) {
-    super(props);
-
-  }
   findStordGoods() {
     const urlUtil = new UrlUtil(window.location);
     const {
@@ -61,7 +57,7 @@ export default class StoreIndex extends Component {
             ) : (
               <Layout>
                 <Header className="search-warp">
-                  <StoreSearch />
+                  <StoreSearch id={id} />
                 </Header>
                 <Content>
                   <GoodsBanner goodsList={bannerGoods} />

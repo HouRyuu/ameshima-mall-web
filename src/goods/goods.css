@@ -102,6 +102,7 @@
   margin: 0 4px 4px 0;
 }
 
+.goodsInfo-warp .goodsAttrList .selectedAttr,
 .goodsInfo-warp .goodsAttrList li:hover {
   border: 1px solid #ff0036;
 }
@@ -114,4 +115,42 @@
 .goodsInfo-warp .goodsAttrList li img {
   width: 40px;
   height: 40px;
+}
+
+.goodsInfo-warp .ant-card-head {
+  background-color: #fafafa;
+}
+
+.goodsInfo-warp .goodsDetail-tab {
+  margin-left: 12px;
+}
+
+.goodsInfo-warp .goodsDetail-tab .ant-tabs-nav-container {
+  height: 58px;
+}
+
+.goodsInfo-warp .ant-descriptions {
+  border: 1px solid #efefef;
+  padding: 16px;
+}
+
+.goodsInfo-warp .ant-descriptions-row > td {
+  padding-bottom: 10px;
+}
+
+.goodsInfo-warp .ant-descriptions-item-label,
+.goodsInfo-warp .ant-descriptions-item-content {
+  font-size: 12px;
+}
+
+.goodsInfo-warp .ant-descriptions-item-content {
+  max-width: 200px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.goodsInfo-warp .detailImg-warp img {
+  width: 100%;
 }

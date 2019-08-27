@@ -1,9 +1,31 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
 import { Row, Col, Icon, Input, AutoComplete } from "antd";
+import FetchUtil from "../utils/FetchUtil";
 
 export default class StoreSearch extends Component {
+  state = { evaluate: {} };
+  getEvaluate(id) {
+    if (id)
+      FetchUtil.get({
+        url: `/store/evaluate/${id}/getEvaluate`,
+        success: ({ data: evaluate }) => {
+          this.setState({ evaluate });
+        }
+      });
+  }
+  componentWillReceiveProps(props) {
+    const { id, evaluate } = props;
+    if (id) {
+      this.getEvaluate(id);
+    } else {
+      this.setState({ evaluate });
+    }
+  }
   render() {
+    const {
+      evaluate: { storeId, name, descScore, serviceScore, logisticsScore }
+    } = this.state;
     return (
       <Row type="flex" align="middle" className="storeHead-warp">
         <Col span={4}>
@@ -15,9 +37,27 @@ export default class StoreSearch extends Component {
             />
           </Link>
         </Col>
-        <Col span={7} className="storeInfo-warp">
+        <Col span={3} className="storeInfo-warp">
           <div>
-            <h2>stokke旗舰店</h2>
+            <Link to={`/store?id=${storeId}`} title={name}>
+              {name}
+            </Link>
+          </div>
+        </Col>
+        <Col span={4} className="storeInfo-warp">
+          <div>
+            <div className="shopdsr-item">
+              <div className="shopdsr-title">描述</div>
+              <div className="shopdsr-score">{descScore}</div>
+            </div>
+            <div className="shopdsr-item">
+              <div className="shopdsr-title">服务</div>
+              <div className="shopdsr-score">{serviceScore}</div>
+            </div>
+            <div className="shopdsr-item">
+              <div className="shopdsr-title">物流</div>
+              <div className="shopdsr-score">{logisticsScore}</div>
+            </div>
           </div>
         </Col>
         <Col span={8} offset={5}>

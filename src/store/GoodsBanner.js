@@ -9,7 +9,7 @@ export default class GoodsBanner extends Component {
       <Carousel autoplay className="storeBanner-warp">
         {goodsList.map(({ id, bannerUrl }) => (
           <div key={id}>
-            <Link to={`/goods/detail?id=${id}`}>
+            <Link to={`/goods?id=${id}`}>
               <img className="bannerImg" alt="" src={bannerUrl} />
             </Link>
           </div>
