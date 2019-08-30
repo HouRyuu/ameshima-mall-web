@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Layout } from "antd";
+import { Layout, BackTop } from "antd";
 import IndexHead from "./indexHead";
 import IndexSearch from "./indexSearch";
 import IndexGoodsNav from "./indexGoodsNav";
@@ -40,6 +40,7 @@ class Index extends Component {
         </Layout>
         <Footer className="view-footer">
           <TmallFooter />
+          <BackTop />
         </Footer>
       </Layout>
     );

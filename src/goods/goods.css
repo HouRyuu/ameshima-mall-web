@@ -7,15 +7,44 @@
 }
 
 .goodsInfo-warp .imgzoom-warp {
-  width: 420px;
-  height: 420px;
   margin: auto;
   border: 1px solid #eee;
+  position: relative;
+}
+
+.goodsInfo-warp .imgzoom-warp,
+.goodsInfo-warp .ks-imagezoom-viewer {
+  width: 420px;
+  height: 420px;
+}
+
+.goodsInfo-warp .ks-imagezoom-lens {
+  position: absolute;
+  width: 218.405px;
+  height: 218.405px;
+  background-image: url(//img-tmdetail.alicdn.com/tps/i4/T12pdtXaldXXXXXXXX-2-2.png);
+  cursor: move;
+}
+
+.goodsInfo-warp .ks-imagezoom-viewer {
+  position: absolute;
+  top: 0;
+  left: 432px;
+  z-index: 1;
+  overflow: hidden;
+  background-color: #fff;
+  border: 1px solid rgb(204, 204, 204);
 }
 
 .goodsInfo-warp .imgzoom-warp > img {
   max-width: 100%;
   max-height: 100%;
+}
+
+.goodsInfo-warp .ks-imagezoom-viewer img {
+  width: 800px;
+  height: 800px;
+  position: absolute;
 }
 
 .goodsInfo-warp .coverImg-list {
