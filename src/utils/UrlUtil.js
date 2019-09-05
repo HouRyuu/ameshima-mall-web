@@ -1,6 +1,6 @@
 export default class UrlUtil {
   url = null;
-  searchParam = null;
+  searchParam = {};
   constructor(url) {
     this.url = url;
     this.analysisSearchParam();

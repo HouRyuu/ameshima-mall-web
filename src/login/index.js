@@ -2,12 +2,17 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 import { Row, Col, Form, Icon, Input, Button, message } from "antd";
 import FetchUtil from "../utils/FetchUtil";
+import UrlUtil from "../utils/UrlUtil";
 import "./login.css";
 
 export default class Login extends Component {
   constructor(props) {
     super(props);
+    const {
+      searchParam: { redirectURL }
+    } = new UrlUtil(window.location);
     this.state = {
+      redirectURL,
       loginBtnDis: false
     };
   }
@@ -22,7 +27,7 @@ export default class Login extends Component {
           success: ({ errCode, errMsg, data }) => {
             if (errCode === 0) {
               localStorage.setItem("token", data);
-              window.location.href = "/";
+              window.location.href = unescape(this.state.redirectURL) || "/";
               return;
             }
             message.error(errMsg);
@@ -34,7 +39,7 @@ export default class Login extends Component {
   };
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { loginBtnDis } = this.state;
+    const { loginBtnDis, redirectURL } = this.state;
     return (
       <div className="login-page">
         <Row className="login-logo-row">
@@ -54,7 +59,16 @@ export default class Login extends Component {
               <Form onSubmit={this.handleSubmit} className="login-form">
                 <Form.Item>
                   {getFieldDecorator("account", {
-                    rules: [{ required: true, message: "请输入手机号！" }]
+                    rules: [
+                      {
+                        required: true,
+                        message: "请输入手机号！"
+                      },
+                      {
+                        pattern: /^1[3-8]\d{9}$/,
+                        message: "手机号格式错误！"
+                      }
+                    ]
                   })(
                     <Input
                       prefix={
@@ -66,7 +80,17 @@ export default class Login extends Component {
                 </Form.Item>
                 <Form.Item>
                   {getFieldDecorator("password", {
-                    rules: [{ required: true, message: "请输入密码！" }]
+                    rules: [
+                      {
+                        required: true,
+                        message: "请输入密码！"
+                      },
+                      {
+                        min: 6,
+                        max: 32,
+                        message: "长度介于6至32位间！"
+                      }
+                    ]
                   })(
                     <Input.Password
                       prefix={
@@ -89,10 +113,22 @@ export default class Login extends Component {
               </Form>
               <Row type="flex" justify="end" className="other-link-warp">
                 <Col span={6}>
-                  <Link>忘记密码</Link>
+                  <Link
+                    to={`/forgetPwd${
+                      redirectURL ? `?redirectURL=${redirectURL}` : ""
+                    }`}
+                  >
+                    忘记密码
+                  </Link>
                 </Col>
                 <Col span={6}>
-                  <Link to="/register">免费注册</Link>
+                  <Link
+                    to={`/register${
+                      redirectURL ? `?redirectURL=${redirectURL}` : ""
+                    }`}
+                  >
+                    免费注册
+                  </Link>
                 </Col>
               </Row>
               <div className="more-sign">

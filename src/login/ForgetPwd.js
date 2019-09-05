@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
-import { Row, Col, Form, Icon, Input, Button, message, Checkbox } from "antd";
-import Protocol from "../components/Protocol";
+import { Row, Col, Form, Icon, Input, Button, message } from "antd";
 import FetchUtil from "../utils/FetchUtil";
 import UrlUtil from "../utils/UrlUtil";
 import "../login/login.css";
 
-class RegisterForm extends Component {
+class ForgetForm extends Component {
   constructor(props) {
     super(props);
     const {
@@ -14,7 +13,6 @@ class RegisterForm extends Component {
     } = new UrlUtil(window.location);
     this.state = {
       redirectURL,
-      protocolVisible: false,
       captchaBtnText: "获取验证码",
       captchaBtnDis: false
     };
@@ -25,7 +23,7 @@ class RegisterForm extends Component {
     const account = form.getFieldValue("account");
     if (!form.getFieldError("account")) {
       FetchUtil.get({
-        url: "/user/sendRegisterCaptcha",
+        url: "/user/sendForgetCaptcha",
         data: { account },
         sendBefore: () => this.setState({ captchaBtnDis: true }),
         success: ({ errCode, errMsg, data }) => {
@@ -52,7 +50,7 @@ class RegisterForm extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         FetchUtil.post({
-          url: "/user/register",
+          url: "/user/forgetPwd",
           data: values,
           sendBefore: () => this.setState({ regBtnDis: true }),
           success: ({ errCode, errMsg, data }) => {
@@ -61,7 +59,7 @@ class RegisterForm extends Component {
             }
             localStorage.setItem("token", data);
             message.success(
-              "注册成功啦！快去购物吧^_^",
+              "修改成功啦！请保管好您的密码哦^_^",
               () =>
                 (window.location.href = unescape(this.state.redirectURL) || "/")
             );
@@ -73,12 +71,7 @@ class RegisterForm extends Component {
   };
   render() {
     const { getFieldDecorator } = this.props.form;
-    const {
-      redirectURL,
-      protocolVisible,
-      captchaBtnText,
-      captchaBtnDis
-    } = this.state;
+    const { redirectURL, captchaBtnText, captchaBtnDis } = this.state;
     return (
       <div className="login-page">
         <Row className="login-logo-row">
@@ -94,7 +87,7 @@ class RegisterForm extends Component {
         <Row>
           <Col span={6} offset={9}>
             <div className="login-warp">
-              <h2>注册</h2>
+              <h2>忘记密码</h2>
               <Form onSubmit={this.handleSubmit} className="login-form">
                 <Form.Item>
                   {getFieldDecorator("account", {
@@ -173,23 +166,6 @@ class RegisterForm extends Component {
                   )}
                 </Form.Item>
                 <Form.Item>
-                  {getFieldDecorator("nickName", {
-                    rules: [
-                      {
-                        required: true,
-                        message: "请输入昵称！",
-                        whitespace: true
-                      },
-                      {
-                        max: 16,
-                        message: "长度不得超过16个字符！"
-                      }
-                    ]
-                  })(
-                    <Input prefix={<Icon type="user" />} placeholder="昵称" />
-                  )}
-                </Form.Item>
-                <Form.Item>
                   <Row gutter={8}>
                     <Col span={12}>
                       {getFieldDecorator("captcha", {
@@ -228,43 +204,29 @@ class RegisterForm extends Component {
                   htmlType="submit"
                   className="login-button"
                 >
-                  注册
+                  修改密码
                 </Button>
-                <Form.Item>
-                  {getFieldDecorator("agreement", {
-                    valuePropName: "checked",
-                    rules: [
-                      {
-                        required: true,
-                        message: "请仔细阅读并同意隐私协议！"
-                      }
-                    ]
-                  })(
-                    <Checkbox style={{ fontSize: 12 }}>
-                      我已阅读并同意
-                      <Button
-                        type="link"
-                        style={{ padding: 0, fontSize: 12 }}
-                        onClick={() => this.setState({ protocolVisible: true })}
-                      >
-                        入会协议
-                      </Button>
-                    </Checkbox>
-                  )}
-                  <Link
-                    className="toLogin-link"
-                    to={`/login${
-                      redirectURL ? `?redirectURL=${redirectURL}` : ""
-                    }`}
-                  >
-                    登录
-                  </Link>
-                </Form.Item>
+                <Row type="flex" justify="end" className="other-link-warp">
+                  <Col span={4}>
+                    <Link
+                      to={`/login${
+                        redirectURL ? `?redirectURL=${redirectURL}` : ""
+                      }`}
+                    >
+                      登录
+                    </Link>
+                  </Col>
+                  <Col span={6}>
+                    <Link
+                      to={`/register${
+                        redirectURL ? `?redirectURL=${redirectURL}` : ""
+                      }`}
+                    >
+                      免费注册
+                    </Link>
+                  </Col>
+                </Row>
               </Form>
-              <Protocol
-                visible={protocolVisible}
-                onCancel={() => this.setState({ protocolVisible: false })}
-              />
             </div>
           </Col>
         </Row>
@@ -272,5 +234,5 @@ class RegisterForm extends Component {
     );
   }
 }
-const Register = Form.create()(RegisterForm);
-export default Register;
+const ForgetPwd = Form.create()(ForgetForm);
+export default ForgetPwd;

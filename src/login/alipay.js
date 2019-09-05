@@ -11,7 +11,7 @@ export default class AliPayLogin extends Component {
   }
   componentWillMount() {
     FetchUtil.get({
-      url: "/user/alipay/auth" + window.location.search,
+      url: `/user/alipay/auth${window.location.search}`,
       success: ({ errCode, data }) => {
         if (errCode === 0) {
           localStorage.setItem("token", data);
@@ -36,13 +36,7 @@ export default class AliPayLogin extends Component {
           status="warning"
           title="登录失败，请尝试重新登录。"
           extra={
-            <Button
-              type="primary"
-              key="console"
-              onClick={() => {
-                window.location.href = "/login";
-              }}
-            >
+            <Button type="primary" key="console" href="/login">
               登录
             </Button>
           }
@@ -54,13 +48,7 @@ export default class AliPayLogin extends Component {
         status="success"
         title="登录成功，购物愉快哟。"
         extra={
-          <Button
-            type="primary"
-            key="console"
-            onClick={() => {
-              window.location.href = "/";
-            }}
-          >
+          <Button type="primary" key="console" href="/">
             首页
           </Button>
         }

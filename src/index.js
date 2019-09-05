@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { Router, Route, browserHistory } from "react-router";
 import Index from "./index/";
 import Login from "./login/";
+import ForgetPwd from "./login/ForgetPwd";
 import AliPayLogin from "./login/alipay";
 import Register from "./register/";
 import StoreIndex from "./store/";
@@ -14,6 +15,7 @@ ReactDOM.render(
     <Route path="/" component={Index} />
     <Route path="/store" component={StoreIndex} />
     <Route path="/goods" component={GoodsIndex} />
+    <Route path="/forgetPwd" component={ForgetPwd} />
     <Route path="/login" component={Login} />
     <Route path="/alipayLogin" component={AliPayLogin} />
     <Route path="/register" component={Register} />

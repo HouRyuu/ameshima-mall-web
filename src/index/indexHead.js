@@ -6,35 +6,23 @@ import FetchUtil from "../utils/FetchUtil";
 const myTmallMenu = (
   <Menu className="head-menu">
     <Menu.Item>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="http://www.alipay.com/"
-      >
+      <Link target="_blank" to="http://www.alipay.com/">
         已买到的宝贝
-      </a>
+      </Link>
     </Menu.Item>
   </Menu>
 );
 const favoritesMenu = (
   <Menu className="head-menu">
     <Menu.Item>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="http://www.alipay.com/"
-      >
+      <Link target="_blank" to="http://www.alipay.com/">
         收藏的宝贝
-      </a>
+      </Link>
     </Menu.Item>
     <Menu.Item>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="http://www.alipay.com/"
-      >
+      <Link target="_blank" to="http://www.alipay.com/">
         收藏的店铺
-      </a>
+      </Link>
     </Menu.Item>
   </Menu>
 );
@@ -80,10 +68,16 @@ export default class IndexHead extends Component {
       return (
         <p className="sn-login-info">
           <em>喵，欢迎来天猫</em>
-          <Link className="sn-login" to="/login">
+          <Link
+            className="sn-login"
+            to={`/login?redirectURL=${escape(window.location)}`}
+          >
             请登录
           </Link>
-          <Link className="sn-register" to="/register">
+          <Link
+            className="sn-register"
+            to={`/register?redirectURL=${escape(window.location)}`}
+          >
             免费注册
           </Link>
         </p>

@@ -1,12 +1,19 @@
 import React, { Component } from "react";
-import { Row, Col, InputNumber, Button } from "antd";
+import { Row, Col, InputNumber, Button, Cascader } from "antd";
 import CoverImg from "./CoverImg";
+import FetchUtil from "../utils/FetchUtil";
 
 export default class GoodsInfo extends Component {
   state = {
     curSku: {
       attrs: "",
       goodsCount: 1
+    },
+    regionList: [],
+    targetCity: {
+      regionCode: ["110000", "110100"],
+      regionName: "北京市",
+      freight: 0
     }
   };
   selectAttr(attrId, index) {
@@ -44,6 +51,64 @@ export default class GoodsInfo extends Component {
       this.setState({ curSku });
     }
   }
+  findProvinces() {
+    FetchUtil.get({
+      url: "/basic/region/provinces",
+      success: ({ data: regionList }) => {
+        if (regionList) {
+          this.setState({
+            regionList: regionList.map(item => {
+              item.isLeaf = false;
+              return item;
+            })
+          });
+        }
+      }
+    });
+  }
+  loadCities(selectedOptions) {
+    const targetOption = selectedOptions[selectedOptions.length - 1];
+    if (!targetOption.children) {
+      targetOption.loading = true;
+      const { regionCode } = targetOption;
+      FetchUtil.get({
+        url: `/basic/region/${regionCode}/findByParent`,
+        success: ({ data }) => {
+          targetOption.children = data;
+          this.setState({ regionList: this.state.regionList });
+        },
+        complete: () => (targetOption.loading = false)
+      });
+    }
+  }
+  changeCity(value, selectedOptions) {
+    const { regionName } = selectedOptions[selectedOptions.length - 1];
+    const targetCity = {
+      regionCode: value,
+      regionName
+    };
+    this.setState({ targetCity }, () => this.getFreight(this.props.goods.id));
+  }
+  getFreight(id) {
+    const { targetCity } = this.state;
+    const regionCode = targetCity.regionCode[1];
+    FetchUtil.get({
+      url: `/goods/${id}/${regionCode}/freight`,
+      success: ({ data }) => {
+        targetCity.freight = data;
+        this.setState({ targetCity });
+      }
+    });
+  }
+  componentWillMount() {
+    this.findProvinces();
+  }
+  componentWillReceiveProps(props) {
+    const {
+      goods: { id }
+    } = props;
+    this.getFreight(id);
+  }
   render() {
     const { goods, attrs, coverImgs } = this.props;
     const { name, simpleDesc, location } = goods;
@@ -54,7 +119,9 @@ export default class GoodsInfo extends Component {
         marketPrice = goods.marketPrice,
         quantity = goods.quantity,
         goodsCount
-      }
+      },
+      targetCity: { regionCode, regionName, freight },
+      regionList
     } = this.state;
     const attrAray = attrsStr.split(",");
     return (
@@ -92,7 +159,21 @@ export default class GoodsInfo extends Component {
           )}
           <Row>
             <Col span={3}>运费</Col>
-            <Col span={21}>{location}</Col>
+            <Col span={21}>
+              {location} 至{" "}
+              <Cascader
+                fieldNames={{ label: "regionName", value: "regionCode" }}
+                defaultValue={regionCode}
+                options={regionList}
+                loadData={selectedOptions => this.loadCities(selectedOptions)}
+                onChange={(value, selectedOptions) =>
+                  this.changeCity(value, selectedOptions)
+                }
+              >
+                <Button type="link">{regionName}</Button>
+              </Cascader>{" "}
+              快递：{freight}
+            </Col>
           </Row>
           <div>
             {attrs.map(({ key, value }, index) => (
