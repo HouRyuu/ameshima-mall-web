@@ -351,19 +351,6 @@
   left: -38px;
 }
 
-.guessLike-warp .wonderful-line {
-  padding: 0;
-  display: flex;
-}
-
-.guessLike-warp .wonderful-item {
-  margin-right: 13px;
-}
-
-.guessLike-warp .wonderful-item:last-child {
-  margin-right: 0;
-}
-
 .wonderful-end {
   background: url(//img.alicdn.com/tps/TB1wQDAPXXXXXXgaFXXXXXXXXXX-62-35.png)
     no-repeat;

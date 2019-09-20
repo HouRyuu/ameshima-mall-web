@@ -90,7 +90,7 @@ export default class IndexGoodsNav extends Component {
                     </Col>
                     <Col span={21} className="line-con">
                       {categoryList.map(({ id, name }) => (
-                        <a key={id} href={`/goods/category/${id}`}>
+                        <a key={id} href={`/search?q=${name}`}>
                           {name}
                         </a>
                       ))}

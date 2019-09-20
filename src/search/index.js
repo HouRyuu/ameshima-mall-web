@@ -1,0 +1,133 @@
+import React, { Component } from "react";
+import { Link } from "react-router";
+import { Layout, BackTop, Row, Col, Input, Pagination, Empty } from "antd";
+import IndexHead from "../index/indexHead";
+import TmallFooter from "../components/TmallFooter";
+import Condition from "./Condition";
+import GoodsList from "../components/GoodsList";
+import FetchUtil from "../utils/FetchUtil";
+import UrlUtil from "../utils/UrlUtil";
+import "antd/dist/antd.css";
+import "../style.css";
+import "../index/index.css";
+import "./search.css";
+
+const { Header, Footer, Content } = Layout;
+const urlUtil = new UrlUtil(window.location);
+export default class SearchIndex extends Component {
+  state = {
+    queryParam: {
+      pageIndex: 0
+    },
+    goodsPage: {
+      pageSize: 60,
+      pageIndex: 0,
+      total: 0,
+      content: []
+    }
+  };
+  initQ() {
+    const {
+      searchParam: { q }
+    } = urlUtil;
+    if (!q) {
+      window.location = "/";
+      return;
+    }
+    const queryParam = {
+      word: q,
+      pageIndex: 0
+    };
+    return queryParam;
+  }
+  componentWillMount() {
+    const queryParam = this.initQ();
+    this.setState({ queryParam });
+    this.indexGoods(queryParam);
+  }
+  indexGoods(queryParam) {
+    FetchUtil.post({
+      url: "/goods/indexGoods",
+      data: queryParam,
+      success: ({ data: goodsPage }) => this.setState({ queryParam, goodsPage })
+    });
+  }
+  callQuery(queryParam) {
+    this.indexGoods(queryParam);
+  }
+  render() {
+    const { queryParam, goodsPage } = this.state;
+    const { pageSize, pageIndex, total, content } = goodsPage;
+    return (
+      <Layout className="search-page">
+        <Header className="site-nav">
+          <IndexHead />
+        </Header>
+        <Layout>
+          <Content>
+            <Layout>
+              <Header className="search-warp">
+                <Row type="flex" align="middle">
+                  <Col span={4}>
+                    <Link to="/">
+                      <img
+                        className="tmall-logo"
+                        alt="首页"
+                        src="//img.alicdn.com/tfs/TB1_Gn8RXXXXXXqaFXXXXXXXXXX-380-54.png"
+                      />
+                    </Link>
+                  </Col>
+                  <Col span={10} offset={3}>
+                    <Input.Search
+                      className="global-search"
+                      size="large"
+                      style={{ width: "100%" }}
+                      placeholder="搜索 天猫 商品/品牌/店铺"
+                      defaultValue={queryParam.word}
+                      onSearch={value => {
+                        window.location.search = `?q=${value}`;
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </Header>
+              <Content>
+                {total > 0 ? (
+                  <div className="main-warp">
+                    <Condition
+                      queryParam={queryParam}
+                      callQuery={this.callQuery.bind(this)}
+                      goodsPage={goodsPage}
+                    />
+                    <GoodsList goodsList={content} />
+                    <div className="page-line">
+                      <Pagination
+                        showQuickJumper
+                        pageSize={pageSize}
+                        defaultCurrent={pageIndex + 1}
+                        total={total}
+                        onChange={page => {
+                          queryParam.pageIndex = page - 1;
+                          this.indexGoods(queryParam);
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <Empty
+                    image="https://img.alicdn.com/tfs/TB1QJqdPFXXXXccXFXXXXXXXXXX-65-48.png"
+                    description={`喵~没找到与“ ${queryParam.word} ”相关的商品哦`}
+                  />
+                )}
+              </Content>
+            </Layout>
+          </Content>
+        </Layout>
+        <Footer className="view-footer">
+          <TmallFooter />
+          <BackTop />
+        </Footer>
+      </Layout>
+    );
+  }
+}

@@ -7,6 +7,7 @@ export default class UrlUtil {
   }
   analysisSearchParam() {
     let { search } = this.url;
+    search = decodeURI(search);
     if (search) {
       search = search.replace(/\?/, '"');
       search = search.replace(/=/g, '":"');

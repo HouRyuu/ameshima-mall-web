@@ -1,3 +1,16 @@
+.wonderful-line {
+  padding: 0;
+  display: flex;
+}
+
+.wonderful-item {
+  margin-right: 13px;
+}
+
+.wonderful-item:last-child {
+  margin-right: 0;
+}
+
 .goodsGrid-link {
   display: inline-block;
 }

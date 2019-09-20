@@ -7,7 +7,7 @@ export default class BrandPromote extends Component {
   state = {};
   findBrands() {
     FetchUtil.get({
-      url: "/goods/brand/index",
+      url: "/store/index/brand",
       success: ({ data: brands }) => {
         if (brands) {
           this.setState({ brands });

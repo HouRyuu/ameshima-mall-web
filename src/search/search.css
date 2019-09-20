@@ -1,0 +1,74 @@
+.search-page .search-warp {
+  height: 114px;
+}
+
+.search-page .search-warp > div {
+  border-bottom: 1px solid rgb(237, 237, 237);
+}
+
+.search-page .ant-layout-content {
+  background-color: #fff;
+}
+
+.search-page th.ant-descriptions-item-label {
+  width: 134px;
+}
+
+.search-page .filter-line {
+  margin: 10px 0;
+  padding: 5px;
+  background: #faf9f9;
+  color: #806f66;
+  font-size: 12px;
+}
+
+.search-page .sort-warp {
+  text-align: center;
+}
+
+.search-page .sort-warp span {
+  cursor: pointer;
+  display: inline-block;
+  margin-left: -1px;
+  padding: 0 10px;
+  height: 26px;
+  line-height: 24px;
+  border: 1px solid #ccc;
+  position: relative;
+}
+
+.search-page .sort-warp .cur-sort,
+.search-page .sort-warp span:hover {
+  color: #ff0036;
+  background: #f1edec;
+}
+
+.search-page .sort-warp span:last-child {
+  padding-right: 21px;
+}
+
+.search-page .sort-warp span:last-child .anticon {
+  position: absolute;
+}
+
+.search-page .sort-warp .cur-sort .anticon,
+.search-page .sort-warp span:last-child:hover .anticon {
+  color: #806f66;
+}
+
+.search-page .sort-warp .cur-sort.up .anticon-caret-up {
+  color: #ff0036;
+}
+
+.search-page .sort-warp .cur-sort.down .anticon-caret-down {
+  color: #ff0036;
+}
+
+.search-page .goodsGrid-warp {
+  border: 1px solid #f5f5f5;
+}
+
+.search-page .page-line {
+  margin: 20px 0;
+  text-align: center;
+}
