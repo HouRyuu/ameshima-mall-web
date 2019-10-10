@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { browserHistory } from "react-router";
 import { Link } from "react-router";
 import { Row, Col, Menu, Dropdown, Icon, message } from "antd";
 import FetchUtil from "../utils/FetchUtil";
@@ -12,29 +13,25 @@ const myTmallMenu = (
     </Menu.Item>
   </Menu>
 );
-const favoritesMenu = (
-  <Menu className="head-menu">
-    <Menu.Item>
-      <Link target="_blank" to="http://www.alipay.com/">
-        收藏的宝贝
-      </Link>
-    </Menu.Item>
-    <Menu.Item>
-      <Link target="_blank" to="http://www.alipay.com/">
-        收藏的店铺
-      </Link>
-    </Menu.Item>
-  </Menu>
-);
 export default class IndexHead extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loginInfo: null
+      loginInfo: null,
+      cartCount: 0
     };
+    this.loginInfo();
   }
   loginInfo() {
     const token = localStorage.getItem("token");
+    const { loginRequire } = this.props;
+    if (loginRequire && !token) {
+      browserHistory.push({
+        pathname: "/login",
+        search: `?redirectURL=${escape(window.location)}`
+      });
+      return;
+    }
     if (!token) return;
     FetchUtil.get({
       url: "/user/loginInfo",
@@ -44,10 +41,15 @@ export default class IndexHead extends Component {
           this.setState({
             loginInfo: data
           });
+          this.getCartCount();
           return;
         }
-        message.warning(errMsg);
         localStorage.removeItem("token");
+        message.warning(errMsg, () => {
+          if (loginRequire) {
+            window.location = `/login?redirectURL=${escape(window.location)}`;
+          }
+        });
       }
     });
   }
@@ -57,7 +59,8 @@ export default class IndexHead extends Component {
       success: result => {
         localStorage.removeItem("token");
         this.setState({
-          loginInfo: null
+          loginInfo: null,
+          cartCount: 0
         });
       }
     });
@@ -97,31 +100,41 @@ export default class IndexHead extends Component {
       </p>
     );
   }
-  componentWillMount() {
-    this.loginInfo();
+  getCartCount() {
+    FetchUtil.get({
+      url: "/goods/shoppingCart/getCartCount",
+      success: ({ data }) => this.setState({ cartCount: data })
+    });
+  }
+  componentWillReceiveProps(props) {
+    props.getCartCount && this.getCartCount();
   }
   render() {
+    const { loginInfo, cartCount } = this.state;
     return (
       <div className="sn-bd">
         <Row type="flex" justify="space-between">
           <Col span={5}>{this.renderLoginInfo()}</Col>
-          <Col span={5}>
+          <Col span={3}>
             <Dropdown overlay={myTmallMenu}>
               <Link className="ant-dropdown-link">
                 我的天猫
                 <Icon type="down" />
               </Link>
             </Dropdown>
-            <Link className="sn-cart-link">
+            <Link
+              className="sn-cart-link"
+              to={
+                loginInfo
+                  ? "/shoppingCart"
+                  : `/login?redirectURL=${escape(
+                      window.location.origin + "/shoppingCart"
+                    )}`
+              }
+            >
               <Icon type="shopping-cart" />
-              购物车0件
+              购物车{cartCount}件
             </Link>
-            <Dropdown overlay={favoritesMenu}>
-              <Link className="ant-dropdown-link">
-                收藏夹
-                <Icon type="down" />
-              </Link>
-            </Dropdown>
           </Col>
         </Row>
       </div>

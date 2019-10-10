@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router";
 import { Row, Col, List, Icon } from "antd";
 import FetchUtil from "../utils/FetchUtil";
 
@@ -90,9 +91,12 @@ export default class IndexGoodsNav extends Component {
                     </Col>
                     <Col span={21} className="line-con">
                       {categoryList.map(({ id, name }) => (
-                        <a key={id} href={`/search?q=${name}`}>
+                        <Link
+                          key={id}
+                          to={{ pathname: "/search", search: `?q=${name}` }}
+                        >
                           {name}
-                        </a>
+                        </Link>
                       ))}
                     </Col>
                   </Row>

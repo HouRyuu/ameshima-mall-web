@@ -1,24 +1,39 @@
 import React, { Component } from "react";
-import { Row, Col, InputNumber, Button, Cascader } from "antd";
+import { browserHistory } from "react-router";
+import { Row, Col, InputNumber, Button, Cascader, message } from "antd";
 import CoverImg from "./CoverImg";
 import FetchUtil from "../utils/FetchUtil";
 
 export default class GoodsInfo extends Component {
-  state = {
-    curSku: {
-      attrs: "",
-      goodsCount: 1
-    },
-    regionList: [],
-    targetCity: {
-      regionCode: ["110000", "110100"],
-      regionName: "北京市",
-      freight: 0
-    }
-  };
-  selectAttr(attrId, index) {
+  constructor(props) {
+    super(props);
+    const { goods, attrs, coverImgs } = this.props;
+    const { price, marketPrice, quantity } = goods;
+    this.state = {
+      goods,
+      attrs,
+      coverImgs,
+      curSku: {
+        attrs: "",
+        goodsCount: 1,
+        price,
+        marketPrice,
+        quantity,
+        attrsJson: "{}"
+      },
+      regionList: [],
+      targetCity: {
+        regionCode: ["110000", "110100"],
+        regionName: "北京市",
+        freight: -1
+      },
+      buyDis: false,
+      addDis: false
+    };
+  }
+  selectAttr(attrId, index, key, value) {
     let { curSku } = this.state;
-    const { attrs, goodsCount } = curSku;
+    const { attrs, goodsCount, attrsJson } = curSku;
     const curAttrs = attrs ? attrs.split(",") : [];
     const attrIndex = curAttrs.indexOf(attrId + "");
     if (attrIndex > -1) {
@@ -35,29 +50,35 @@ export default class GoodsInfo extends Component {
       if (sku) {
         curSku = { ...sku };
         curSku.goodsCount = goodsCount;
+        const attrsJsonObj = JSON.parse(attrsJson);
+        attrsJsonObj[key] = value;
+        curSku.attrsJson = JSON.stringify(attrsJsonObj);
         this.setState({ curSku });
       }
-    } else {
-      const {
-        goods: { price, marketPrice, quantity }
-      } = this.props;
-      curSku = {
-        attrs: attrsStr,
-        price,
-        marketPrice,
-        quantity
-      };
-      curSku.goodsCount = goodsCount;
-      this.setState({ curSku });
+      return;
     }
+    const {
+      goods: { price, marketPrice, quantity }
+    } = this.props;
+    curSku = {
+      attrs: attrsStr,
+      price,
+      marketPrice,
+      quantity,
+      goodsCount
+    };
+    const attrsJsonObj = JSON.parse(attrsJson);
+    attrsJsonObj[key] = value;
+    curSku.attrsJson = JSON.stringify(attrsJsonObj);
+    this.setState({ curSku });
   }
   findProvinces() {
     FetchUtil.get({
       url: "/basic/region/provinces",
-      success: ({ data: regionList }) => {
-        if (regionList) {
+      success: ({ data }) => {
+        if (data) {
           this.setState({
-            regionList: regionList.map(item => {
+            regionList: data.map(item => {
               item.isLeaf = false;
               return item;
             })
@@ -82,46 +103,75 @@ export default class GoodsInfo extends Component {
     }
   }
   changeCity(value, selectedOptions) {
-    const { regionName } = selectedOptions[selectedOptions.length - 1];
-    const targetCity = {
-      regionCode: value,
-      regionName
-    };
-    this.setState({ targetCity }, () => this.getFreight(this.props.goods.id));
-  }
-  getFreight(id) {
+    const city = selectedOptions[1];
+    const { regionName } = city;
     const { targetCity } = this.state;
+    targetCity.regionCode = value;
+    targetCity.regionName = regionName;
+    this.setState({ targetCity }, () => {
+      if (city.freight === undefined) {
+        this.getFreight(this.props.goods.id, targetCity, city);
+      }
+    });
+  }
+  getFreight(id, targetCity, city) {
+    if (!id) return;
     const regionCode = targetCity.regionCode[1];
     FetchUtil.get({
       url: `/goods/${id}/${regionCode}/freight`,
       success: ({ data }) => {
         targetCity.freight = data;
         this.setState({ targetCity });
+        if (city) {
+          city.freight = data;
+        }
       }
+    });
+  }
+  addCart() {
+    const {
+      curSku: { id, goodsCount, attrsJson }
+    } = this.state;
+    if (!id) {
+      message.warn("请选择您要的商品信息");
+      return;
+    }
+    FetchUtil.post({
+      url: "/goods/shoppingCart/add",
+      data: { skuId: id, amount: goodsCount, attrsJson },
+      sendBefore: () => this.setState({ addDis: true }),
+      success: ({ errCode, errMsg }) => {
+        if (!errCode) {
+          message.success("成功添加至购物车");
+          const { addSuccess } = this.props;
+          addSuccess();
+          return;
+        }
+        message.error(errMsg, () => {
+          if (errCode === 201 || errCode === 202) {
+            browserHistory.push({
+              pathname: "/login",
+              search: `?redirectURL=${escape(window.location)}`
+            });
+          }
+        });
+      },
+      complete: () => this.setState({ addDis: false })
     });
   }
   componentWillMount() {
     this.findProvinces();
-  }
-  componentWillReceiveProps(props) {
-    const {
-      goods: { id }
-    } = props;
-    this.getFreight(id);
+    this.getFreight(this.props.goods.id, this.state.targetCity);
   }
   render() {
-    const { goods, attrs, coverImgs } = this.props;
-    const { name, simpleDesc, location } = goods;
     const {
-      curSku: {
-        attrs: attrsStr,
-        price = goods.price,
-        marketPrice = goods.marketPrice,
-        quantity = goods.quantity,
-        goodsCount
-      },
+      goods: { name, simpleDesc, location },
+      attrs,
+      coverImgs,
+      curSku: { attrs: attrsStr, price, marketPrice, quantity, goodsCount },
       targetCity: { regionCode, regionName, freight },
-      regionList
+      regionList,
+      addDis
     } = this.state;
     const attrAray = attrsStr.split(",");
     return (
@@ -157,10 +207,14 @@ export default class GoodsInfo extends Component {
               </Row>
             </div>
           )}
-          <Row>
+          <Row
+            type="flex"
+            align="middle"
+            style={{ marginBottom: 10, borderBottom: "1px solid #c9c9c9" }}
+          >
             <Col span={3}>运费</Col>
             <Col span={21}>
-              {location} 至{" "}
+              {location} 至
               <Cascader
                 fieldNames={{ label: "regionName", value: "regionCode" }}
                 defaultValue={regionCode}
@@ -171,7 +225,7 @@ export default class GoodsInfo extends Component {
                 }
               >
                 <Button type="link">{regionName}</Button>
-              </Cascader>{" "}
+              </Cascader>
               快递：{freight}
             </Col>
           </Row>
@@ -187,10 +241,10 @@ export default class GoodsInfo extends Component {
                           attrAray[index] === id + "" ? "selectedAttr" : ""
                         }
                         key={id}
-                        onClick={() => this.selectAttr(id, index)}
+                        onClick={() => this.selectAttr(id, index, key, txtValue)}
                       >
                         {imgValue ? (
-                          <img alt="" src={imgValue} />
+                          <img alt="" src={imgValue} title={txtValue} />
                         ) : (
                           <span>{txtValue}</span>
                         )}
@@ -207,10 +261,14 @@ export default class GoodsInfo extends Component {
               <InputNumber
                 min={1}
                 max={quantity}
-                defaultValue={1}
                 value={goodsCount > quantity ? quantity : goodsCount}
                 onChange={value => {
                   const { curSku } = this.state;
+                  if (value < 1) {
+                    value = 1;
+                  } else if (goodsCount > quantity) {
+                    value = quantity;
+                  }
                   curSku.goodsCount = value;
                   this.setState({ curSku });
                 }}
@@ -220,16 +278,31 @@ export default class GoodsInfo extends Component {
               库存{quantity}件
             </Col>
           </Row>
-          <Row className="bugGoods-warp">
-            <Col offset={3} span={4}>
-              <Button size="large">立即购买</Button>
-            </Col>
-            <Col offset={1} span={4}>
-              <Button type="danger" size="large">
-                加入购物车
-              </Button>
-            </Col>
-          </Row>
+          {quantity ? (
+            <Row className="bugGoods-warp">
+              <Col offset={3} span={4}>
+                <Button size="large">立即购买</Button>
+              </Col>
+              <Col offset={1} span={4}>
+                <Button
+                  disabled={addDis}
+                  type="danger"
+                  size="large"
+                  onClick={() => this.addCart()}
+                >
+                  加入购物车
+                </Button>
+              </Col>
+            </Row>
+          ) : (
+            <Row className="bugGoods-warp">
+              <Col offset={3} span={4}>
+                <Button disabled size="large">
+                  宝贝已经卖光啦
+                </Button>
+              </Col>
+            </Row>
+          )}
         </Col>
       </Row>
     );

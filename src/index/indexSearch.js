@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Row, Col, Icon, Input, AutoComplete } from "antd";
+import { browserHistory } from "react-router";
+import { Row, Col, Input } from "antd";
 
 export default class IndexSearch extends Component {
   render() {
@@ -12,7 +13,12 @@ export default class IndexSearch extends Component {
             style={{ width: "100%" }}
             placeholder="搜索 天猫 商品/品牌/店铺"
             onSearch={value => {
-              window.location = `/search?q=${value}`;
+              value = value.trim();
+              if (!value) return;
+              browserHistory.push({
+                pathname: "/search",
+                search: `?q=${value}`
+              });
             }}
           />
         </Col>

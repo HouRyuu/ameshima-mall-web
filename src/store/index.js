@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Layout } from "antd";
+import { Layout, BackTop } from "antd";
 import IndexHead from "../index/indexHead";
 import StoreSearch from "./StoreSearch";
 import GoodsBanner from "./GoodsBanner";
@@ -69,6 +69,7 @@ export default class StoreIndex extends Component {
         </Layout>
         <Footer className="view-footer">
           <TmallFooter />
+          <BackTop />
         </Footer>
       </Layout>
     );

@@ -56,11 +56,13 @@
   color: #806f66;
 }
 
-.search-page .sort-warp .cur-sort.up .anticon-caret-up {
+.search-page .sort-warp .cur-sort.up .anticon-caret-up,
+.search-page .sort-warp .cur-sort.up:hover .anticon-caret-up {
   color: #ff0036;
 }
 
-.search-page .sort-warp .cur-sort.down .anticon-caret-down {
+.search-page .sort-warp .cur-sort.down .anticon-caret-down,
+.search-page .sort-warp .cur-sort.down:hover .anticon-caret-down {
   color: #ff0036;
 }
 

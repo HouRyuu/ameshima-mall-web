@@ -1,6 +1,15 @@
 import React, { Component } from "react";
 import { Link } from "react-router";
-import { Layout, Row, Col, Card, Tabs, Descriptions, Button } from "antd";
+import {
+  Layout,
+  Row,
+  Col,
+  Card,
+  Tabs,
+  Descriptions,
+  Button,
+  BackTop
+} from "antd";
 import IndexHead from "../index/indexHead";
 import StoreSearch from "../store/StoreSearch";
 import GoodsInfo from "./GoodsInfo";
@@ -17,21 +26,19 @@ const { Header, Footer, Content } = Layout;
 const { TabPane } = Tabs;
 export default class GoodsIndex extends Component {
   state = {
-    id: null,
     goods: {},
     attrs: [],
     skus: [],
     coverImgs: [],
     params: [],
     detailImgs: [],
-    evaluate: {}
+    evaluate: {},
+    getCartCount: false
   };
-  findGoodsInfo() {
-    const urlUtil = new UrlUtil(window.location);
+  getGoodsInfo() {
     const {
       searchParam: { id }
-    } = urlUtil;
-    this.setState({ id });
+    } = new UrlUtil(window.location);
     if (id) {
       FetchUtil.get({
         url: `/goods/${id}/detail`,
@@ -48,36 +55,32 @@ export default class GoodsIndex extends Component {
   getEvaluate(storeId) {
     FetchUtil.get({
       url: `/store/evaluate/${storeId}/getEvaluate`,
-      success: ({ data: evaluate }) => {
-        this.setState({ evaluate });
-      }
+      success: ({ data: evaluate }) => this.setState({ evaluate })
     });
   }
   componentWillMount() {
-    this.findGoodsInfo();
+    this.getGoodsInfo();
   }
   render() {
     const {
-      id,
       goods,
       attrs,
       skus,
       coverImgs,
       params,
       detailImgs,
-      evaluate
+      evaluate,
+      getCartCount
     } = this.state;
     const { name, descScore, serviceScore, logisticsScore } = evaluate;
     return (
       <Layout className="store-warp">
         <Header className="site-nav">
-          <IndexHead />
+          <IndexHead getCartCount={getCartCount} />
         </Header>
         <Layout>
           <Content>
-            {!id ? (
-              "地址错误"
-            ) : !goods ? (
+            {!goods.id ? (
               "商品不存在"
             ) : (
               <Layout>
@@ -91,6 +94,9 @@ export default class GoodsIndex extends Component {
                       attrs={attrs}
                       skus={skus}
                       coverImgs={coverImgs}
+                      addSuccess={() => {
+                        this.setState({ getCartCount: true });
+                      }}
                     />
                     <Row>
                       <Col span={4} offset={2}>
@@ -181,6 +187,7 @@ export default class GoodsIndex extends Component {
         </Layout>
         <Footer className="view-footer">
           <TmallFooter />
+          <BackTop />
         </Footer>
       </Layout>
     );

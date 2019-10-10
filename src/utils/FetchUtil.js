@@ -9,7 +9,7 @@ class FetchUtil {
       error,
       complete
     } = params;
-    url = "http://localhost" + url;
+    url = "http://tmallserver.xiaomy.net" + url;
     const headers = new Headers();
     headers.append("Accept", "application/json");
     headers.append("Content-Type", "application/json;charset=UTF-8");

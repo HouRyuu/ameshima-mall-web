@@ -142,12 +142,7 @@ export default class Login extends Component {
                       <Icon type="alipay-circle" style={{ color: "#1890ff" }} />
                     </a>
                   </li>
-                  <li>
-                    <Icon type="wechat" style={{ color: "#00bb29" }} />
-                  </li>
-                  <li>
-                    <Icon type="qq" style={{ color: "#498ad5" }} />
-                  </li>
+                  
                 </ul>
               </div>
             </div>

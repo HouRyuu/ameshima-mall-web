@@ -16,7 +16,6 @@ import FetchUtil from "../utils/FetchUtil";
 const { CheckableTag } = Tag;
 export default class Condition extends Component {
   state = {
-    category: null,
     brands: [],
     categories: [],
     queryParam: {},
@@ -38,41 +37,30 @@ export default class Condition extends Component {
   }
   componentWillReceiveProps(props) {
     const { queryParam, callQuery, goodsPage } = props;
-    console.log(queryParam.pageIndex);
     this.setState({ queryParam: { ...queryParam }, callQuery, goodsPage });
     this.findBrandsAndCategories(props.queryParam);
   }
-  getBreadcrumb() {
-    const { category } = this.state;
+  getBreadcrumb(category, brand) {
     return (
       <Breadcrumb separator=">">
         <Breadcrumb.Item>全部</Breadcrumb.Item>
         {category ? <Breadcrumb.Item>{category}</Breadcrumb.Item> : null}
+        {brand ? <Breadcrumb.Item>{brand}</Breadcrumb.Item> : null}
       </Breadcrumb>
     );
   }
-  selectBrand(checked, brand) {
+  selectBrandOrCategory(checked, value, type) {
     const { queryParam, callQuery } = this.state;
     queryParam.pageIndex = 0;
-    if (checked) {
-      queryParam.brand = brand;
-      callQuery(queryParam);
-      return;
+    if (type === "brand" && checked) {
+      queryParam.brand = value;
+    } else if (type === "brand" && !checked) {
+      queryParam.brand = null;
+    } else if (type === "category" && checked) {
+      queryParam.category = value;
+    } else {
+      queryParam.category = null;
     }
-    queryParam.brand = null;
-    callQuery(queryParam);
-  }
-  selectCategory(checked, category) {
-    const { queryParam, callQuery } = this.state;
-    queryParam.pageIndex = 0;
-    if (checked) {
-      this.setState({ category });
-      queryParam.category = category;
-      callQuery(queryParam);
-      return;
-    }
-    this.setState({ category: null });
-    queryParam.category = null;
     callQuery(queryParam);
   }
   order(field) {
@@ -117,7 +105,7 @@ export default class Condition extends Component {
         <Descriptions
           bordered
           size="small"
-          title={this.getBreadcrumb()}
+          title={this.getBreadcrumb(category, brand)}
           column={1}
         >
           <Descriptions.Item label="品牌">
@@ -125,7 +113,9 @@ export default class Condition extends Component {
               <CheckableTag
                 key={item}
                 checked={brand === item}
-                onChange={checked => this.selectBrand(checked, item)}
+                onChange={checked =>
+                  this.selectBrandOrCategory(checked, item, "brand")
+                }
               >
                 {item}
               </CheckableTag>
@@ -136,7 +126,9 @@ export default class Condition extends Component {
               <CheckableTag
                 key={item}
                 checked={category === item}
-                onChange={checked => this.selectCategory(checked, item)}
+                onChange={checked =>
+                  this.selectBrandOrCategory(checked, item, "category")
+                }
               >
                 {item}
               </CheckableTag>
@@ -148,6 +140,7 @@ export default class Condition extends Component {
             <span
               className={!orderField ? "cur-sort" : null}
               onClick={() => this.order()}
+              title="点击后恢复默认排序"
             >
               综合
               <Icon type="arrow-down" />
@@ -155,6 +148,11 @@ export default class Condition extends Component {
             <span
               className={"salesVolume" === orderField ? "cur-sort" : null}
               onClick={() => this.order("salesVolume")}
+              title={
+                "salesVolume" === orderField
+                  ? "点击后恢复默认排序"
+                  : "点击后按销量从高到低"
+              }
             >
               销量
               <Icon type="arrow-down" />
@@ -168,6 +166,13 @@ export default class Condition extends Component {
                   : null
               }
               onClick={() => this.order("price")}
+              title={
+                "price" === orderField && "DESC" === orderType
+                  ? "点击后恢复默认排序"
+                  : "price" === orderField && "ASC" === orderType
+                  ? "点击后按价格降序"
+                  : "点击后按价格升序"
+              }
             >
               价格
               <Icon type="caret-up" style={{ top: 2 }} />

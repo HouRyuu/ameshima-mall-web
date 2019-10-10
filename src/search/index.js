@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
+import { Link, browserHistory } from "react-router";
 import { Layout, BackTop, Row, Col, Input, Pagination, Empty } from "antd";
 import IndexHead from "../index/indexHead";
 import TmallFooter from "../components/TmallFooter";
@@ -13,7 +13,6 @@ import "../index/index.css";
 import "./search.css";
 
 const { Header, Footer, Content } = Layout;
-const urlUtil = new UrlUtil(window.location);
 export default class SearchIndex extends Component {
   state = {
     queryParam: {
@@ -28,22 +27,24 @@ export default class SearchIndex extends Component {
   };
   initQ() {
     const {
-      searchParam: { q }
-    } = urlUtil;
-    if (!q) {
-      window.location = "/";
+      searchParam: { q: word }
+    } = new UrlUtil(window.location);
+    if (!word) {
+      browserHistory.push("/");
       return;
     }
     const queryParam = {
-      word: q,
+      word,
       pageIndex: 0
     };
-    return queryParam;
-  }
-  componentWillMount() {
-    const queryParam = this.initQ();
     this.setState({ queryParam });
     this.indexGoods(queryParam);
+  }
+  componentWillMount() {
+    this.initQ();
+  }
+  componentWillReceiveProps() {
+    this.initQ();
   }
   indexGoods(queryParam) {
     FetchUtil.post({
@@ -85,7 +86,13 @@ export default class SearchIndex extends Component {
                       placeholder="搜索 天猫 商品/品牌/店铺"
                       defaultValue={queryParam.word}
                       onSearch={value => {
-                        window.location.search = `?q=${value}`;
+                        value = value.trim();
+                        if (!value) return;
+                        // window.location.search = `?q=${value}`;
+                        browserHistory.push({
+                          pathname: "/search",
+                          search: `?q=${value}`
+                        });
                       }}
                     />
                   </Col>

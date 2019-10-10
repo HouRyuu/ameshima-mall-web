@@ -3,9 +3,9 @@ export default class UrlUtil {
   searchParam = {};
   constructor(url) {
     this.url = url;
-    this.analysisSearchParam();
+    this.analyzeSearchParam();
   }
-  analysisSearchParam() {
+  analyzeSearchParam() {
     let { search } = this.url;
     search = decodeURI(search);
     if (search) {

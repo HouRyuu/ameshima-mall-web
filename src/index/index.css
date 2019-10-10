@@ -9,7 +9,8 @@
 .search-warp > .ant-row-flex,
 .main-warp,
 .promoteList-panel,
-.goodsInfo-warp {
+.goodsInfo-warp,
+.cart-warp .cart-table {
   min-width: 1024px;
   max-width: 1230px;
   margin: auto;

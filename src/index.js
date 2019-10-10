@@ -11,6 +11,7 @@ import Register from "./register/";
 import StoreIndex from "./store/";
 import GoodsIndex from "./goods/";
 import SearchIndex from "./search/";
+import CartIndex from "./cart/";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
@@ -24,6 +25,7 @@ ReactDOM.render(
       <Route path="/alipayLogin" component={AliPayLogin} />
       <Route path="/register" component={Register} />
       <Route path="/search" component={SearchIndex} />
+      <Route path="/shoppingCart" component={CartIndex} />
     </Router>
   </LocaleProvider>,
   document.getElementById("root")
