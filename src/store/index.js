@@ -24,7 +24,11 @@ export default class StoreIndex extends Component {
     if (id) {
       FetchUtil.get({
         url: `/goods/${id}/storeGoods`,
-        success: ({ data }) => {
+        success:  ({ errCode, data }) => {
+          if (errCode) {
+            this.setState({id: null});
+            return;
+          }
           const bannerGoods = [],
             promoteGoods = [];
           data.forEach(goods => {

@@ -42,7 +42,11 @@ export default class GoodsIndex extends Component {
     if (id) {
       FetchUtil.get({
         url: `/goods/${id}/detail`,
-        success: ({ data }) => {
+        success: ({ errCode, data }) => {
+          if (errCode) {
+            this.setState({goods: null});
+            return;
+          }
           this.setState({ ...data });
           const {
             goods: { storeId }
@@ -80,7 +84,7 @@ export default class GoodsIndex extends Component {
         </Header>
         <Layout>
           <Content>
-            {!goods.id ? (
+            {!goods ? (
               "商品不存在"
             ) : (
               <Layout>

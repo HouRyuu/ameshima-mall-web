@@ -9,7 +9,7 @@ class FetchUtil {
       error,
       complete
     } = params;
-    url = "http://tmallserver.xiaomy.net" + url;
+    url = "//localhost" + url;
     const headers = new Headers();
     headers.append("Accept", "application/json");
     headers.append("Content-Type", "application/json;charset=UTF-8");
@@ -63,6 +63,10 @@ class FetchUtil {
   }
   post(param = {}) {
     param.method = "post";
+    this.send(param);
+  }  
+  put(param = {}) {
+    param.method = "put";
     this.send(param);
   }
 }
