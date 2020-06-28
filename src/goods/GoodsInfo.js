@@ -6,8 +6,9 @@ import FetchUtil from "../utils/FetchUtil";
 
 export default class GoodsInfo extends Component {
     state = {
+        attrs: [],
         curSku: {
-            attrs: "",
+            attrs: [],
             goodsCount: 1,
             price: 0,
             marketPrice: 0,
@@ -21,56 +22,80 @@ export default class GoodsInfo extends Component {
             freight: -1
         },
         buyDis: false,
-        addDis: false
-    }
+        addDis: false,
+        attrSet: new Set()
+    };
     componentWillReceiveProps(nextProps) {
-        const { goods: { price, marketPrice, quantity } } = nextProps;
+        const { goods: { price, marketPrice, quantity }, skus } = nextProps;
         const { curSku } = this.state;
-        curSku.price = price;
-        curSku.marketPrice = marketPrice;
-        curSku.quantity = quantity;
-        this.setState({ curSku });
+        if (!curSku.id) {
+            curSku.price = price;
+            curSku.marketPrice = marketPrice;
+            curSku.quantity = quantity;
+        }
+
+        let attrSet = [];
+        skus.forEach(({ attrs }) => {
+            attrSet = attrSet.concat(attrs.split(','));
+        })
+        this.setState({ curSku, attrSet: new Set(attrSet) });
+    }
+    filterSelectbleAttr(attrArray = []) {
+        const { skus } = this.props;
+        let attrId, attrsTmp, attrArray1 = [], attrArray2;
+        for (let index = 0; index < attrArray.length; index++) {
+            attrId = attrArray[index];
+            attrArray2 = [];
+            skus.forEach(({ attrs }) => {
+                attrsTmp = attrs.split(',');
+                attrArray2.push(attrsTmp[index]);
+                if (!attrId || attrsTmp.indexOf(`${attrId}`) > -1) {
+                    attrArray2 = attrArray2.concat(attrsTmp);
+                }
+            });
+            if (index === 0) {
+                attrArray1 = attrArray2;
+            } else {
+                attrArray1 = attrArray1.filter(id => attrArray2.indexOf(id) > -1);
+            }
+        }
+        if (!attrArray.length) {
+            skus.forEach(({ attrs }) => {
+                attrArray1 = attrArray1.concat(attrs.split(','));
+            })
+        }
+        return new Set(attrArray1);
     }
     selectAttr(attrId, index, key, value) {
         let { curSku } = this.state;
-        const { attrs, goodsCount, attrsJson } = curSku;
-        const curAttrs = attrs ? attrs.split(",") : [];
-        const attrIndex = curAttrs.indexOf(attrId + "");
-        if (attrIndex > -1) {
-            curAttrs.splice(attrIndex, 1);
-        } else {
-            curAttrs[index] = attrId;
-        }
+        let { attrs: attsArray, goodsCount, attrsJson } = curSku;
+        attsArray[index] = attsArray.indexOf(attrId) < 0 ? attrId : undefined;
         const { skus } = this.props;
-        const attrsStr = curAttrs.join(",");
-        if (skus[0].attrs.split(",").length === curAttrs.filter(id => id).length) {
-            const sku = skus.find(({ attrs }) => {
-                return attrs === attrsStr;
-            });
-            if (sku) {
-                curSku = { ...sku };
-                curSku.goodsCount = goodsCount;
-                const attrsJsonObj = JSON.parse(attrsJson);
-                attrsJsonObj[key] = value;
-                curSku.attrsJson = JSON.stringify(attrsJsonObj);
-                this.setState({ curSku });
+        let goods;
+        let skuId;
+        if (skus[0].attrs.split(",").length === attsArray.filter(id => !!id).length) {
+            const attrsStr = attsArray.join(',');
+            const sku = skus.find(({ attrs }) => attrs === attrsStr);
+            if (!sku) {
+                return;
             }
-            return;
+            goods = sku;
+            skuId = sku.id;
+        } else {
+            goods = this.props.goods;
         }
-        const {
-            goods: { price, marketPrice, quantity }
-        } = this.props;
-        curSku = {
-            attrs: attrsStr,
-            price,
-            marketPrice,
-            quantity,
-            goodsCount
-        };
         const attrsJsonObj = JSON.parse(attrsJson);
         attrsJsonObj[key] = value;
-        curSku.attrsJson = JSON.stringify(attrsJsonObj);
-        this.setState({ curSku });
+        curSku = {
+            id: skuId,
+            attrs: attsArray,
+            goodsCount,
+            attrsJson: JSON.stringify(attrsJsonObj),
+            price: goods.price,
+            marketPrice: goods.marketPrice,
+            quantity: goods.quantity
+        }
+        this.setState({ attrSet: this.filterSelectbleAttr(attsArray), curSku });
     }
     findProvinces() {
         FetchUtil.get({
@@ -163,19 +188,28 @@ export default class GoodsInfo extends Component {
         this.findProvinces();
         this.getFreight(this.props.goods.id, this.state.targetCity);
     }
+    getAttrClass(attrId, selectedAttr, attrSet) {
+        if (selectedAttr.indexOf(attrId) > -1) {
+            return 'selectedAttr';
+        }
+        if (!attrSet.has(`${attrId}`)) {
+            return 'disabledAttr';
+        }
+        return '';
+    }
     render() {
         const {
-            goods: { name, simpleDesc, location },
             attrs,
+            goods: { name, simpleDesc, location },
             coverImgs
         } = this.props;
         const {
-            curSku: { attrs: attrsStr, price, marketPrice, quantity, goodsCount },
+            curSku: { attrs: attrArray, price, marketPrice, quantity, goodsCount },
             targetCity: { regionCode, regionName, freight },
             regionList,
-            addDis
+            addDis,
+            attrSet
         } = this.state;
-        const attrAray = attrsStr.split(",");
         return (
             <Row type="flex" justify="center">
                 <Col span={11}>
@@ -228,10 +262,16 @@ export default class GoodsInfo extends Component {
                                 <Col span={3}>{key}</Col>
                                 <Col span={21}>
                                     <ul className="goodsAttrList">
-                                        {value.map(({ id, txtValue, imgValue }) =>
-                                            <li className={attrAray[index] === id + "" ? "selectedAttr" : ""}
+                                        {value.map(({ id, txtValue, imgValue }) => {
+                                            const attrClassName = this.getAttrClass(id, attrArray, attrSet);
+                                            return <li className={attrClassName}
                                                 key={id}
-                                                onClick={() => this.selectAttr(id, index, key, txtValue)}>
+                                                onClick={() => {
+                                                    if (attrClassName === 'disabledAttr') {
+                                                        return;
+                                                    }
+                                                    this.selectAttr(id, index, key, txtValue);
+                                                }}>
                                                 {imgValue ? (<img alt=""
                                                     src={imgValue}
                                                     title={txtValue}
@@ -239,6 +279,7 @@ export default class GoodsInfo extends Component {
                                                 ) : (<span>{txtValue}</span>)
                                                 }
                                             </li>
+                                        }
                                         )}
                                     </ul>
                                 </Col>
@@ -261,15 +302,14 @@ export default class GoodsInfo extends Component {
                                     }
                                     curSku.goodsCount = value;
                                     this.setState({ curSku });
-                                }
-                                }
+                                }}
                             />
                         </Col>
                         <Col offset={1}
                             span={4}
                             style={{ color: "#878787", fontSize: 12 }} >
                             库存 {quantity} 件
-                    </Col>
+                        </Col>
                     </Row>
                     {quantity ? (<Row className="bugGoods-warp">
                         <Col offset={3}
@@ -294,7 +334,7 @@ export default class GoodsInfo extends Component {
                     </Row>)
                     }
                 </Col>
-            </Row>
+            </Row >
         );
     }
 }

@@ -44,7 +44,7 @@ export default class GoodsIndex extends Component {
         url: `/goods/${id}/detail`,
         success: ({ errCode, data }) => {
           if (errCode) {
-            this.setState({goods: null});
+            this.setState({ goods: null });
             return;
           }
           this.setState({ ...data });
@@ -87,106 +87,106 @@ export default class GoodsIndex extends Component {
             {!goods ? (
               "商品不存在"
             ) : (
-              <Layout>
-                <Header className="search-warp">
-                  <StoreSearch evaluate={evaluate} />
-                </Header>
-                <Content>
-                  <div className="goodsInfo-warp">
-                    <GoodsInfo
-                      goods={goods}
-                      attrs={attrs}
-                      skus={skus}
-                      coverImgs={coverImgs}
-                      addSuccess={() => {
-                        this.setState({ getCartCount: true });
-                      }}
-                    />
-                    <Row>
-                      <Col span={4} offset={2}>
-                        <Card title={name}>
-                          <div className="storeInfo-warp">
-                            <div style={{ border: "none" }}>
-                              <div className="shopdsr-item">
-                                <div className="shopdsr-title">描述</div>
-                                <div className="shopdsr-score">{descScore}</div>
-                              </div>
-                              <div className="shopdsr-item">
-                                <div className="shopdsr-title">服务</div>
-                                <div className="shopdsr-score">
-                                  {serviceScore}
+                <Layout>
+                  <Header className="search-warp">
+                    <StoreSearch evaluate={evaluate} />
+                  </Header>
+                  <Content>
+                    <div className="goodsInfo-warp">
+                      <GoodsInfo
+                        goods={goods}
+                        attrs={attrs}
+                        skus={skus}
+                        coverImgs={coverImgs}
+                        addSuccess={() => {
+                          this.setState({ getCartCount: true });
+                        }}
+                      />
+                      <Row>
+                        <Col span={4} offset={2}>
+                          <Card title={name}>
+                            <div className="storeInfo-warp">
+                              <div style={{ border: "none" }}>
+                                <div className="shopdsr-item">
+                                  <div className="shopdsr-title">描述</div>
+                                  <div className="shopdsr-score">{descScore}</div>
                                 </div>
-                              </div>
-                              <div className="shopdsr-item">
-                                <div className="shopdsr-title">物流</div>
-                                <div className="shopdsr-score">
-                                  {logisticsScore}
+                                <div className="shopdsr-item">
+                                  <div className="shopdsr-title">服务</div>
+                                  <div className="shopdsr-score">
+                                    {serviceScore}
+                                  </div>
+                                </div>
+                                <div className="shopdsr-item">
+                                  <div className="shopdsr-title">物流</div>
+                                  <div className="shopdsr-score">
+                                    {logisticsScore}
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                          <p>
-                            <Link to={`/store?id=${goods.storeId}`}>
-                              <Button size="small" type="primary">
-                                进店逛逛
+                            <p>
+                              <Link to={`/store?id=${goods.storeId}`}>
+                                <Button size="small" type="primary">
+                                  进店逛逛
                               </Button>
-                            </Link>
-                            <Button size="small" style={{ marginLeft: 8 }}>
-                              收藏店铺
+                              </Link>
+                              <Button size="small" style={{ marginLeft: 8 }}>
+                                收藏店铺
                             </Button>
-                          </p>
-                        </Card>
-                      </Col>
-                      <Col span={18}>
-                        <Tabs className="goodsDetail-tab" size="large">
-                          <TabPane tab="商品详情" key="1">
-                            <Descriptions title="产品参数">
-                              {params.map(({ paramName, paramValue }) => (
-                                <Descriptions.Item
-                                  key={paramName}
-                                  label={paramName}
-                                >
-                                  {paramValue}
-                                </Descriptions.Item>
-                              ))}
-                            </Descriptions>
-                            <div className="detailImg-warp">
-                              {detailImgs.map(img => (
-                                <img key={img} alt="" src={img} />
-                              ))}
-                              <img
-                                alt=""
-                                style={{ marginTop: 20 }}
-                                src="https://img.alicdn.com/tfs/TB1.CUdsY9YBuNjy0FgXXcxcXXa-1572-394.png"
-                              />
-                            </div>
-                          </TabPane>
-                          <TabPane
-                            tab={
-                              <div>
-                                累计评价
-                                <span
-                                  style={{
-                                    display: "inline-block",
-                                    marginLeft: 10,
-                                    color: "#38b"
-                                  }}
-                                >
-                                  {goods.evaluateCount}
-                                </span>
+                            </p>
+                          </Card>
+                        </Col>
+                        <Col span={18}>
+                          <Tabs className="goodsDetail-tab" size="large">
+                            <TabPane tab="商品详情" key="1">
+                              <Descriptions title="产品参数">
+                                {params.map(({ paramName, paramValue }) => (
+                                  <Descriptions.Item
+                                    key={paramName}
+                                    label={paramName}
+                                  >
+                                    {paramValue}
+                                  </Descriptions.Item>
+                                ))}
+                              </Descriptions>
+                              <div className="detailImg-warp">
+                                {detailImgs.map(img => (
+                                  <img key={img} alt="" src={img} />
+                                ))}
+                                <img
+                                  alt=""
+                                  style={{ marginTop: 20 }}
+                                  src="https://img.alicdn.com/tfs/TB1.CUdsY9YBuNjy0FgXXcxcXXa-1572-394.png"
+                                />
                               </div>
-                            }
-                            key="2"
-                          >
-                            Content of tab 2
+                            </TabPane>
+                            <TabPane
+                              tab={
+                                <div>
+                                  累计评价
+                                <span
+                                    style={{
+                                      display: "inline-block",
+                                      marginLeft: 10,
+                                      color: "#38b"
+                                    }}
+                                  >
+                                    {goods.evaluateCount}
+                                  </span>
+                                </div>
+                              }
+                              key="2"
+                            >
+                              Content of tab 2
                           </TabPane>
-                        </Tabs>
-                      </Col>
-                    </Row>
-                  </div>
-                </Content>
-              </Layout>
-            )}
+                          </Tabs>
+                        </Col>
+                      </Row>
+                    </div>
+                  </Content>
+                </Layout>
+              )}
           </Content>
         </Layout>
         <Footer className="view-footer">
