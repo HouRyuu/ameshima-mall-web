@@ -281,6 +281,19 @@ export default class CartIndex extends Component {
     });
     return result;
   }
+  removeFail() {
+    FetchUtil.delete({
+      url: '/goods/shoppingCart/fail/remove',
+      success: ({ errMsg }) => {
+        if (errMsg) {
+          message.error(errMsg);
+          return;
+        }
+        const { storeList } = this.state;
+        this.setState({ storeList: storeList.filter(store => !store.goodsState), hasInvalid: false })
+      }
+    });
+  }
   render() {
     const {
       storeList,
@@ -412,7 +425,7 @@ export default class CartIndex extends Component {
                               </Col>
                               {hasInvalid ? (
                                 <Col span={8}>
-                                  <Button type="link">清空已失效宝贝</Button>
+                                  <Button type="link" onClick={() => this.removeFail()}>清空已失效宝贝</Button>
                                 </Col>
                               ) : null}
                             </Row>

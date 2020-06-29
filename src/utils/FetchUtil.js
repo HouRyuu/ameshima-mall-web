@@ -64,9 +64,13 @@ class FetchUtil {
   post(param = {}) {
     param.method = "post";
     this.send(param);
-  }  
+  }
   put(param = {}) {
     param.method = "put";
+    this.send(param);
+  }
+  delete(param = {}) {
+    param.method = "delete";
     this.send(param);
   }
 }

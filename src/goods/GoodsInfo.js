@@ -17,9 +17,9 @@ export default class GoodsInfo extends Component {
         },
         regionList: [],
         targetCity: {
-            regionCode: ["110000", "110100"],
-            regionName: "北京市",
-            freight: -1
+            regionCode: [],
+            regionName: "",
+            freight: 0
         },
         buyDis: false,
         addDis: false,
@@ -40,9 +40,18 @@ export default class GoodsInfo extends Component {
         })
         this.setState({ curSku, attrSet: new Set(attrSet) });
     }
+    /**
+     * 根据已选属性过滤可选属性
+     * @param {*} attrArray 当前已选属性数组
+     * @return 可选属性set
+     */
     filterSelectbleAttr(attrArray = []) {
         const { skus } = this.props;
-        let attrId, attrsTmp, attrArray1 = [], attrArray2;
+        let attrId, attrsTmp, attrArray1, attrArray2;
+        // 遍历已选属性，里层遍历sku属性，可选属性为当前已选属性所在行中的sku属性
+        // 如当前行未选择属性，则表示sku中所有属性都可选择
+        // 从sku中筛选包含当前行已选属性，则该sku中所有属性可选
+        // 将每行已选属性对应的可选属性取交集，则可筛选出剩余可选属性
         for (let index = 0; index < attrArray.length; index++) {
             attrId = attrArray[index];
             attrArray2 = [];
@@ -59,6 +68,7 @@ export default class GoodsInfo extends Component {
                 attrArray1 = attrArray1.filter(id => attrArray2.indexOf(id) > -1);
             }
         }
+        // 未选择任何属性时，可选属性为sku中所有属性
         if (!attrArray.length) {
             skus.forEach(({ attrs }) => {
                 attrArray1 = attrArray1.concat(attrs.split(','));
@@ -66,13 +76,19 @@ export default class GoodsInfo extends Component {
         }
         return new Set(attrArray1);
     }
+    /**
+     * 选择属性时间
+     * @param {*} attrId 所选属性id
+     * @param {*} index 属性所在行
+     * @param {*} key 属性名称
+     * @param {*} value 属性值
+     */
     selectAttr(attrId, index, key, value) {
         let { curSku } = this.state;
         let { attrs: attsArray, goodsCount, attrsJson } = curSku;
         attsArray[index] = attsArray.indexOf(attrId) < 0 ? attrId : undefined;
         const { skus } = this.props;
-        let goods;
-        let skuId;
+        let goods, skuId;
         if (skus[0].attrs.split(",").length === attsArray.filter(id => !!id).length) {
             const attrsStr = attsArray.join(',');
             const sku = skus.find(({ attrs }) => attrs === attrsStr);
@@ -107,12 +123,17 @@ export default class GoodsInfo extends Component {
                             item.isLeaf = false;
                             return item;
                         })
+                    }, () => {
+                        this.loadCities([{
+                            ...data[0],
+                            "isLeaf": false
+                        }], true);
                     });
                 }
             }
         });
     }
-    loadCities(selectedOptions) {
+    loadCities(selectedOptions, defaultSelect) {
         const targetOption = selectedOptions[selectedOptions.length - 1];
         if (!targetOption.children) {
             targetOption.loading = true;
@@ -121,7 +142,14 @@ export default class GoodsInfo extends Component {
                 url: `/basic/region/${regionCode}/findByParent`,
                 success: ({ data }) => {
                     targetOption.children = data;
-                    this.setState({ regionList: this.state.regionList });
+                    this.setState({ regionList: this.state.regionList }, () => {
+                        if (defaultSelect) {
+                            this.changeCity(
+                                [targetOption.regionCode, data[0].regionCode],
+                                [targetOption, data[0]]
+                            );
+                        }
+                    });
                 },
                 complete: () => (targetOption.loading = false)
             });
@@ -139,6 +167,12 @@ export default class GoodsInfo extends Component {
             }
         });
     }
+    /**
+     * 根据商品id及目标城市获取运费
+     * @param {*} id 商品id
+     * @param {*} targetCity 目标城市
+     * @param {*} city 当前选中城市
+     */
     getFreight(id, targetCity, city) {
         if (!id) return;
         const regionCode = targetCity.regionCode[1];
@@ -147,7 +181,7 @@ export default class GoodsInfo extends Component {
             success: ({ data }) => {
                 targetCity.freight = data;
                 this.setState({ targetCity });
-                if (city) {
+                if (city) { // 记录当前城市运费，下次选中时避免请求
                     city.freight = data;
                 }
             }
@@ -172,6 +206,7 @@ export default class GoodsInfo extends Component {
                     addSuccess();
                     return;
                 }
+                // 未登录，跳转至登录页
                 message.error(errMsg, () => {
                     if (errCode === 201 || errCode === 202) {
                         browserHistory.push({
@@ -189,13 +224,7 @@ export default class GoodsInfo extends Component {
         this.getFreight(this.props.goods.id, this.state.targetCity);
     }
     getAttrClass(attrId, selectedAttr, attrSet) {
-        if (selectedAttr.indexOf(attrId) > -1) {
-            return 'selectedAttr';
-        }
-        if (!attrSet.has(`${attrId}`)) {
-            return 'disabledAttr';
-        }
-        return '';
+        return selectedAttr.indexOf(attrId) > -1 ? 'selectedAttr' : !attrSet.has(`${attrId}`) ? 'disabledAttr' : '';
     }
     render() {
         const {
@@ -267,24 +296,18 @@ export default class GoodsInfo extends Component {
                                             return <li className={attrClassName}
                                                 key={id}
                                                 onClick={() => {
-                                                    if (attrClassName === 'disabledAttr') {
-                                                        return;
-                                                    }
+                                                    if (attrClassName === 'disabledAttr') return;
                                                     this.selectAttr(id, index, key, txtValue);
                                                 }}>
-                                                {imgValue ? (<img alt=""
-                                                    src={imgValue}
-                                                    title={txtValue}
-                                                />
-                                                ) : (<span>{txtValue}</span>)
-                                                }
+                                                {imgValue ?
+                                                    (<img alt="" src={imgValue} title={txtValue} />)
+                                                    :
+                                                    (<span>{txtValue}</span>)}
                                             </li>
-                                        }
-                                        )}
+                                        })}
                                     </ul>
                                 </Col>
-                            </Row>
-                        )}
+                            </Row>)}
                     </div>
                     <Row type="flex" align="middle">
                         <Col span={3}>数量</Col>
@@ -324,15 +347,13 @@ export default class GoodsInfo extends Component {
                                 加入购物车
                             </Button>
                         </Col>
-                    </Row>
-                    ) : (<Row className="bugGoods-warp">
+                    </Row>) : (<Row className="bugGoods-warp">
                         <Col offset={3} span={4}>
                             <Button disabled size="large">
                                 宝贝已经卖光啦
                                 </Button>
                         </Col>
-                    </Row>)
-                    }
+                    </Row>)}
                 </Col>
             </Row >
         );
