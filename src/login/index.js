@@ -116,7 +116,7 @@ export default class Login extends Component {
                   <Link
                     to={`/forgetPwd${
                       redirectURL ? `?redirectURL=${redirectURL}` : ""
-                    }`}
+                      }`}
                   >
                     忘记密码
                   </Link>
@@ -125,7 +125,7 @@ export default class Login extends Component {
                   <Link
                     to={`/register${
                       redirectURL ? `?redirectURL=${redirectURL}` : ""
-                    }`}
+                      }`}
                   >
                     免费注册
                   </Link>
@@ -142,7 +142,6 @@ export default class Login extends Component {
                       <Icon type="alipay-circle" style={{ color: "#1890ff" }} />
                     </a>
                   </li>
-                  
                 </ul>
               </div>
             </div>

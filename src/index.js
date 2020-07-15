@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Router, Route, browserHistory } from "react-router";
+import { Router, Route, browserHistory, IndexRoute } from "react-router";
 import { LocaleProvider } from "antd";
 import zh_CN from "antd/lib/locale-provider/zh_CN";
 import Index from "./index/";
@@ -12,6 +12,10 @@ import StoreIndex from "./store/";
 import GoodsIndex from "./goods/";
 import SearchIndex from "./search/";
 import CartIndex from "./cart/";
+import Manage from "./manage/";
+import PersonalInfo from "./manage/personalInfo/";
+import Order from "./manage/order/";
+import Address from "./manage/address/";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
@@ -26,6 +30,12 @@ ReactDOM.render(
       <Route path="/register" component={Register} />
       <Route path="/search" component={SearchIndex} />
       <Route path="/shoppingCart" component={CartIndex} />
+      <Route path="/manage" component={Manage}>
+        <IndexRoute component={PersonalInfo} />
+        <Route path="/manage/personalInfo" component={PersonalInfo} />
+        <Route path="/manage/order" component={Order} />
+        <Route path="/manage/address" component={Address} />
+      </Route>
     </Router>
   </LocaleProvider>,
   document.getElementById("root")

@@ -1,0 +1,15 @@
+.manage-content {
+    margin-left: 24px;
+    padding: 12px;
+    background-color: #ffffff;
+    min-height: 550px;
+}
+
+.manage-content>main {
+    position: relative;
+}
+
+.logo {
+    width: 190px;
+    height: 27px;
+}
