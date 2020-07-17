@@ -8,7 +8,7 @@ export default class AddressForm extends Component {
         area: [],
         cities: [],
         districts: [],
-        visible: true,
+        visible: false,
         address: {},
         validateStatus: {}
     }
@@ -16,10 +16,17 @@ export default class AddressForm extends Component {
         const { visible, address } = props;
         this.setState({
             visible,
-            address
-        }, () => {
-            console.log(Region.provinceList);
+            address,
+            validateStatus: {}
         })
+        if (address.id) {
+            Region.initRegion(Region.setCityList, address.provinceCode, undefined, 2, () =>
+                this.setState({})
+            );
+            Region.initRegion(Region.setDistrictList, address.cityCode, address.provinceCode, 3, () =>
+                this.setState({})
+            );
+        }
     }
     onClose() {
         this.setState({
@@ -52,6 +59,7 @@ export default class AddressForm extends Component {
     render() {
         const { visible, address, validateStatus } = this.state;
         const { name, phone, provinceCode, cityCode, districtCode, detailedAddress } = address;
+        const { provinceList, cityList, districtList } = Region;
         return <Drawer
             title="地址"
             placement="left"
@@ -68,19 +76,19 @@ export default class AddressForm extends Component {
                                 maxLength={32}
                                 onChange={({ target: { value } }) => {
                                     address.name = value.trim();
-                                    this.setState({ address });
-                                    this.validation();
+                                    validateStatus['name'] = !!address.name ? 'success' : 'error';
+                                    this.setState({ address, validateStatus });
                                 }} />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
-                        <Form.Item label="phone" hasFeedback validateStatus={validateStatus.phone}>
+                        <Form.Item label="电话" hasFeedback validateStatus={validateStatus.phone}>
                             <Input placeholder="请输入电话" value={phone}
                                 maxLength={16}
                                 onChange={({ target: { value } }) => {
                                     address.phone = value.trim();
-                                    this.setState({ address });
-                                    this.validation();
+                                    validateStatus['phone'] = !!address.phone ? 'success' : 'error';
+                                    this.setState({ address, validateStatus });
                                 }} />
                         </Form.Item>
                     </Col>
@@ -92,10 +100,17 @@ export default class AddressForm extends Component {
                                 onChange={(value, option) => {
                                     address.provinceCode = value;
                                     address.province = option.props.children;
-                                    this.setState({ address });
-                                    this.validation();
+                                    validateStatus['provinceCode'] = !!address.provinceCode ? 'success' : 'error';
+                                    address.cityCode = undefined;
+                                    address.city = undefined;
+                                    address.districtCode = undefined;
+                                    address.district = undefined;
+                                    Region.initRegion(Region.setCityList, value, undefined, 2, () =>
+                                        this.setState({ address, validateStatus })
+                                    );
                                 }} >
-                                {}
+                                {provinceList.map(({ regionCode, regionName }) =>
+                                    <Option key={regionCode} value={regionCode}>{regionName}</Option>)}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -105,11 +120,15 @@ export default class AddressForm extends Component {
                                 onChange={(value, option) => {
                                     address.cityCode = value;
                                     address.city = option.props.children;
-                                    this.setState({ address });
-                                    this.validation();
+                                    address.districtCode = undefined;
+                                    address.district = undefined;
+                                    validateStatus['cityCode'] = !!address.cityCode ? 'success' : 'error';
+                                    Region.initRegion(Region.setDistrictList, value, option.key, 3, () =>
+                                        this.setState({ address, validateStatus })
+                                    );
                                 }} >
-                                <Option value="xiao">Xiaoxiao Fu</Option>
-                                <Option value="mao">Maomao Zhou</Option>
+                                {cityList.map(({ regionCode, regionName, parentCode }) =>
+                                    <Option key={parentCode} value={regionCode}>{regionName}</Option>)}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -119,11 +138,11 @@ export default class AddressForm extends Component {
                                 onChange={(value, option) => {
                                     address.districtCode = value;
                                     address.district = option.props.children;
-                                    this.setState({ address });
-                                    this.validation();
+                                    validateStatus['districtCode'] = !!address.districtCode ? 'success' : 'error';
+                                    this.setState({ address, validateStatus });
                                 }} >
-                                <Option value="xiao">Xiaoxiao Fu</Option>
-                                <Option value="mao">Maomao Zhou</Option>
+                                {districtList.map(({ regionCode, regionName }) =>
+                                    <Option key={regionCode} value={regionCode}>{regionName}</Option>)}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -135,8 +154,8 @@ export default class AddressForm extends Component {
                                 maxLength={128}
                                 onChange={({ target: { value } }) => {
                                     address.detailedAddress = value.trim();
-                                    this.setState({ address });
-                                    this.validation();
+                                    validateStatus['detailedAddress'] = !!address.detailedAddress ? 'success' : 'error';
+                                    this.setState({ address, validateStatus });
                                 }} />
                         </Form.Item>
                     </Col>

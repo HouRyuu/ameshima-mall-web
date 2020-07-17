@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Icon, Table, message } from "antd";
+import { Button, Icon, Table, message, Popconfirm } from "antd";
 import FetchUtil from "../../utils/FetchUtil";
 import AddressForm from "./addressForm";
 import './address.css'
@@ -31,25 +31,25 @@ export default class Address extends Component {
             dataIndex: 'id',
             key: 'id',
             align: 'center',
-            render: (id) => {
+            render: (id, record, index) => {
                 return <ButtonGroup>
-                    <Button title="修改"><Icon type="edit" /></Button>
-                    <Button title="删除" type="danger"><Icon type="delete" /></Button>
+                    <Button title="修改" onClick={() => this.openEdit(record, index)}><Icon type="edit" /></Button>
+                    <Popconfirm
+                        title="确定删除吗？"
+                        onConfirm={() => this.removeAddress(id, index)}
+                        okText="是"
+                        cancelText="否"
+                    >
+                        <Button title="删除" type="danger"><Icon type="delete" /></Button>
+                    </Popconfirm>
                 </ButtonGroup>
             }
         }
     ]
     state = {
         formVisible: false,
-        addressList: [{
-            id: 1,
-            province: '上海市',
-            city: '上海市',
-            district: '长宁区',
-            detailedAddress: '华山路1520弄',
-            name: '刘鹏',
-            phone: '18516516436'
-        }]
+        addressList: [],
+        address: {}
     }
     findAddressList() {
         FetchUtil.get({
@@ -60,22 +60,47 @@ export default class Address extends Component {
         })
     }
     componentWillMount() {
-        // this.findAddressList();
+        this.findAddressList();
     }
     openAdd() {
         this.setState({ formVisible: true, address: {} })
+    }
+    openEdit(address, editIndex) {
+        this.setState({ formVisible: true, address, editIndex })
     }
     saveAddress(address) {
         FetchUtil.put({
             url: '/user/address/save',
             data: address,
+            success: ({ errCode, errMsg, data }) => {
+                if (errCode) {
+                    message.error(errMsg);
+                    return;
+                }
+                const { addressList, editIndex } = this.state;
+                if (!address.id) {
+                    address.id = data;
+                    addressList.push(addressList);
+                } else {
+                    addressList[editIndex] = address;
+                }
+                this.setState({ addressList, formVisible: false });
+                message.info('保存成功啦^_^');
+            }
+        })
+    }
+    removeAddress(id, index) {
+        FetchUtil.delete({
+            url: `/user/address/${id}`,
             success: ({ errCode, errMsg }) => {
                 if (errCode) {
                     message.error(errMsg);
                     return;
                 }
-                this.setState({ formVisible: false })
-                message.info('保存成功啦^_^');
+                const { addressList } = this.state;
+                addressList.splice(index, 1);
+                this.setState({ addressList });
+                message.info('地址已经删除啦^_^');
             }
         })
     }

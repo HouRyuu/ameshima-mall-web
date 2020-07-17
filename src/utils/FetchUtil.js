@@ -1,3 +1,5 @@
+import { message } from "antd";
+
 class FetchUtil {
   send(params = {}) {
     let {
@@ -38,20 +40,24 @@ class FetchUtil {
     fetch(url, fetchOptions)
       .then(res => {
         res.json().then(result => {
-          if (result.errCode !== undefined) {
+          if (result.errCode === 0) {
             success(result);
             return;
           }
-          console.error(result);
+          console.warn(result);
           if (error) {
-            error();
+            error(result);
+            return;
+          }
+          if (result.message) {
+            message.error(result.message)
           }
         });
       })
       .catch(e => {
         console.error(e);
         if (error) {
-          error();
+          error(undefined, e);
         }
       });
     if (complete) {
