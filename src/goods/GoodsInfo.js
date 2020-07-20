@@ -47,12 +47,12 @@ export default class GoodsInfo extends Component {
      */
     filterSelectbleAttr(attrArray = []) {
         const { skus } = this.props;
-        let attrId, attrsTmp, attrArray1, attrArray2;
+        let attrsTmp, attrArray1, attrArray2;
         // 遍历已选属性，里层遍历sku属性，可选属性为当前已选属性所在行中的sku属性
         // 如当前行未选择属性，则表示sku中所有属性都可选择
         // 从sku中筛选包含当前行已选属性，则该sku中所有属性可选
         // 将每行已选属性对应的可选属性取交集，则可筛选出剩余可选属性
-        for (let index = 0; index < attrArray.length; index++) {
+        attrArray.forEach((attrId, index) => {
             attrId = attrArray[index];
             attrArray2 = [];
             skus.forEach(({ attrs }) => {
@@ -67,7 +67,7 @@ export default class GoodsInfo extends Component {
             } else {
                 attrArray1 = attrArray1.filter(id => attrArray2.indexOf(id) > -1);
             }
-        }
+        })
         // 未选择任何属性时，可选属性为sku中所有属性
         if (!attrArray.length) {
             skus.forEach(({ attrs }) => {

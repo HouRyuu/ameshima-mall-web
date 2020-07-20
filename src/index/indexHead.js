@@ -117,7 +117,15 @@ export default class IndexHead extends Component {
           <Col span={5}>{this.renderLoginInfo()}</Col>
           <Col span={3}>
             <Dropdown overlay={myTmallMenu}>
-              <Link className="ant-dropdown-link">
+              <Link className="ant-dropdown-link"
+                to={
+                  loginInfo
+                    ? "/manage"
+                    : `/login?redirectURL=${escape(
+                      window.location.origin + "/manage"
+                    )}`
+                }
+              >
                 我的天猫
                 <Icon type="down" />
               </Link>
@@ -128,8 +136,8 @@ export default class IndexHead extends Component {
                 loginInfo
                   ? "/shoppingCart"
                   : `/login?redirectURL=${escape(
-                      window.location.origin + "/shoppingCart"
-                    )}`
+                    window.location.origin + "/shoppingCart"
+                  )}`
               }
             >
               <Icon type="shopping-cart" />

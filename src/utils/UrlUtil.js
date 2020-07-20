@@ -1,12 +1,14 @@
 export default class UrlUtil {
   url = null;
   searchParam = {};
+  pathname = [];
   constructor(url) {
     this.url = url;
     this.analyzeSearchParam();
   }
   analyzeSearchParam() {
-    let { search } = this.url;
+    let { search, pathname } = this.url;
+    this.pathname = pathname.split('/').filter(path => !!path);
     search = decodeURI(search);
     if (search) {
       search = search.replace(/\?/, '"');

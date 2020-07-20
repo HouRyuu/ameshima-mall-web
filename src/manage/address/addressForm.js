@@ -46,11 +46,10 @@ export default class AddressForm extends Component {
         this.setState({ validateStatus });
         return flag;
     }
-    sumitAddress() {
+    sumitAddress(address) {
         if (!this.validation()) {
             return;
         }
-        const { address } = this.state;
         const { submit } = this.props;
         if (submit) {
             submit(address);
@@ -123,12 +122,12 @@ export default class AddressForm extends Component {
                                     address.districtCode = undefined;
                                     address.district = undefined;
                                     validateStatus['cityCode'] = !!address.cityCode ? 'success' : 'error';
-                                    Region.initRegion(Region.setDistrictList, value, option.key, 3, () =>
+                                    Region.initRegion(Region.setDistrictList, value, provinceCode, 3, () =>
                                         this.setState({ address, validateStatus })
                                     );
                                 }} >
-                                {cityList.map(({ regionCode, regionName, parentCode }) =>
-                                    <Option key={parentCode} value={regionCode}>{regionName}</Option>)}
+                                {cityList.map(({ regionCode, regionName }) =>
+                                    <Option key={regionCode} value={regionCode}>{regionName}</Option>)}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -174,7 +173,7 @@ export default class AddressForm extends Component {
                 }}
             >
                 <Button onClick={() => this.onClose()} style={{ marginRight: 8 }}>取消</Button>
-                <Button type="primary" onClick={() => this.sumitAddress()}> 保存</Button>
+                <Button type="primary" onClick={() => this.sumitAddress(address)}> 保存</Button>
             </div>
         </Drawer>
     }

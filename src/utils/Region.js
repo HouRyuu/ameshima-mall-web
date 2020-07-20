@@ -11,12 +11,12 @@ class Region {
         this.provinceList = provinceList;
     }
     setCityList = (provinceCode, parentCode, cityList) => {
-        this.provinceList.find(({ regionCode }) => regionCode == provinceCode).children = cityList;
+        this.provinceList.find(({ regionCode }) => `${regionCode}` === `${provinceCode}`).children = cityList;
         this.cityList = cityList;
     }
     setDistrictList = (code, parentCode, districtList, outCallback) => {
-        this.provinceList.find(({ regionCode }) => regionCode == parentCode)
-            .children.find(({ regionCode }) => regionCode == code).children = districtList;
+        this.provinceList.find(({ regionCode }) => `${regionCode}` === `${parentCode}`)
+            .children.find(({ regionCode }) => `${regionCode}` === `${code}`).children = districtList;
         this.districtList = districtList;
         if (outCallback) outCallback();
     }
@@ -24,7 +24,9 @@ class Region {
         if (level < 2) {
             return false;
         }
-        const province = this.provinceList.find(({ regionCode }) => regionCode == (level === 2 ? code : parentCode));
+        const province = this.provinceList.find(({ regionCode }) =>
+            `${regionCode}` === (level === 2 ? `${code}` : `${parentCode}`)
+        );
         let result = !!province && !!province.children;
         if (!result || level === 2) {
             if (result) {
@@ -33,7 +35,7 @@ class Region {
             }
             return result;
         }
-        const city = province.children.find(({ regionCode }) => regionCode == code);
+        const city = province.children.find(({ regionCode }) => `${regionCode}` === `${code}`);
         result = !!city && !!city.children;
         if (result) this.districtList = city.children;
         return result;

@@ -37,32 +37,46 @@ class FetchUtil {
     if (sendBefore) {
       sendBefore();
     }
+    let errorFlag = true, completeFlag = true;
     fetch(url, fetchOptions)
-      .then(res => {
-        res.json().then(result => {
-          if (result.errCode === 0) {
-            success(result);
-            return;
-          }
-          console.warn(result);
-          if (error) {
-            error(result);
-            return;
-          }
-          if (result.message) {
-            message.error(result.message)
-          }
-        });
-      })
-      .catch(e => {
-        console.error(e);
-        if (error) {
-          error(undefined, e);
+      .then(response => {
+        if (response.ok) {
+          return response.json();
         }
+        throw new Error(response.statusText);
+      }).then(result => {
+        if (result.errCode === 0) {
+          success(result);
+          if (complete) {
+            complete(result);
+          }
+          completeFlag = false;
+          return;
+        }
+        console.warn(result);
+        if (error) {
+          error(result);
+        } else if (result.message) {
+          message.error(`${url} => ${result.message}`);
+        }
+        errorFlag = false;
+        if (complete) {
+          complete(result);
+        }
+        completeFlag = false;
+      }).catch(e => {
+        console.error('fetch exception', e);
+        if (error && errorFlag) {
+          error(e);
+        } else if (e.message) {
+          message.error(`${url} => ${e.message}`);
+        }
+        errorFlag = false;
+        if (complete && completeFlag) {
+          complete(undefined, e);
+        }
+        completeFlag = false;
       });
-    if (complete) {
-      complete();
-    }
   }
   get(param) {
     this.send(param);

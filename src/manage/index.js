@@ -1,11 +1,18 @@
 import React, { Component } from "react";
 import { Layout, Menu } from 'antd';
 import { browserHistory, Link } from 'react-router';
+import UrlUtil from "../utils/UrlUtil";
 import "antd/dist/antd.css";
 import './manage.css'
 
 const { Header, Content, Footer, Sider } = Layout;
 export default class Manage extends Component {
+    defaultSelectedKeys = ['personalInfo'];
+    constructor(props) {
+        super(props);
+        const { pathname } = new UrlUtil(window.location);
+        this.defaultSelectedKeys = [pathname[1]];
+    }
     render() {
         return <Layout>
             <Header className="header">
@@ -23,7 +30,7 @@ export default class Manage extends Component {
                         <Menu
                             theme="dark"
                             mode="inline"
-                            defaultSelectedKeys={['personalInfo']}
+                            defaultSelectedKeys={this.defaultSelectedKeys}
                             onSelect={item => {
                                 browserHistory.push(`/manage/${item.key}`);
                             }}

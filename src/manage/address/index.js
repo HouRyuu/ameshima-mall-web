@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Icon, Table, message, Popconfirm } from "antd";
+import { Button, Icon, Table, message, Popconfirm, Alert } from "antd";
 import FetchUtil from "../../utils/FetchUtil";
 import AddressForm from "./addressForm";
 import './address.css'
@@ -49,7 +49,8 @@ export default class Address extends Component {
     state = {
         formVisible: false,
         addressList: [],
-        address: {}
+        address: {},
+        maxCount: 0
     }
     findAddressList() {
         FetchUtil.get({
@@ -60,6 +61,7 @@ export default class Address extends Component {
         })
     }
     componentWillMount() {
+        this.getMaxCount();
         this.findAddressList();
     }
     openAdd() {
@@ -104,9 +106,19 @@ export default class Address extends Component {
             }
         })
     }
+    getMaxCount() {
+        FetchUtil.get({
+            url: '/basic/address/maxCount',
+            success: ({ data: maxCount }) => this.setState({ maxCount })
+        });
+    }
     render() {
-        const { formVisible, addressList, address } = this.state;
+        const { formVisible, addressList, address, maxCount } = this.state;
         return <main>
+            <Alert
+                style={{ marginBottom: '10px' }}
+                type="info"
+                message={`共 ${addressList.length} 条，最多 ${maxCount} 条地址`} />
             <Button shape="circle" className="addBtn" onClick={() => this.openAdd()}>
                 <Icon type="plus" />
             </Button>
