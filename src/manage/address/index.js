@@ -80,9 +80,10 @@ export default class Address extends Component {
                     return;
                 }
                 const { addressList, editIndex } = this.state;
+                console.log();
                 if (!address.id) {
                     address.id = data;
-                    addressList.push(addressList);
+                    addressList.push(address);
                 } else {
                     addressList[editIndex] = address;
                 }

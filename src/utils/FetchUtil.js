@@ -11,7 +11,7 @@ class FetchUtil {
       error,
       complete
     } = params;
-    url = "//localhost" + url;
+    url = "//localhost:8080" + url;
     const headers = new Headers();
     headers.append("Accept", "application/json");
     headers.append("Content-Type", "application/json;charset=UTF-8");
