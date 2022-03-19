@@ -16,6 +16,12 @@ import Manage from "./manage/";
 import PersonalInfo from "./manage/personalInfo/";
 import Order from "./manage/order/";
 import Address from "./manage/address/";
+import OrderSubmit from "./order/";
+import OrderConfirm from "./order/confirm";
+import OrderConfirmDone from "./order/configDone";
+import OrderPay from "./order/pay";
+import OrderReceiveConfirm from "./order/receiveConfirm";
+import OrderComment from "./order/comment";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
@@ -35,6 +41,13 @@ ReactDOM.render(
         <Route path="/manage/personalInfo" component={PersonalInfo} />
         <Route path="/manage/order" component={Order} />
         <Route path="/manage/address" component={Address} />
+      </Route>
+      <Route path="/order" component={OrderSubmit}>
+        <Route path="/order/confirm" component={OrderConfirm} key='confirm' />
+        <Route path="/order/confirmDone" component={OrderConfirmDone} />
+        <Route path="/order/pay" component={OrderPay} />
+        <Route path="/order/receiveConfirm" component={OrderReceiveConfirm} />
+        <Route path="/order/comment" component={OrderComment} />
       </Route>
     </Router>
   </LocaleProvider>,

@@ -56,8 +56,8 @@ class FetchUtil {
         console.warn(result);
         if (error) {
           error(result);
-        } else if (result.message) {
-          message.error(`${url} => ${result.message}`);
+        } else if (result.errMsg) {
+          message.error(result.errMsg);
         }
         errorFlag = false;
         if (complete) {

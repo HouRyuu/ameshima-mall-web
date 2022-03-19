@@ -26,10 +26,7 @@ class ForgetForm extends Component {
         url: "/user/sendForgetCaptcha",
         data: { account },
         sendBefore: () => this.setState({ captchaBtnDis: true }),
-        success: ({ errCode, errMsg, data }) => {
-          if (errMsg) {
-            return message.error(errMsg);
-          }
+        success: ({ data }) => {
           const countDown = setInterval(() => {
             this.setState({ captchaBtnText: `${--data}s` });
             if (data === 0) {
@@ -53,10 +50,7 @@ class ForgetForm extends Component {
           url: "/user/forgetPwd",
           data: values,
           sendBefore: () => this.setState({ regBtnDis: true }),
-          success: ({ errCode, errMsg, data }) => {
-            if (errMsg) {
-              return message.error(errMsg);
-            }
+          success: ({ data }) => {
             localStorage.setItem("token", data);
             message.success(
               "修改成功啦！请保管好您的密码哦^_^",

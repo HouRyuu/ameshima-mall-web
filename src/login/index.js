@@ -24,13 +24,9 @@ export default class Login extends Component {
           url: "/user/login",
           data: values,
           sendBefore: () => this.setState({ loginBtnDis: true }),
-          success: ({ errCode, errMsg, data }) => {
-            if (errCode === 0) {
-              localStorage.setItem("token", data);
-              window.location.href = unescape(this.state.redirectURL) || "/";
-              return;
-            }
-            message.error(errMsg);
+          success: ({ data }) => {
+            localStorage.setItem("token", data);
+            window.location.href = unescape(this.state.redirectURL) || "/";
           },
           complete: () => this.setState({ loginBtnDis: false })
         });

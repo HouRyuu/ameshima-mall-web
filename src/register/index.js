@@ -28,10 +28,7 @@ class RegisterForm extends Component {
         url: "/user/sendRegisterCaptcha",
         data: { account },
         sendBefore: () => this.setState({ captchaBtnDis: true }),
-        success: ({ errCode, errMsg, data }) => {
-          if (errMsg) {
-            return message.error(errMsg);
-          }
+        success: ({ data }) => {
           const countDown = setInterval(() => {
             this.setState({ captchaBtnText: `${--data}s` });
             if (data === 0) {
@@ -55,10 +52,7 @@ class RegisterForm extends Component {
           url: "/user/register",
           data: values,
           sendBefore: () => this.setState({ regBtnDis: true }),
-          success: ({ errCode, errMsg, data }) => {
-            if (errMsg) {
-              return message.error(errMsg);
-            }
+          success: ({ data }) => {
             localStorage.setItem("token", data);
             message.success(
               "注册成功啦！快去购物吧^_^",

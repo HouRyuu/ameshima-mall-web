@@ -24,13 +24,8 @@ export default class StoreIndex extends Component {
     if (id) {
       FetchUtil.get({
         url: `/goods/${id}/storeGoods`,
-        success:  ({ errCode, data }) => {
-          if (errCode) {
-            this.setState({id: null});
-            return;
-          }
-          const bannerGoods = [],
-            promoteGoods = [];
+        success:  ({ data }) => {
+          const bannerGoods = [], promoteGoods = [];
           data.forEach(goods => {
             if (goods.isShowBanner) {
               bannerGoods.push(goods);
@@ -40,6 +35,9 @@ export default class StoreIndex extends Component {
             }
           });
           this.setState({ bannerGoods, promoteGoods });
+        },
+        error: () => {
+          this.setState({id: null});
         }
       });
     }

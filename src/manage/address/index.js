@@ -74,13 +74,8 @@ export default class Address extends Component {
         FetchUtil.put({
             url: '/user/address/save',
             data: address,
-            success: ({ errCode, errMsg, data }) => {
-                if (errCode) {
-                    message.error(errMsg);
-                    return;
-                }
+            success: ({ data }) => {
                 const { addressList, editIndex } = this.state;
-                console.log();
                 if (!address.id) {
                     address.id = data;
                     addressList.push(address);
@@ -95,11 +90,7 @@ export default class Address extends Component {
     removeAddress(id, index) {
         FetchUtil.delete({
             url: `/user/address/${id}`,
-            success: ({ errCode, errMsg }) => {
-                if (errCode) {
-                    message.error(errMsg);
-                    return;
-                }
+            success: () => {
                 const { addressList } = this.state;
                 addressList.splice(index, 1);
                 this.setState({ addressList });

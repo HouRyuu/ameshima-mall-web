@@ -200,12 +200,11 @@ export default class GoodsInfo extends Component {
             data: { skuId: id, amount: goodsCount, attrsJson },
             sendBefore: () => this.setState({ addDis: true }),
             success: ({ errCode, errMsg }) => {
-                if (!errCode) {
-                    message.success("成功添加至购物车");
-                    const { addSuccess } = this.props;
-                    addSuccess();
-                    return;
-                }
+                message.success("成功添加至购物车");
+                const { addSuccess } = this.props;
+                addSuccess();
+            },
+            error: ({errCode, errMsg}) => {
                 // 未登录，跳转至登录页
                 message.error(errMsg, () => {
                     if (errCode === 201 || errCode === 202) {

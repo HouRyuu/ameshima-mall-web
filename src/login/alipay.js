@@ -12,14 +12,13 @@ export default class AliPayLogin extends Component {
   componentWillMount() {
     FetchUtil.get({
       url: `/user/alipay/auth${window.location.search}`,
-      success: ({ errCode, data }) => {
-        if (errCode === 0) {
-          localStorage.setItem("token", data);
-          this.setState({
-            loginStatus: 1
-          });
-          return;
-        }
+      success: ({ data }) => {
+        localStorage.setItem("token", data);
+        this.setState({
+          loginStatus: 1
+        });
+      },
+      error: () => {
         this.setState({
           loginStatus: 0
         });

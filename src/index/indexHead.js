@@ -35,15 +35,13 @@ export default class IndexHead extends Component {
     if (!token) return;
     FetchUtil.get({
       url: "/user/loginInfo",
-      success: result => {
-        const { errCode, errMsg, data } = result;
-        if (errCode === 0) {
-          this.setState({
-            loginInfo: data
-          });
-          this.getCartCount();
-          return;
-        }
+      success: ({ data }) => {
+        this.setState({
+          loginInfo: data
+        });
+        this.getCartCount();
+      },
+      error: ({errMsg}) => {
         localStorage.removeItem("token");
         message.warning(errMsg, () => {
           if (loginRequire) {
@@ -56,7 +54,7 @@ export default class IndexHead extends Component {
   logout() {
     FetchUtil.get({
       url: "/user/logout",
-      success: result => {
+      success: () => {
         localStorage.removeItem("token");
         this.setState({
           loginInfo: null,

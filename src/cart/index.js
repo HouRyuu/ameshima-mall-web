@@ -58,11 +58,7 @@ export default class CartIndex extends Component {
     FetchUtil.post({
       url: '/goods/shoppingCart/remove',
       data: { ids },
-      success: ({ errCode, errMsg }) => {
-        if (errCode && errMsg) {
-          message.info(errMsg)
-          return;
-        }
+      success: () => {
         const { storeList: oldStoreList } = this.state;
         let storeList = [], goodsList;
         oldStoreList.forEach(store => {
@@ -132,11 +128,7 @@ export default class CartIndex extends Component {
   updateAmount(amount, cartId) {
     FetchUtil.put({
       url: `/goods/shoppingCart/${cartId}/amount/${amount}/update`,
-      success: ({ errCode, errMsg }) => {
-        if (errCode) {
-          message.error(errMsg);
-          return;
-        }
+      success: () => {
         const { storeList } = this.state;
         let cart;
         storeList.find(store => {
@@ -223,7 +215,7 @@ export default class CartIndex extends Component {
           amount: goodsState ? (
             amount
           ) : (
-              <InputNumber min={1} max={quantity} defaultValue={amount} onChange={(value) => this.updateAmount(value, id)} />
+              <InputNumber bordered={false} min={1} max={quantity} defaultValue={amount} onChange={(value) => this.updateAmount(value, id)} />
             ),
           money: <span className="cart-sum">￥{price * amount}</span>,
           operate: (

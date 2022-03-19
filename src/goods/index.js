@@ -42,16 +42,15 @@ export default class GoodsIndex extends Component {
     if (id) {
       FetchUtil.get({
         url: `/goods/${id}/detail`,
-        success: ({ errCode, data }) => {
-          if (errCode) {
-            this.setState({ goods: null });
-            return;
-          }
+        success: ({ data }) => {
           this.setState({ ...data });
           const {
             goods: { storeId }
           } = data;
           this.getEvaluate(storeId);
+        },
+        error: () => {
+          this.setState({ goods: null });
         }
       });
     }
