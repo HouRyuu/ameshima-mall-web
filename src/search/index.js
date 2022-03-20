@@ -73,7 +73,7 @@ export default class SearchIndex extends Component {
                     <Link to="/">
                       <img
                         className="tmall-logo"
-                        alt="首页"
+                        alt="トップページ"
                         src="//img.alicdn.com/tfs/TB1_Gn8RXXXXXXqaFXXXXXXXXXX-380-54.png"
                       />
                     </Link>
@@ -83,7 +83,7 @@ export default class SearchIndex extends Component {
                       className="global-search"
                       size="large"
                       style={{ width: "100%" }}
-                      placeholder="搜索 天猫 商品/品牌/店铺"
+                      placeholder="検索 天猫 商品/ブランド/店舗"
                       defaultValue={queryParam.word}
                       onSearch={value => {
                         value = value.trim();
@@ -123,7 +123,7 @@ export default class SearchIndex extends Component {
                 ) : (
                   <Empty
                     image="https://img.alicdn.com/tfs/TB1QJqdPFXXXXccXFXXXXXXXXXX-65-48.png"
-                    description={`喵~没找到与“ ${queryParam.word} ”相关的商品哦`}
+                    description={`二ャ－“ ${queryParam.word} ”関連商品が見つかりませんんでした`}
                   />
                 )}
               </Content>

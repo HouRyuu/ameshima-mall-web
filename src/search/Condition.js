@@ -108,7 +108,7 @@ export default class Condition extends Component {
           title={this.getBreadcrumb(category, brand)}
           column={1}
         >
-          <Descriptions.Item label="品牌">
+          <Descriptions.Item label="ブランド">
             {brands.map(item => (
               <CheckableTag
                 key={item}
@@ -121,7 +121,7 @@ export default class Condition extends Component {
               </CheckableTag>
             ))}
           </Descriptions.Item>
-          <Descriptions.Item label="分类">
+          <Descriptions.Item label="種類">
             {categories.map(item => (
               <CheckableTag
                 key={item}
@@ -140,7 +140,7 @@ export default class Condition extends Component {
             <span
               className={!orderField ? "cur-sort" : null}
               onClick={() => this.order()}
-              title="点击后恢复默认排序"
+              title="デフォルトの順に戻す"
             >
               综合
               <Icon type="arrow-down" />

@@ -48,7 +48,7 @@ export default class IndexGoodsNav extends Component {
         />
         <div className="goods-nav-head">
           <Icon type="unordered-list" />
-          商品分类
+          商品分類
         </div>
         <div className="category-warp">
           <List

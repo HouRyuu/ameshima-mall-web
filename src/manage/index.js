@@ -19,7 +19,7 @@ export default class Manage extends Component {
                 <Link to="/">
                     <img
                         className="logo"
-                        alt="首页"
+                        alt="トップページ"
                         src="//img.alicdn.com/tfs/TB1_Gn8RXXXXXXqaFXXXXXXXXXX-380-54.png"
                     />
                 </Link>
@@ -35,9 +35,9 @@ export default class Manage extends Component {
                                 browserHistory.push(`/manage/${item.key}`);
                             }}
                         >
-                            <Menu.Item key="personalInfo">个人信息</Menu.Item>
-                            <Menu.Item key="order">我的订单</Menu.Item>
-                            <Menu.Item key="address">我的地址</Menu.Item>
+                            <Menu.Item key="personalInfo">個人情報</Menu.Item>
+                            <Menu.Item key="order">注文履歴</Menu.Item>
+                            <Menu.Item key="address">アドレス帳</Menu.Item>
                         </Menu>
                     </Sider>
                     <Content className="manage-content">{this.props.children}</Content>

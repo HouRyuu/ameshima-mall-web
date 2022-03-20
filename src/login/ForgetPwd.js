@@ -13,7 +13,7 @@ class ForgetForm extends Component {
     } = new UrlUtil(window.location);
     this.state = {
       redirectURL,
-      captchaBtnText: "获取验证码",
+      captchaBtnText: "キャプチャ",
       captchaBtnDis: false
     };
   }
@@ -31,7 +31,7 @@ class ForgetForm extends Component {
             this.setState({ captchaBtnText: `${--data}s` });
             if (data === 0) {
               this.setState({
-                captchaBtnText: "获取验证码",
+                captchaBtnText: "キャプチャ",
                 captchaBtnDis: false
               });
               clearInterval(countDown);
@@ -53,7 +53,7 @@ class ForgetForm extends Component {
           success: ({ data }) => {
             localStorage.setItem("token", data);
             message.success(
-              "修改成功啦！请保管好您的密码哦^_^",
+              "修正完了。妥当にパスワードを預かりますね^_^",
               () =>
                 (window.location.href = unescape(this.state.redirectURL) || "/")
             );
@@ -72,7 +72,7 @@ class ForgetForm extends Component {
           <Col span={6} offset={4}>
             <Link to="/">
               <img
-                alt="首页"
+                alt="トップページ"
                 src="//img.alicdn.com/tfs/TB1_Gn8RXXXXXXqaFXXXXXXXXXX-380-54.png"
               />
             </Link>
@@ -81,24 +81,24 @@ class ForgetForm extends Component {
         <Row>
           <Col span={6} offset={9}>
             <div className="login-warp">
-              <h2>忘记密码</h2>
+              <h2>パスワードを忘れた</h2>
               <Form onSubmit={this.handleSubmit} className="login-form">
                 <Form.Item>
                   {getFieldDecorator("account", {
                     rules: [
                       {
                         required: true,
-                        message: "请输入手机号！"
+                        message: "携帯番号を入力してください"
                       },
                       {
                         pattern: /^1[3-8]\d{9}$/,
-                        message: "手机号格式错误！"
+                        message: "携帯番号が違います"
                       }
                     ]
                   })(
                     <Input
                       prefix={<Icon type="mobile" />}
-                      placeholder="手机号"
+                      placeholder="携帯番号"
                     />
                   )}
                 </Form.Item>
@@ -107,12 +107,12 @@ class ForgetForm extends Component {
                     rules: [
                       {
                         required: true,
-                        message: "请输入密码！"
+                        message: "パスワードを入力してください"
                       },
                       {
                         min: 6,
                         max: 32,
-                        message: "长度介于6至32位间！"
+                        message: "長さは6かさ32までです"
                       },
                       {
                         validator: (rule, value, callback) => {
@@ -127,7 +127,7 @@ class ForgetForm extends Component {
                   })(
                     <Input.Password
                       prefix={<Icon type="lock" />}
-                      placeholder="密码"
+                      placeholder="パスワード"
                     />
                   )}
                 </Form.Item>
@@ -136,7 +136,7 @@ class ForgetForm extends Component {
                     rules: [
                       {
                         required: true,
-                        message: "请输入确认密码！"
+                        message: "確認パスワードを入力してください"
                       },
                       {
                         validator: (rule, value, callback) => {
@@ -145,7 +145,7 @@ class ForgetForm extends Component {
                             value &&
                             value !== form.getFieldValue("password")
                           ) {
-                            callback("两次输入的密码不一致！");
+                            callback("2回のパサワードが違います");
                             return;
                           }
                           callback();
@@ -155,7 +155,7 @@ class ForgetForm extends Component {
                   })(
                     <Input.Password
                       prefix={<Icon type="lock" />}
-                      placeholder="确认密码"
+                      placeholder="確認パスワード"
                     />
                   )}
                 </Form.Item>
@@ -166,7 +166,7 @@ class ForgetForm extends Component {
                         rules: [
                           {
                             required: true,
-                            message: "请输入验证码!",
+                            message: "キャプチャを入力してください",
                             whitespace: true
                           },
                           {
@@ -177,7 +177,7 @@ class ForgetForm extends Component {
                       })(
                         <Input
                           prefix={<Icon type="message" />}
-                          placeholder="验证码"
+                          placeholder="キャプチャ"
                         />
                       )}
                     </Col>
@@ -198,16 +198,16 @@ class ForgetForm extends Component {
                   htmlType="submit"
                   className="login-button"
                 >
-                  修改密码
+                  パスワードを修正
                 </Button>
                 <Row type="flex" justify="end" className="other-link-warp">
-                  <Col span={4}>
+                  <Col span={6}>
                     <Link
                       to={`/login${
                         redirectURL ? `?redirectURL=${redirectURL}` : ""
                       }`}
                     >
-                      登录
+                      ログイン
                     </Link>
                   </Col>
                   <Col span={6}>
@@ -216,7 +216,7 @@ class ForgetForm extends Component {
                         redirectURL ? `?redirectURL=${redirectURL}` : ""
                       }`}
                     >
-                      免费注册
+                      新規登録
                     </Link>
                   </Col>
                 </Row>

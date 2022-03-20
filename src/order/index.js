@@ -40,7 +40,7 @@ export default class OrderSubmit extends Component {
                     <Link to="/" onlyActiveOnIndex>
                       <img
                         className="tmall-logo"
-                        alt="首页"
+                        alt="トップページ"
                         src="//img.alicdn.com/tfs/TB1_Gn8RXXXXXXqaFXXXXXXXXXX-380-54.png"
                       />
                     </Link>

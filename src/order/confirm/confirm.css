@@ -1,9 +1,9 @@
-.address-list {
+.confirm-panel .address-list {
     padding: 0 2px;
     overflow: hidden;
 }
 
-.addr-item-wrapper {
+.confirm-panel .addr-item-wrapper {
     display: inline-block;
     vertical-align: top;
     position: relative;
@@ -15,7 +15,7 @@
     cursor: pointer;
 }
 
-.addr-item-wrapper > .inner-infos {
+.confirm-panel .addr-item-wrapper > .inner-infos {
     height: 100%;
     padding: 11px 15px;
     background: url(//img.alicdn.com/tps/i2/T1VPiBXvpeXXbjLKQ7-237-106.png);
@@ -23,11 +23,11 @@
     position: relative;
 }
 
-.addr-item-wrapper > .inner-infos:hover, .addr-selected > .inner-infos {
+.confirm-panel .addr-item-wrapper > .inner-infos:hover, .confirm-panel .addr-selected > .inner-infos {
     background-image: url(//img.alicdn.com/tfs/TB1OVRCRpXXXXaMXFXXXXXXXXXX-237-106.png);
 }
 
-.addr-item-wrapper .addr-hd {
+.confirm-panel .addr-item-wrapper .addr-hd {
     width: 100%;
     border-bottom: 1px solid #f2f2f2;
     padding: 0 0 5px;
@@ -39,21 +39,21 @@
     text-overflow: ellipsis;
 }
 
-.addr-item-wrapper .addr-bd {
+.confirm-panel .addr-item-wrapper .addr-bd {
     height: 36px;
     overflow: hidden;
 }
 
-.addr-item-wrapper .addr-bd, .addr-bd span {
+.confirm-panel .addr-item-wrapper .addr-bd, .addr-bd span {
     word-break: break-all;
     word-wrap: break-word;
 }
 
-.addr-item-wrapper .addr-bd span {
+.confirm-panel .addr-item-wrapper .addr-bd span {
     margin-right: 3px;
 }
 
-.default-tip {
+.confirm-panel .default-tip {
     position: absolute;
     top: 0;
     right: 0;
@@ -66,7 +66,7 @@
     color: #fff;
 }
 
-.addr-selected .curMarker {
+.confirm-panel .addr-selected .curMarker {
     z-index: 3;
     position: absolute;
     background: url(//img.alicdn.com/tfs/TB1zLJRRpXXXXcrXXXXXXXXXXXX-30-600.png) no-repeat;
@@ -75,4 +75,24 @@
     height: 28px;
     right: 0;
     bottom: 0;
+}
+
+.confirm-panel .buy-list-1 {
+    width: 9%;
+}
+
+.confirm-panel .buy-list-2 {
+    width: 29%;
+}
+
+.confirm-panel .buy-list-3 {
+    width: 28%;
+}
+
+.confirm-panel .buy-list-4 {
+    width: 10%;
+}
+
+.confirm-panel .buy-list-5 {
+    width: 16%;
 }

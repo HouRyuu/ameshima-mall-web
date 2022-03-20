@@ -32,7 +32,7 @@ export default class StoreSearch extends Component {
           <Link to="/">
             <img
               className="tmall-logo"
-              alt="首页"
+              alt="トップページ"
               src="//img.alicdn.com/tfs/TB1_Gn8RXXXXXXqaFXXXXXXXXXX-380-54.png"
             />
           </Link>
@@ -65,7 +65,7 @@ export default class StoreSearch extends Component {
             className="global-search"
             size="large"
             style={{ width: "100%" }}
-            placeholder="搜索 本店 商品/品牌"
+            placeholder="検索 当店 商品/ブランド"
             optionLabelProp="text"
           >
             <Input

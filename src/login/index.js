@@ -42,7 +42,7 @@ export default class Login extends Component {
           <Col span={6} offset={4}>
             <Link to="/">
               <img
-                alt="首页"
+                alt="トップページ"
                 src="//img.alicdn.com/tfs/TB1_Gn8RXXXXXXqaFXXXXXXXXXX-380-54.png"
               />
             </Link>
@@ -51,18 +51,18 @@ export default class Login extends Component {
         <Row>
           <Col span={6} offset={9}>
             <div className="login-warp">
-              <h2>登录</h2>
+              <h2>登録</h2>
               <Form onSubmit={this.handleSubmit} className="login-form">
                 <Form.Item>
                   {getFieldDecorator("account", {
                     rules: [
                       {
                         required: true,
-                        message: "请输入手机号！"
+                        message: "携帯番号を入力してください"
                       },
                       {
                         pattern: /^1[3-8]\d{9}$/,
-                        message: "手机号格式错误！"
+                        message: "携帯番号が違います"
                       }
                     ]
                   })(
@@ -70,7 +70,7 @@ export default class Login extends Component {
                       prefix={
                         <Icon type="user" style={{ color: "rgba(0,0,0)" }} />
                       }
-                      placeholder="手机号"
+                      placeholder="携帯番号"
                     />
                   )}
                 </Form.Item>
@@ -79,12 +79,12 @@ export default class Login extends Component {
                     rules: [
                       {
                         required: true,
-                        message: "请输入密码！"
+                        message: "パスワードを入力してください"
                       },
                       {
                         min: 6,
                         max: 32,
-                        message: "长度介于6至32位间！"
+                        message: "長さは6かさ32までです"
                       }
                     ]
                   })(
@@ -92,7 +92,7 @@ export default class Login extends Component {
                       prefix={
                         <Icon type="lock" style={{ color: "rgba(0,0,0)" }} />
                       }
-                      placeholder="密码"
+                      placeholder="パスワード"
                     />
                   )}
                 </Form.Item>
@@ -104,31 +104,31 @@ export default class Login extends Component {
                   htmlType="submit"
                   className="login-button"
                 >
-                  登录
+                  ログイン
                 </Button>
               </Form>
               <Row type="flex" justify="end" className="other-link-warp">
-                <Col span={6}>
+                <Col span={12}>
                   <Link
                     to={`/forgetPwd${
                       redirectURL ? `?redirectURL=${redirectURL}` : ""
                       }`}
                   >
-                    忘记密码
+                    パスワードを忘れた
                   </Link>
                 </Col>
-                <Col span={6}>
+                <Col span={5}>
                   <Link
                     to={`/register${
                       redirectURL ? `?redirectURL=${redirectURL}` : ""
                       }`}
                   >
-                    免费注册
+                    新規登録
                   </Link>
                 </Col>
               </Row>
               <div className="more-sign">
-                <h6>社交帐号登录</h6>
+                <h6>SNS口座で登録</h6>
                 <ul>
                   <li>
                     <a

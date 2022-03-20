@@ -68,18 +68,18 @@ export default class IndexHead extends Component {
     if (loginInfo == null) {
       return (
         <p className="sn-login-info">
-          <em>喵，欢迎来天猫</em>
+          <em>ニヤー天猫へようこそ</em>
           <Link
             className="sn-login"
             to={`/login?redirectURL=${escape(window.location)}`}
           >
-            请登录
+            ログイン
           </Link>
           <Link
             className="sn-register"
             to={`/register?redirectURL=${escape(window.location)}`}
           >
-            免费注册
+            新規登録
           </Link>
         </p>
       );
@@ -93,7 +93,7 @@ export default class IndexHead extends Component {
             this.logout();
           }}
         >
-          退出
+          ログアウト
         </Link>
       </p>
     );
@@ -124,7 +124,7 @@ export default class IndexHead extends Component {
                     )}`
                 }
               >
-                我的天猫
+                マイ天猫
                 <Icon type="down" />
               </Link>
             </Dropdown>
@@ -139,7 +139,7 @@ export default class IndexHead extends Component {
               }
             >
               <Icon type="shopping-cart" />
-              购物车{cartCount}件
+              カート{cartCount}件
             </Link>
           </Col>
         </Row>

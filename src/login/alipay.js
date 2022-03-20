@@ -33,10 +33,10 @@ export default class AliPayLogin extends Component {
       return (
         <Result
           status="warning"
-          title="登录失败，请尝试重新登录。"
+          title="ログインが失敗しました。改めてログインを試してください"
           extra={
             <Button type="primary" key="console" href="/login">
-              登录
+              ログイン
             </Button>
           }
         />
@@ -45,10 +45,10 @@ export default class AliPayLogin extends Component {
     return (
       <Result
         status="success"
-        title="登录成功，购物愉快哟。"
+        title="ログイン完了。お買い物が楽しいように"
         extra={
           <Button type="primary" key="console" href="/">
-            首页
+            トップページ
           </Button>
         }
       />
