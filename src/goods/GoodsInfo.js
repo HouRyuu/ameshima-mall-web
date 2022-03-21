@@ -183,10 +183,11 @@ export default class GoodsInfo extends Component {
     getFreight(id, targetCity, city) {
         if (!id) return;
         const regionCode = targetCity.regionCode[1];
-        FetchUtil.get({
-            url: `/goods/${id}/${regionCode}/freight`,
+        FetchUtil.post({
+            url: `/goods/${regionCode}/freight`,
+            data: [id],
             success: ({data}) => {
-                targetCity.freight = data;
+                targetCity.freight = data[id];
                 this.setState({targetCity});
                 if (city) { // 记录当前城市运费，下次选中时避免请求
                     city.freight = data;
@@ -212,17 +213,6 @@ export default class GoodsInfo extends Component {
                 const {addSuccess} = this.props;
                 addSuccess();
             },
-            error: ({errCode, errMsg}) => {
-                // 未登录，跳转至登录页
-                message.error(errMsg, () => {
-                    if (errCode === 201 || errCode === 202) {
-                        browserHistory.push({
-                            pathname: "/login",
-                            search: `?redirectURL=${escape(window.location)}`
-                        });
-                    }
-                });
-            },
             complete: () => this.setState({addDis: false})
         });
     }
@@ -242,17 +232,6 @@ export default class GoodsInfo extends Component {
             success: () => {
                 browserHistory.push({
                     pathname: "/order/confirm"
-                });
-            },
-            error: ({errCode, errMsg}) => {
-                // 未登录，跳转至登录页
-                message.error(errMsg, () => {
-                    if (errCode === 201 || errCode === 202) {
-                        browserHistory.push({
-                            pathname: "/login",
-                            search: `?redirectURL=${escape(window.location)}`
-                        });
-                    }
                 });
             },
             complete: () => this.setState({addDis: false})
@@ -302,7 +281,7 @@ export default class GoodsInfo extends Component {
                                 </Row>
                                 <Row type="flex" align="middle">
                                     <Col span={3}>割引価格</Col>
-                                    <Col span={21} className="price">￥{price}</Col>
+                                    <Col span={21} className="price">¥{price}</Col>
                                 </Row>
                             </div>
                         )

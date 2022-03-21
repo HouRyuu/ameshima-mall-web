@@ -1,5 +1,15 @@
 import React, {Component} from "react";
-import {Table, Row, Col, Button, Empty, Popover, InputNumber, Tag, Icon} from "antd";
+import {
+    Table,
+    Row,
+    Col,
+    Button,
+    Empty,
+    Popover,
+    Tag,
+    Icon,
+    Affix,
+} from "antd";
 import "../../cart/cart.css";
 import "./confirm.css";
 import FetchUtil from "../../utils/FetchUtil";
@@ -12,7 +22,7 @@ export default class OrderConfirm extends Component {
     }
 
     state = {
-        seletedAddrIndex: 0,
+        seletedAddrIndex: -1,
         showAllAddr: false,
         addressList: [{
             name: '郭女士',
@@ -24,14 +34,20 @@ export default class OrderConfirm extends Component {
             isDefault: 1
         }],
         address: {},
-        storeList: []
+        storeList: [],
+        freightMap: {},
+        totalPrice: 0
     }
 
     findAddressList() {
         FetchUtil.get({
             url: '/user/address/list',
             success: ({data: addressList}) => {
-                this.setState({addressList, showAllAddr: addressList.length < 6});
+                this.setState({addressList, seletedAddrIndex: 0, showAllAddr: addressList.length < 6}, () => {
+                    if (addressList.length && this.state.storeList.length) {
+                        this.findFreight(addressList[0].cityCode);
+                    }
+                });
             }
         })
     }
@@ -41,15 +57,53 @@ export default class OrderConfirm extends Component {
         this.findGoods();
     }
 
-    selectAddress(seletedAddrIndex) {
-        this.setState({seletedAddrIndex})
+    selectAddress(cityCode, seletedAddrIndex) {
+        this.setState({seletedAddrIndex});
+        this.findFreight(cityCode);
     }
 
     findGoods() {
         fetchUtil.get({
             url: '/goods/goodsBySkus',
             success: ({data}) => {
-                this.setState({storeList: data})
+                this.setState({storeList: data}, () => {
+                    if (data.length && this.state.addressList.length) {
+                        this.findFreight(this.state.addressList[0].cityCode);
+                    }
+                });
+            }
+        })
+    }
+
+    findFreight(cityCode) {
+        const {freightMap, storeList} = this.state;
+        if (!storeList.length) {
+            return;
+        }
+        const goodsIds = [];
+        let totalPrice = 0;
+        storeList.forEach(({goodsList}) => {
+            goodsList.forEach(({goodsId, price, amount}) => {
+                goodsIds.push(goodsId);
+                totalPrice += price * amount;
+            });
+        })
+        if (freightMap[cityCode]) {
+            for (let goodsId in freightMap[cityCode]) {
+                totalPrice += freightMap[cityCode][goodsId];
+            }
+            this.setState({totalPrice});
+            return;
+        }
+        FetchUtil.post({
+            url: `/goods/${cityCode}/freight`,
+            data: goodsIds,
+            success: ({data}) => {
+                for (let goodsId in data) {
+                    totalPrice += data[goodsId];
+                }
+                freightMap[cityCode] = data;
+                this.setState({totalPrice, freightMap});
             }
         })
     }
@@ -68,7 +122,12 @@ export default class OrderConfirm extends Component {
     renderGoods(storeList) {
         const result = [];
         if (!storeList || !storeList.length) return [];
-        storeList.forEach(({storeId, storeName, goodsState, goodsList}, storeIndex) => {
+        let skuFreight;
+        const {freightMap, seletedAddrIndex, addressList} = this.state;
+        if (freightMap && seletedAddrIndex > -1) {
+            skuFreight = freightMap[addressList[seletedAddrIndex].cityCode];
+        }
+        storeList.forEach(({storeId, storeName, goodsState, goodsList}/*, storeIndex*/) => {
             const dataSource = [];
             goodsList.map(({
                                skuId,
@@ -80,7 +139,8 @@ export default class OrderConfirm extends Component {
                                marketPrice,
                                amount,
                                quantity
-                           }, index) => {
+                           }/*, index*/) => {
+                const freight = skuFreight ? skuFreight[goodsId] ? skuFreight[goodsId] : 0 : 0;
                 const attrObj = JSON.parse(attrsJson);
                 const attrDom = [];
                 for (const attrKey in attrObj) {
@@ -91,6 +151,7 @@ export default class OrderConfirm extends Component {
                     );
                 }
                 dataSource.push({
+                    key: skuId,
                     img: (
                         <Popover
                             placement="right"
@@ -108,25 +169,25 @@ export default class OrderConfirm extends Component {
                     attrs: (
                         <div className="cart-attrs-content">
                             {attrDom.map(attr => attr)}
-                            <div>库存{quantity}件</div>
+                            <div>在庫{quantity}</div>
                         </div>
                     ),
                     price:
                         price === marketPrice ? (
-                            <span className="cart-price-content">￥{price}</span>
+                            <span className="cart-price-content">¥{price}</span>
                         ) : (
                             <div className="cart-price-content">
-                                <span>￥{marketPrice}</span>
-                                <span>￥{price}</span>
+                                <span>¥{marketPrice}</span>
+                                <span>¥{price}</span>
                             </div>
                         ),
-                    amount: goodsState ? (
+                    amount: amount/*goodsState ? (
                         amount
                     ) : (
                         <InputNumber bordered={false} min={1} max={quantity} defaultValue={amount}
                                      onChange={(value) => this.updateAmount(skuId, value, storeIndex, index)}/>
-                    ),
-                    money: <span className="cart-sum">￥{price * amount}</span>
+                    )*/,
+                    money: <span className="cart-sum">¥{price * amount}<br/>送料：¥{freight}</span>
                 });
             });
             result.push({
@@ -165,7 +226,15 @@ export default class OrderConfirm extends Component {
     }
 
     render() {
-        const {seletedAddrIndex, showAllAddr, addressList, storeList} = this.state;
+        const {seletedAddrIndex, showAllAddr, addressList, storeList, totalPrice} = this.state;
+        let goodsCount = 0; // 选中SKU数量
+        if (storeList.length) {
+            storeList.forEach(store => {
+                store.goodsList.forEach(goods => {
+                    goodsCount += goods.amount;
+                })
+            })
+        }
         return (
             <div className="confirm-panel">
                 <div className='cart-table'>
@@ -176,9 +245,11 @@ export default class OrderConfirm extends Component {
                         >
 
                             {addressList.map(({
+                                                  id,
                                                   name,
                                                   province,
                                                   city,
+                                                  cityCode,
                                                   district,
                                                   detailedAddress,
                                                   phone,
@@ -187,7 +258,7 @@ export default class OrderConfirm extends Component {
                                               }, index) =>
                                 <div
                                     className={`addr-item-wrapper ${seletedAddrIndex === index ? 'addr-selected' : ''}`}
-                                    onClick={() => this.selectAddress(index)}>
+                                    onClick={() => this.selectAddress(cityCode, index)}>
                                     <div className="inner-infos">
                                         <div className="addr-hd">{`${province + city + district}(${name})`}</div>
                                         <div className="addr-bd">
@@ -233,7 +304,24 @@ export default class OrderConfirm extends Component {
                         ]}
                         dataSource={this.renderGoods(storeList)}
                         pagination={false}
+                        locale={{emptyText: <Empty description='何もありません'/>}}
                     />
+                    <div>
+                        <Affix offsetBottom={10}>
+                            <Row type="flex" justify="space-between" align="middle" className="balance-row">
+                                <Col span={5} offset={11} style={{textAlign: 'right'}}>
+                                    <span className="selected-count">{goodsCount}</span>個の商品
+                                </Col>
+                                <Col span={5} style={{textAlign: 'right'}}>
+                                    小計：{" "}<span className="total-price">¥{totalPrice}</span>(税込)
+                                </Col>
+                                <Col span={3} style={{textAlign: 'center'}}>
+                                    <Button type="danger">レジに進む</Button>
+                                </Col>
+                            </Row>
+                        </Affix>
+                        <div className="wonderful-end"/>
+                    </div>
                 </div>
             </div>
         );

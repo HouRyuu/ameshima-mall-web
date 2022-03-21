@@ -34,7 +34,9 @@ export default class CartIndex extends Component {
             goodsCount: 0,
             totalPrice: 0,
             checkedCartIds: [],
-            delAllVisible: false
+            delAllVisible: false,
+            toBuyDisabled: false,
+            hasValid: false
         };
     }
 
@@ -45,7 +47,8 @@ export default class CartIndex extends Component {
                 if (storeList)
                     this.setState({
                         storeList,
-                        hasInvalid: !!storeList.some(store => !store.goodsState)
+                        hasInvalid: !!storeList.some(store => !store.goodsState),
+                        hasValid: !!storeList.some(store => store.goodsState)
                     });
             }
         });
@@ -54,7 +57,7 @@ export default class CartIndex extends Component {
     removeCartGoods(id) {
         const ids = id ? [id] : this.state.checkedCartIds;
         if (!ids || !ids.length) {
-            message.warning("请选择宝贝");
+            message.warning("お宝物を選んでください");
             return;
         }
         FetchUtil.post({
@@ -93,7 +96,7 @@ export default class CartIndex extends Component {
         const checkedCartIds = [];
         storeList.forEach(store => {
             const {storeId, goodsState, goodsList} = store;
-            if (!goodsState) {
+            if (goodsState) {
                 storeCount++; // 计算可选店铺总数
                 storeGoodsCount = goodsList.length;
                 checkGoodsCount = 0;
@@ -130,7 +133,10 @@ export default class CartIndex extends Component {
         });
     }
 
-    updateAmount(amount, cartId) {
+    updateAmount(amount, quantity, cartId) {
+        if (isNaN(amount) || amount < 1 || amount > quantity) {
+            return;
+        }
         FetchUtil.put({
             url: `/goods/shoppingCart/${cartId}/amount/${amount}/update`,
             success: () => {
@@ -151,22 +157,23 @@ export default class CartIndex extends Component {
     renderGoods(storeList) {
         const result = [];
         if (!storeList || !storeList.length) return [];
-        storeList.forEach(item => {
-            const {storeId, storeName, goodsState, goodsList, checkedStore} = item;
+        storeList.forEach(({storeId, storeName, goodsState, goodsList, checkedStore}) => {
             const dataSource = [];
-            goodsList.forEach(goods => {
-                const {
-                    id,
-                    goodsId,
-                    name,
-                    imgUrl,
-                    attrsJson,
-                    price,
-                    marketPrice,
-                    amount,
-                    quantity,
-                    checked
-                } = goods;
+            goodsList.forEach(({
+                                   id,
+                                   goodsId,
+                                   name,
+                                   imgUrl,
+                                   attrsJson,
+                                   price,
+                                   marketPrice,
+                                   amount,
+                                   quantity,
+                                   checked
+                               }) => {
+                if (amount > quantity) {
+                    this.updateAmount(quantity, quantity, id);
+                }
                 let attrObj = JSON.parse(attrsJson);
                 const attrDom = [];
                 for (const attrKey in attrObj) {
@@ -179,7 +186,7 @@ export default class CartIndex extends Component {
                 dataSource.push({
                     id,
                     key:
-                        goodsState === 0 ? (
+                        goodsState ? (
                             <Checkbox
                                 value={id}
                                 checked={checked}
@@ -199,38 +206,40 @@ export default class CartIndex extends Component {
                         </Popover>
                     ),
                     name: goodsState ? (
-                        name
-                    ) : (
                         <Link to={`/goods?id=${goodsId}`} onlyActiveOnIndex>{name}</Link>
-                    ),
+                    ) : name,
                     attrs: (
                         <div className="cart-attrs-content">
                             {attrDom.map(attr => attr)}
-                            <div>库存{quantity}件</div>
+                            <div>在庫{quantity}</div>
                         </div>
                     ),
                     price:
                         price === marketPrice ? (
-                            <span className="cart-price-content">￥{price}</span>
+                            <span className="cart-price-content">¥{price}</span>
                         ) : (
                             <div className="cart-price-content">
-                                <span>￥{marketPrice}</span>
-                                <span>￥{price}</span>
+                                <span>¥{marketPrice}</span>
+                                <span>¥{price}</span>
                             </div>
                         ),
                     amount: goodsState ? (
-                        amount
-                    ) : (
                         <InputNumber bordered={false} min={1} max={quantity} defaultValue={amount}
-                                     onChange={(value) => this.updateAmount(value, id)}/>
+                                     onChange={(value) => {
+                                         if (value !== amount) {
+                                             this.updateAmount(value, quantity, id)
+                                         }
+                                     }}/>
+                    ) : (
+                        amount
                     ),
-                    money: <span className="cart-sum">￥{price * amount}</span>,
+                    money: <span className="cart-sum">¥{price * amount}</span>,
                     operate: (
                         <Popconfirm
-                            title=">_<真的要把我删掉吗？"
+                            title=">_<本当に僕を削除しますか"
                             onConfirm={() => this.removeCartGoods(id)}
                         >
-                            <Button type="link">删除</Button>
+                            <Button type="link">削除</Button>
                         </Popconfirm>
                     )
                 });
@@ -243,7 +252,7 @@ export default class CartIndex extends Component {
                         className="cart-goods-table"
                         title={() => (
                             <div className="shop-info">
-                                {goodsState === 0 ? (
+                                {goodsState ? (
                                     <Checkbox
                                         style={{marginTop: -3}}
                                         value={storeId}
@@ -253,12 +262,11 @@ export default class CartIndex extends Component {
                                         }
                                     />
                                 ) : (
-                                    <Tag>已失效</Tag>
+                                    <Tag>無効</Tag>
                                 )}
                                 <Icon type="shop" style={{margin: "0 8px", fontSize: 16}}/>
-                                <span style={{fontSize: 13}}>
-                  店铺：<Link to={`/store?id=${storeId}`} onlyActiveOnIndex>{storeName}</Link>
-                </span>
+                                <span style={{fontSize: 13}}>店舗：<Link to={`/store?id=${storeId}`}
+                                                                      onlyActiveOnIndex>{storeName}</Link></span>
                             </div>
                         )}
                         showHeader={false}
@@ -284,15 +292,39 @@ export default class CartIndex extends Component {
     removeFail() {
         FetchUtil.delete({
             url: '/goods/shoppingCart/fail/remove',
-            success: ({errMsg}) => {
-                if (errMsg) {
-                    message.error(errMsg);
-                    return;
-                }
+            success: () => {
                 const {storeList} = this.state;
-                this.setState({storeList: storeList.filter(store => !store.goodsState), hasInvalid: false})
+                this.setState({storeList: storeList.filter(store => store.goodsState), hasInvalid: false})
             }
         });
+    }
+
+    toBuy(goodsCount) {
+        if (!goodsCount) {
+            return;
+        }
+        const {storeList} = this.state;
+        const buySkus = [];
+        storeList.map(({goodsList}) => {
+            goodsList.map(({skuId, attrsJson, amount, checked}) => {
+                if (checked) {
+                    buySkus.push({skuId, attrsJson, amount});
+                }
+            })
+        })
+        if (buySkus.length) {
+            FetchUtil.put({
+                url: '/goods/cacheBuySkus',
+                data: buySkus,
+                sendBefore: () => this.setState({toBuyDisabled: true}),
+                success: () => {
+                    browserHistory.push({
+                        pathname: "/order/confirm"
+                    });
+                },
+                complete: () => this.setState({toBuyDisabled: false})
+            })
+        }
     }
 
     render() {
@@ -300,7 +332,9 @@ export default class CartIndex extends Component {
             storeList,
             hasInvalid,
             allChecked,
-            delAllVisible
+            delAllVisible,
+            toBuyDisabled,
+            hasValid
         } = this.state;
         let goodsCount = 0; // 选中SKU数量
         let totalPrice = 0; // 选中SKU总价
@@ -325,7 +359,7 @@ export default class CartIndex extends Component {
                             <Header className="search-warp">
                                 <Row type="flex" align="middle">
                                     <Col span={4}>
-                                        <Link to="/">
+                                        <Link to="/" onlyActiveOnIndex>
                                             <img
                                                 className="tmall-logo"
                                                 alt="トップページ"
@@ -361,18 +395,19 @@ export default class CartIndex extends Component {
                                                     <div className="cart-table-head">
                             <span style={{width: "15%"}}>
                               <Checkbox
+                                  disabled={!hasValid}
                                   checked={allChecked}
                                   onChange={({target: {checked}}) =>
                                       this.checkGoods(checked)
                                   }
                               >
-                                全选
+                                オールチェック
                               </Checkbox>
                             </span>
-                                                        <span style={{width: "44%"}}>商品信息</span>
-                                                        <span style={{width: "10%"}}>单价</span>
+                                                        <span style={{width: "44%"}}>お宝物</span>
+                                                        <span style={{width: "10%"}}>単価</span>
                                                         <span style={{width: "12%"}}>数量</span>
-                                                        <span style={{width: "11.5%"}}>金额</span>
+                                                        <span style={{width: "11.5%"}}>金額</span>
                                                         <span>操作</span>
                                                     </div>
                                                 ),
@@ -395,17 +430,18 @@ export default class CartIndex extends Component {
                                                         <Row type="flex" align="middle">
                                                             <Col span={6} style={{textAlign: "center"}}>
                                                                 <Checkbox
+                                                                    disabled={!hasValid}
                                                                     checked={allChecked}
                                                                     onChange={({target: {checked}}) =>
                                                                         this.checkGoods(checked)
                                                                     }
                                                                 >
-                                                                    全选
+                                                                    チェック
                                                                 </Checkbox>
                                                             </Col>
                                                             <Col span={4}>
                                                                 <Popconfirm
-                                                                    title=">_<真的要删除这些宝贝吗？"
+                                                                    title=">_<これらのお宝物を削除しますか？"
                                                                     visible={delAllVisible}
                                                                     okType="danger"
                                                                     onVisibleChange={delAllVisible => {
@@ -416,18 +452,18 @@ export default class CartIndex extends Component {
                                                                         if (goodsCount > 0) {
                                                                             this.setState({delAllVisible});
                                                                         } else {
-                                                                            message.warning("请选择宝贝");
+                                                                            message.warning("お宝物を選んでください");
                                                                         }
                                                                     }}
                                                                     onConfirm={() => this.removeCartGoods()}
                                                                 >
-                                                                    <Button type="link">删除</Button>
+                                                                    <Button type="link">削除</Button>
                                                                 </Popconfirm>
                                                             </Col>
                                                             {hasInvalid ? (
                                                                 <Col span={8}>
                                                                     <Button type="link"
-                                                                            onClick={() => this.removeFail()}>清空已失效宝贝</Button>
+                                                                            onClick={() => this.removeFail()}>無効なものをクリア</Button>
                                                                 </Col>
                                                             ) : null}
                                                         </Row>
@@ -439,26 +475,28 @@ export default class CartIndex extends Component {
                                                             align="middle"
                                                         >
                                                             <Col span={8}>
-                                                                已选商品
+                                                                選んだ宝物
                                                                 <span className="selected-count">
                                   {goodsCount}
                                 </span>
-                                                                件
+                                                                個
                                                             </Col>
                                                             <Col span={12}>
-                                                                合计（不含运费）：{" "}
+                                                                合計（送料抜き）：{" "}
                                                                 <span className="total-price">
-                                  ￥{totalPrice}
+                                  ¥{totalPrice}
                                 </span>
                                                             </Col>
                                                             <Col span={4}>
-                                                                <Button type="danger">结算</Button>
+                                                                <Button type="danger"
+                                                                        disabled={!goodsCount || toBuyDisabled}
+                                                                        onClick={() => this.toBuy(goodsCount)}>注文</Button>
                                                             </Col>
                                                         </Row>
                                                     </Col>
                                                 </Row>
                                             </Affix>
-                                            <div className="wonderful-end"></div>
+                                            <div className="wonderful-end"/>
                                         </div>
                                     ) : null}
                                 </div>

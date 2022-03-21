@@ -51,11 +51,11 @@ export default class OrderSubmit extends Component {
                         return path === children.props.route.path;
                       })
                     }>
-                      <Step title="确认订单" />
-                      <Step title="拍下商品" />
-                      <Step title="支付" />
-                      <Step title="确认收货" />
-                      <Step title="评价" />
+                      <Step title="注文確認" />
+                      <Step title="レジ" />
+                      <Step title="支払い完了" />
+                      <Step title="届け確認" />
+                      <Step title="コメント" />
                     </Steps>
                   </Col>
                 </Row>

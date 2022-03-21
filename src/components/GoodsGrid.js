@@ -36,7 +36,7 @@ export default class GoodsGrid extends Component {
         <div className="goodsGrid-warp">
           <img alt="" className="goodsGrid-img" src={imgUrl} />
           <div className="goodsGrid-title">{name}</div>
-          <div className="goodsGrid-price">￥{price}</div>
+          <div className="goodsGrid-price">¥{price}</div>
         </div>
       </Link>
     );
