@@ -18,7 +18,7 @@ import Order from "./manage/order/";
 import Address from "./manage/address/";
 import OrderSubmit from "./order/";
 import OrderConfirm from "./order/confirm";
-import OrderConfirmDone from "./order/configDone";
+import OrderConfirmDone from "./order/confirmDone";
 import OrderPay from "./order/pay";
 import OrderReceiveConfirm from "./order/receiveConfirm";
 import OrderComment from "./order/comment";

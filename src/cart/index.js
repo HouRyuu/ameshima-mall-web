@@ -265,8 +265,9 @@ export default class CartIndex extends Component {
                                     <Tag>無効</Tag>
                                 )}
                                 <Icon type="shop" style={{margin: "0 8px", fontSize: 16}}/>
-                                <span style={{fontSize: 13}}>店舗：<Link to={`/store?id=${storeId}`}
-                                                                      onlyActiveOnIndex>{storeName}</Link></span>
+                                <span style={{fontSize: 13}}>
+                                    <Link to={`/store?id=${storeId}`} onlyActiveOnIndex>{storeName}</Link>
+                                </span>
                             </div>
                         )}
                         showHeader={false}
@@ -306,9 +307,9 @@ export default class CartIndex extends Component {
         const {storeList} = this.state;
         const buySkus = [];
         storeList.map(({goodsList}) => {
-            goodsList.map(({skuId, attrsJson, amount, checked}) => {
+            goodsList.map(({id: cartId, skuId, attrsJson, amount, checked}) => {
                 if (checked) {
-                    buySkus.push({skuId, attrsJson, amount});
+                    buySkus.push({cartId, skuId, attrsJson, amount});
                 }
             })
         })

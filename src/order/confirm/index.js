@@ -8,13 +8,13 @@ import {
     Popover,
     Tag,
     Icon,
-    Affix,
+    Affix, Spin, message
 } from "antd";
 import "../../cart/cart.css";
 import "./confirm.css";
 import FetchUtil from "../../utils/FetchUtil";
 import fetchUtil from "../../utils/FetchUtil";
-import {Link} from "react-router";
+import {browserHistory, Link} from "react-router";
 
 export default class OrderConfirm extends Component {
     constructor(props) {
@@ -24,19 +24,11 @@ export default class OrderConfirm extends Component {
     state = {
         seletedAddrIndex: -1,
         showAllAddr: false,
-        addressList: [{
-            name: '郭女士',
-            province: '广东省',
-            city: '广州市',
-            district: '海珠区',
-            detailedAddress: '海珠南洲后滘大街一巷六号',
-            phone: '15625162528',
-            isDefault: 1
-        }],
-        address: {},
+        addressList: [],
         storeList: [],
         freightMap: {},
-        totalPrice: 0
+        totalPrice: 0,
+        orderTag: false
     }
 
     findAddressList() {
@@ -45,6 +37,7 @@ export default class OrderConfirm extends Component {
             success: ({data: addressList}) => {
                 this.setState({addressList, seletedAddrIndex: 0, showAllAddr: addressList.length < 6}, () => {
                     if (addressList.length && this.state.storeList.length) {
+                        this.setState({orderTag: true});
                         this.findFreight(addressList[0].cityCode);
                     }
                 });
@@ -63,11 +56,13 @@ export default class OrderConfirm extends Component {
     }
 
     findGoods() {
-        fetchUtil.get({
+        fetchUtil.post({
             url: '/goods/goodsBySkus',
+            data: {},
             success: ({data}) => {
                 this.setState({storeList: data}, () => {
                     if (data.length && this.state.addressList.length) {
+                        this.setState({orderTag: true});
                         this.findFreight(this.state.addressList[0].cityCode);
                     }
                 });
@@ -104,6 +99,48 @@ export default class OrderConfirm extends Component {
                 }
                 freightMap[cityCode] = data;
                 this.setState({totalPrice, freightMap});
+            }
+        })
+    }
+
+    order() {
+        const {seletedAddrIndex, addressList} = this.state;
+        const address = addressList[seletedAddrIndex]
+        if (!address) {
+            return;
+        }
+        FetchUtil.post({
+            url: `/order/create/${address.cityCode}`,
+            data: {address: JSON.stringify(address)},
+            sendBefore: () => this.setState({orderTag: false}),
+            success: ({data}) => {
+                if (data) {
+                    const waitOrder = setInterval(() => {
+                        FetchUtil.get({
+                            url: `/order/created/${data}`,
+                            success: ({data: state}) => {
+                                if (state) {
+                                    this.setState({orderTag: false}, () => {
+                                        browserHistory.push({
+                                            pathname: '/order/confirmDone',
+                                            search: `?orderNo=${data}`
+                                        });
+                                        clearInterval(waitOrder);
+                                    })
+                                }
+                            },
+                            error: ({errMsg}) => {
+                                this.setState({orderTag: true})
+                                message.error(errMsg);
+                                clearInterval(waitOrder);
+                            }
+                        })
+                    }, 1000);
+                }
+            },
+            error: ({errMsg}) => {
+                message.error(errMsg);
+                this.setState({orderTag: true})
             }
         })
     }
@@ -199,12 +236,12 @@ export default class OrderConfirm extends Component {
                         title={() => (
                             <div className="shop-info">
                                 {goodsState === 0 ? null : (
-                                    <Tag>已失效</Tag>
+                                    <Tag>無効</Tag>
                                 )}
                                 <Icon type="shop" style={{margin: "0 8px", fontSize: 16}}/>
                                 <span style={{fontSize: 13}}>
-                  店铺：<Link to={`/store?id=${storeId}`} onlyActiveOnIndex>{storeName}</Link>
-                </span>
+                                    <Link to={`/store?id=${storeId}`} onlyActiveOnIndex>{storeName}</Link>
+                                </span>
                             </div>
                         )}
                         showHeader={false}
@@ -226,7 +263,7 @@ export default class OrderConfirm extends Component {
     }
 
     render() {
-        const {seletedAddrIndex, showAllAddr, addressList, storeList, totalPrice} = this.state;
+        const {seletedAddrIndex, showAllAddr, addressList, storeList, totalPrice, orderTag} = this.state;
         let goodsCount = 0; // 选中SKU数量
         if (storeList.length) {
             storeList.forEach(store => {
@@ -236,94 +273,97 @@ export default class OrderConfirm extends Component {
             })
         }
         return (
-            <div className="confirm-panel">
-                <div className='cart-table'>
-                    <h3 style={{fontSize: '13px', fontWeight: 'bold'}}>选择收货地址</h3>
-                    {addressList.length ?
-                        <div className='address-list'
-                             style={!showAllAddr ? {height: '113px'} : null}
-                        >
+            <Spin size={"large"} tip="注文中" spinning={!orderTag}>
+                <div className="confirm-panel">
+                    <div className='cart-table'>
+                        <h3 style={{fontSize: '13px', fontWeight: 'bold'}}>配送先を選ぶ</h3>
+                        {addressList.length ?
+                            <div className='address-list'
+                                 style={!showAllAddr ? {height: '113px'} : null}
+                            >
 
-                            {addressList.map(({
-                                                  id,
-                                                  name,
-                                                  province,
-                                                  city,
-                                                  cityCode,
-                                                  district,
-                                                  detailedAddress,
-                                                  phone,
-                                                  isDefault,
-                                                  selected
-                                              }, index) =>
-                                <div
-                                    className={`addr-item-wrapper ${seletedAddrIndex === index ? 'addr-selected' : ''}`}
-                                    onClick={() => this.selectAddress(cityCode, index)}>
-                                    <div className="inner-infos">
-                                        <div className="addr-hd">{`${province + city + district}(${name})`}</div>
-                                        <div className="addr-bd">
-                                            <span>{detailedAddress}</span>
-                                            <span>{phone}</span>
+                                {addressList.map(({
+                                                      id,
+                                                      name,
+                                                      province,
+                                                      city,
+                                                      cityCode,
+                                                      district,
+                                                      detailedAddress,
+                                                      phone,
+                                                      isDefault,
+                                                      selected
+                                                  }, index) =>
+                                    <div
+                                        className={`addr-item-wrapper ${seletedAddrIndex === index ? 'addr-selected' : ''}`}
+                                        onClick={() => this.selectAddress(cityCode, index)}>
+                                        <div className="inner-infos">
+                                            <div className="addr-hd">{`${province + city + district}(${name})`}</div>
+                                            <div className="addr-bd">
+                                                <span>{detailedAddress}</span>
+                                                <span>{phone}</span>
+                                            </div>
+                                            {seletedAddrIndex === index ?
+                                                <a title="配送先を修正" className="modify-operation">修正</a> : null}
+                                            {seletedAddrIndex === index ? <div className="curMarker"/> : null}
+                                            {isDefault ? <div className="default-tip">デフォルト</div> : null}
                                         </div>
-                                        {seletedAddrIndex === index ?
-                                            <a title="配送先を修正" className="modify-operation">修正</a> : null}
-                                        {seletedAddrIndex === index ? <div className="curMarker"/> : null}
-                                        {isDefault ? <div className="default-tip">デフォルト</div> : null}
-                                    </div>
-                                </div>)}
-                        </div> :
-                        <Empty description="配送先を配置していません"/>
-                    }
-                    <Row type="flex" align="middle" justify={"space-between"} style={{textAlign: "center"}}>
-                        <Col span={3}>
-                            {
-                                !addressList.length || showAllAddr ? <Button>配送先をクリエート</Button> :
-                                    <Button type="link"
-                                            onClick={() => this.setState({showAllAddr: true})}>配送先を広げる</Button>
-                            }
-                        </Col>
-                        <Col span={2}><Button>配送先を管理</Button></Col>
-                    </Row>
-                </div>
-                <div className="cart-table">
-                    <Table
-                        rowKey="key"
-                        columns={[
-                            {
-                                title: (
-                                    <div className="cart-table-head">
-                                        <span style={{width: "40%"}}>お宝物</span>
-                                        <span style={{width: "27%"}}>品物属性</span>
-                                        <span style={{width: "12%"}}>単価</span>
-                                        <span style={{width: "15%"}}>数量</span>
-                                        <span>金額</span>
-                                    </div>
-                                ),
-                                dataIndex: "goodsTable"
-                            }
-                        ]}
-                        dataSource={this.renderGoods(storeList)}
-                        pagination={false}
-                        locale={{emptyText: <Empty description='何もありません'/>}}
-                    />
-                    <div>
-                        <Affix offsetBottom={10}>
-                            <Row type="flex" justify="space-between" align="middle" className="balance-row">
-                                <Col span={5} offset={11} style={{textAlign: 'right'}}>
-                                    <span className="selected-count">{goodsCount}</span>個の商品
-                                </Col>
-                                <Col span={5} style={{textAlign: 'right'}}>
-                                    小計：{" "}<span className="total-price">¥{totalPrice}</span>(税込)
-                                </Col>
-                                <Col span={3} style={{textAlign: 'center'}}>
-                                    <Button type="danger">レジに進む</Button>
-                                </Col>
-                            </Row>
-                        </Affix>
-                        <div className="wonderful-end"/>
+                                    </div>)}
+                            </div> :
+                            <Empty description="配送先を配置していません"/>
+                        }
+                        <Row type="flex" align="middle" justify={"space-between"} style={{textAlign: "center"}}>
+                            <Col span={3}>
+                                {
+                                    !addressList.length || showAllAddr ? <Button>配送先をクリエート</Button> :
+                                        <Button type="link"
+                                                onClick={() => this.setState({showAllAddr: true})}>配送先を広げる</Button>
+                                }
+                            </Col>
+                            <Col span={2}><Button>配送先を管理</Button></Col>
+                        </Row>
+                    </div>
+                    <div className="cart-table">
+                        <Table
+                            rowKey="key"
+                            columns={[
+                                {
+                                    title: (
+                                        <div className="cart-table-head">
+                                            <span style={{width: "40%"}}>お宝物</span>
+                                            <span style={{width: "27%"}}>品物属性</span>
+                                            <span style={{width: "12%"}}>単価</span>
+                                            <span style={{width: "15%"}}>数量</span>
+                                            <span>金額</span>
+                                        </div>
+                                    ),
+                                    dataIndex: "goodsTable"
+                                }
+                            ]}
+                            dataSource={this.renderGoods(storeList)}
+                            pagination={false}
+                            locale={{emptyText: <Empty description='何もありません'/>}}
+                        />
+                        <div>
+                            <Affix offsetBottom={10}>
+                                <Row type="flex" justify="space-between" align="middle" className="balance-row">
+                                    <Col span={5} offset={11} style={{textAlign: 'right'}}>
+                                        <span className="selected-count">{goodsCount}</span>個の商品
+                                    </Col>
+                                    <Col span={5} style={{textAlign: 'right'}}>
+                                        小計：{" "}<span className="total-price">¥{totalPrice}</span>(税込)
+                                    </Col>
+                                    <Col span={3} style={{textAlign: 'center'}}>
+                                        <Button type="danger" disabled={!orderTag}
+                                                onClick={() => this.order()}>レジに進む</Button>
+                                    </Col>
+                                </Row>
+                            </Affix>
+                            <div className="wonderful-end"/>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </Spin>
         );
     }
 }
