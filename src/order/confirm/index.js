@@ -15,6 +15,7 @@ import "./confirm.css";
 import FetchUtil from "../../utils/FetchUtil";
 import fetchUtil from "../../utils/FetchUtil";
 import {browserHistory, Link} from "react-router";
+import AddressForm from "../../manage/address/addressForm";
 
 export default class OrderConfirm extends Component {
     constructor(props) {
@@ -25,6 +26,8 @@ export default class OrderConfirm extends Component {
         seletedAddrIndex: -1,
         showAllAddr: false,
         addressList: [],
+        editAddr: {},
+        addrFormFlag: false,
         storeList: [],
         freightMap: {},
         totalPrice: 0,
@@ -262,8 +265,31 @@ export default class OrderConfirm extends Component {
         return result;
     }
 
+    openAddrEdit(editAddr) {
+        this.setState({addrFormFlag: true, editAddr});
+    }
+
+    saveAddress(address) {
+        FetchUtil.put({
+            url: '/user/address/save',
+            data: address,
+            success: ({data}) => {
+                message.info('セーブ完了^_^');
+                const {addressList, seletedAddrIndex} = this.state;
+                if (!address.id) {
+                    address.id = data;
+                    address.isDefault = addressList.length === 0 ? 1 : 0;
+                    addressList.push(address);
+                } else {
+                    addressList[seletedAddrIndex] = address;
+                }
+                this.setState({addressList, addrFormFlag: false});
+            }
+        })
+    }
+
     render() {
-        const {seletedAddrIndex, showAllAddr, addressList, storeList, totalPrice, orderTag} = this.state;
+        const {seletedAddrIndex, showAllAddr, addressList, editAddr, addrFormFlag, storeList, totalPrice, orderTag} = this.state;
         let goodsCount = 0; // 选中SKU数量
         if (storeList.length) {
             storeList.forEach(store => {
@@ -274,6 +300,10 @@ export default class OrderConfirm extends Component {
         }
         return (
             <Spin size={"large"} tip="注文中" spinning={!orderTag}>
+                <AddressForm
+                    visible={addrFormFlag}
+                    address={editAddr}
+                    submit={(newAddress) => this.saveAddress(newAddress)}/>
                 <div className="confirm-panel">
                     <div className='cart-table'>
                         <h3 style={{fontSize: '13px', fontWeight: 'bold'}}>配送先を選ぶ</h3>
@@ -282,19 +312,20 @@ export default class OrderConfirm extends Component {
                                  style={!showAllAddr ? {height: '113px'} : null}
                             >
 
-                                {addressList.map(({
-                                                      id,
-                                                      name,
-                                                      province,
-                                                      city,
-                                                      cityCode,
-                                                      district,
-                                                      detailedAddress,
-                                                      phone,
-                                                      isDefault,
-                                                      selected
-                                                  }, index) =>
-                                    <div
+                                {addressList.map((item, index) => {
+                                    const {
+                                        id,
+                                        name,
+                                        province,
+                                        city,
+                                        cityCode,
+                                        district,
+                                        detailedAddress,
+                                        phone,
+                                        isDefault,
+                                        selected
+                                    } = item;
+                                    return <div
                                         className={`addr-item-wrapper ${seletedAddrIndex === index ? 'addr-selected' : ''}`}
                                         onClick={() => this.selectAddress(cityCode, index)}>
                                         <div className="inner-infos">
@@ -304,18 +335,21 @@ export default class OrderConfirm extends Component {
                                                 <span>{phone}</span>
                                             </div>
                                             {seletedAddrIndex === index ?
-                                                <a title="配送先を修正" className="modify-operation">修正</a> : null}
+                                                <a title="配送先を修正" onClick={() => this.openAddrEdit(item)}
+                                                   className="modify-operation">修正</a> : null}
                                             {seletedAddrIndex === index ? <div className="curMarker"/> : null}
                                             {isDefault ? <div className="default-tip">デフォルト</div> : null}
                                         </div>
-                                    </div>)}
+                                    </div>
+                                })}
                             </div> :
                             <Empty description="配送先を配置していません"/>
                         }
                         <Row type="flex" align="middle" justify={"space-between"} style={{textAlign: "center"}}>
                             <Col span={3}>
                                 {
-                                    !addressList.length || showAllAddr ? <Button>配送先をクリエート</Button> :
+                                    !addressList.length || showAllAddr ?
+                                        <Button onClick={() => this.openAddrEdit({})}>配送先をクリエート</Button> :
                                         <Button type="link"
                                                 onClick={() => this.setState({showAllAddr: true})}>配送先を広げる</Button>
                                 }
@@ -334,7 +368,7 @@ export default class OrderConfirm extends Component {
                                             <span style={{width: "27%"}}>品物属性</span>
                                             <span style={{width: "12%"}}>単価</span>
                                             <span style={{width: "15%"}}>数量</span>
-                                            <span>金額</span>
+                                            <span>小計</span>
                                         </div>
                                     ),
                                     dataIndex: "goodsTable"
@@ -351,7 +385,7 @@ export default class OrderConfirm extends Component {
                                         <span className="selected-count">{goodsCount}</span>個の商品
                                     </Col>
                                     <Col span={5} style={{textAlign: 'right'}}>
-                                        小計：{" "}<span className="total-price">¥{totalPrice}</span>(税込)
+                                        合計：{" "}<span className="total-price">¥{totalPrice}</span>(税込)
                                     </Col>
                                     <Col span={3} style={{textAlign: 'center'}}>
                                         <Button type="danger" disabled={!orderTag}

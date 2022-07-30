@@ -408,7 +408,7 @@ export default class CartIndex extends Component {
                                                         <span style={{width: "44%"}}>お宝物</span>
                                                         <span style={{width: "10%"}}>単価</span>
                                                         <span style={{width: "12%"}}>数量</span>
-                                                        <span style={{width: "11.5%"}}>金額</span>
+                                                        <span style={{width: "11.5%"}}>小計</span>
                                                         <span>操作</span>
                                                     </div>
                                                 ),
