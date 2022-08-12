@@ -22,7 +22,7 @@ export default class GuessLike extends Component {
         <h2 className="wonderful-title">
           <span>
             <Icon type="heart" />
-            好みを当てて
+            おすすめ
           </span>
         </h2>
         <GoodsList {...this.state} />

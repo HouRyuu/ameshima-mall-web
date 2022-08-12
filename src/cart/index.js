@@ -306,8 +306,8 @@ export default class CartIndex extends Component {
         }
         const {storeList} = this.state;
         const buySkus = [];
-        storeList.map(({goodsList}) => {
-            goodsList.map(({id: cartId, skuId, attrsJson, amount, checked}) => {
+        storeList.forEach(({goodsList}) => {
+            goodsList.forEach(({id: cartId, skuId, attrsJson, amount, checked}) => {
                 if (checked) {
                     buySkus.push({cartId, skuId, attrsJson, amount});
                 }

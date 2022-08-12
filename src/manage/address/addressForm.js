@@ -36,6 +36,10 @@ export default class AddressForm extends Component {
             address: {},
             validateStatus: {}
         });
+        const {close} = this.props;
+        if (close) {
+            close();
+        }
     }
 
     validation() {

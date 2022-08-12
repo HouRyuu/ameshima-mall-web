@@ -137,7 +137,7 @@ export default class Address extends Component {
             url: `/user/address/${id}/default`,
             success: () => {
                 const {addressList} = this.state;
-                addressList.map((record, index) => {
+                addressList.forEach((record, index) => {
                     if (record.isDefault) {
                         record.isDefault = 0;
                     } else if (curIndex === index) {
@@ -169,7 +169,8 @@ export default class Address extends Component {
             <AddressForm
                 visible={formVisible}
                 address={address}
-                submit={(newAddress) => this.saveAddress(newAddress)}/>
+                submit={(newAddress) => this.saveAddress(newAddress)}
+                close={() => this.setState({formVisible: false})}/>
         </main>
     }
 }

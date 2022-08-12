@@ -11,16 +11,11 @@ import {
     Affix, Spin, message
 } from "antd";
 import "../../cart/cart.css";
-import "./confirm.css";
 import FetchUtil from "../../utils/FetchUtil";
-import fetchUtil from "../../utils/FetchUtil";
 import {browserHistory, Link} from "react-router";
 import AddressForm from "../../manage/address/addressForm";
 
 export default class OrderConfirm extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     state = {
         seletedAddrIndex: -1,
@@ -59,7 +54,7 @@ export default class OrderConfirm extends Component {
     }
 
     findGoods() {
-        fetchUtil.post({
+        FetchUtil.post({
             url: '/goods/goodsBySkus',
             data: {},
             success: ({data}) => {
@@ -116,17 +111,17 @@ export default class OrderConfirm extends Component {
             url: `/order/create/${address.cityCode}`,
             data: {address: JSON.stringify(address)},
             sendBefore: () => this.setState({orderTag: false}),
-            success: ({data}) => {
-                if (data) {
+            success: ({data: orderNo}) => {
+                if (orderNo) {
                     const waitOrder = setInterval(() => {
                         FetchUtil.get({
-                            url: `/order/created/${data}`,
+                            url: `/order/created/${orderNo}`,
                             success: ({data: state}) => {
                                 if (state) {
                                     this.setState({orderTag: false}, () => {
                                         browserHistory.push({
                                             pathname: '/order/confirmDone',
-                                            search: `?orderNo=${data}`
+                                            search: `?orderNo=${orderNo}`
                                         });
                                         clearInterval(waitOrder);
                                     })
@@ -148,17 +143,6 @@ export default class OrderConfirm extends Component {
         })
     }
 
-    updateAmount(skuId, amount, storeIndex, index) {
-        const {storeList} = this.state;
-        FetchUtil.put({
-            url: `/goods/cacheBuySkus/${skuId}/updateAmount/${amount}`,
-            success: () => {
-                storeList[storeIndex].goodsList[index].amount = amount;
-                this.setState({storeList});
-            }
-        })
-    }
-
     renderGoods(storeList) {
         const result = [];
         if (!storeList || !storeList.length) return [];
@@ -167,19 +151,19 @@ export default class OrderConfirm extends Component {
         if (freightMap && seletedAddrIndex > -1) {
             skuFreight = freightMap[addressList[seletedAddrIndex].cityCode];
         }
-        storeList.forEach(({storeId, storeName, goodsState, goodsList}/*, storeIndex*/) => {
+        storeList.forEach(({storeId, storeName, goodsState, goodsList}) => {
             const dataSource = [];
-            goodsList.map(({
-                               skuId,
-                               goodsId,
-                               name,
-                               imgUrl,
-                               attrsJson,
-                               price,
-                               marketPrice,
-                               amount,
-                               quantity
-                           }/*, index*/) => {
+            goodsList.forEach(({
+                                   skuId,
+                                   goodsId,
+                                   name,
+                                   imgUrl,
+                                   attrsJson,
+                                   price,
+                                   marketPrice,
+                                   amount,
+                                   quantity
+                               }) => {
                 const freight = skuFreight ? skuFreight[goodsId] ? skuFreight[goodsId] : 0 : 0;
                 const attrObj = JSON.parse(attrsJson);
                 const attrDom = [];
@@ -289,7 +273,16 @@ export default class OrderConfirm extends Component {
     }
 
     render() {
-        const {seletedAddrIndex, showAllAddr, addressList, editAddr, addrFormFlag, storeList, totalPrice, orderTag} = this.state;
+        const {
+            seletedAddrIndex,
+            showAllAddr,
+            addressList,
+            editAddr,
+            addrFormFlag,
+            storeList,
+            totalPrice,
+            orderTag
+        } = this.state;
         let goodsCount = 0; // 选中SKU数量
         if (storeList.length) {
             storeList.forEach(store => {
@@ -303,7 +296,8 @@ export default class OrderConfirm extends Component {
                 <AddressForm
                     visible={addrFormFlag}
                     address={editAddr}
-                    submit={(newAddress) => this.saveAddress(newAddress)}/>
+                    submit={(newAddress) => this.saveAddress(newAddress)}
+                    close={() => this.setState({addrFormFlag: false})}/>
                 <div className="confirm-panel">
                     <div className='cart-table'>
                         <h3 style={{fontSize: '13px', fontWeight: 'bold'}}>配送先を選ぶ</h3>
@@ -314,7 +308,6 @@ export default class OrderConfirm extends Component {
 
                                 {addressList.map((item, index) => {
                                     const {
-                                        id,
                                         name,
                                         province,
                                         city,
@@ -322,8 +315,7 @@ export default class OrderConfirm extends Component {
                                         district,
                                         detailedAddress,
                                         phone,
-                                        isDefault,
-                                        selected
+                                        isDefault
                                     } = item;
                                     return <div
                                         className={`addr-item-wrapper ${seletedAddrIndex === index ? 'addr-selected' : ''}`}
@@ -382,7 +374,7 @@ export default class OrderConfirm extends Component {
                             <Affix offsetBottom={10}>
                                 <Row type="flex" justify="space-between" align="middle" className="balance-row">
                                     <Col span={5} offset={11} style={{textAlign: 'right'}}>
-                                        <span className="selected-count">{goodsCount}</span>個の商品
+                                        商品<span className="selected-count">{goodsCount}</span>点
                                     </Col>
                                     <Col span={5} style={{textAlign: 'right'}}>
                                         合計：{" "}<span className="total-price">¥{totalPrice}</span>(税込)
