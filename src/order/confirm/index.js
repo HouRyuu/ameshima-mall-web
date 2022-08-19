@@ -205,12 +205,7 @@ export default class OrderConfirm extends Component {
                                 <span>¥{price}</span>
                             </div>
                         ),
-                    amount: amount/*goodsState ? (
-                        amount
-                    ) : (
-                        <InputNumber bordered={false} min={1} max={quantity} defaultValue={amount}
-                                     onChange={(value) => this.updateAmount(skuId, value, storeIndex, index)}/>
-                    )*/,
+                    amount: amount,
                     money: <span className="cart-sum">¥{price * amount}<br/>送料：¥{freight}</span>
                 });
             });
@@ -327,8 +322,8 @@ export default class OrderConfirm extends Component {
                                                 <span>{phone}</span>
                                             </div>
                                             {seletedAddrIndex === index ?
-                                                <a title="配送先を修正" onClick={() => this.openAddrEdit(item)}
-                                                   className="modify-operation">修正</a> : null}
+                                                <Link title="配送先を修正" onClick={() => this.openAddrEdit(item)}
+                                                      className="modify-operation" onlyActiveOnIndex>修正</Link> : null}
                                             {seletedAddrIndex === index ? <div className="curMarker"/> : null}
                                             {isDefault ? <div className="default-tip">デフォルト</div> : null}
                                         </div>

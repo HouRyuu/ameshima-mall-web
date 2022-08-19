@@ -69,8 +69,7 @@
 .confirm-panel .addr-selected .curMarker {
     z-index: 3;
     position: absolute;
-    background: url(//img.alicdn.com/tfs/TB1zLJRRpXXXXcrXXXXXXXXXXXX-30-600.png) no-repeat;
-    background-position: 0 -272px;
+    background: url(//img.alicdn.com/tfs/TB1zLJRRpXXXXcrXXXXXXXXXXXX-30-600.png) no-repeat 0 -272px;
     width: 28px;
     height: 28px;
     right: 0;

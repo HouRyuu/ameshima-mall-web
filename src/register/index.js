@@ -255,7 +255,7 @@ class RegisterForm extends Component {
                                         to={`/login${
                                             redirectURL ? `?redirectURL=${redirectURL}` : ""
                                         }`}
-                                    >
+                                        onlyActiveOnIndex>
                                         ログイン
                                     </Link>
                                 </Form.Item>

@@ -477,16 +477,12 @@ export default class CartIndex extends Component {
                                                         >
                                                             <Col span={8}>
                                                                 選んだ宝物
-                                                                <span className="selected-count">
-                                  {goodsCount}
-                                </span>
-                                                                個
+                                                                <span className="selected-count">{goodsCount}</span>
+                                                                点
                                                             </Col>
                                                             <Col span={12}>
                                                                 合計（送料抜き）：{" "}
-                                                                <span className="total-price">
-                                  ¥{totalPrice}
-                                </span>
+                                                                <span className="total-price">¥{totalPrice}</span>
                                                             </Col>
                                                             <Col span={4}>
                                                                 <Button type="danger"

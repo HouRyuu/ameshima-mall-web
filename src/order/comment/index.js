@@ -1,10 +1,38 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
+import UrlUtil from "../../utils/UrlUtil";
+import FetchUtil from "../../utils/FetchUtil";
+import OrderGoodsList from "../../components/OrderGoodsList";
 
 export default class OrderComment extends Component {
+    state = {
+        orderList: []
+    }
 
-  render() {
-    return (
-        <div>评价</div>
-    );
-  }
+    componentWillMount() {
+        this.findOrderGoodsList();
+    }
+
+    findOrderGoodsList() {
+        const {
+            searchParam: {orderNo}
+        } = new UrlUtil(window.location);
+        if (orderNo) {
+            FetchUtil.get({
+                url: `/order/${orderNo}/goods/4`,
+                success: ({data: orderList}) => {
+                    this.setState({orderList});
+                }
+            })
+        }
+    }
+
+    render() {
+        return (
+            <div className="confirm-panel">
+                <div className="cart-table">
+                    <OrderGoodsList orderList={this.state.orderList}/>
+                </div>
+            </div>
+        );
+    }
 }

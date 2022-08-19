@@ -26,3 +26,7 @@ img {
   background-color: #fff;
   text-align: center;
 }
+
+.verticalAlignCenter {
+  vertical-align: middle !important;
+}

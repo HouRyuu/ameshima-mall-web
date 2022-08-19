@@ -20,7 +20,7 @@ export default class OrderConfirmDone extends Component {
         } = new UrlUtil(window.location);
         if (orderNo) {
             FetchUtil.get({
-                url: `/order/${orderNo}/goods`,
+                url: `/order/${orderNo}/goods/1`,
                 success: ({data: orderList}) => {
                     this.setState({orderList});
                 }
@@ -47,7 +47,7 @@ export default class OrderConfirmDone extends Component {
                         <Affix offsetBottom={10}>
                             <Row type="flex" justify="space-between" align="middle" className="balance-row">
                                 <Col span={5} offset={11} style={{textAlign: 'right'}}>
-                                    <span className="selected-count">{goodsCount}</span>点
+                                    商品<span className="selected-count">{goodsCount}</span>点
                                 </Col>
                                 <Col span={5} style={{textAlign: 'right'}}>
                                     合計：{" "}<span className="total-price">¥{totalPrice}</span>(税込)
