@@ -280,13 +280,6 @@ export default class GoodsIndex extends Component {
                                                         }
                                                         {
                                                             evaluatePage.content && evaluatePage.content.length ? <div>
-                                                                    <Pagination
-                                                                        {...evaluatePage}
-                                                                        size="small"
-                                                                        onChange={(pageIndex, pageSize) =>
-                                                                            this.evaluatePage(goods.id, pageIndex, pageSize)
-                                                                        }
-                                                                    />
                                                                     <List
                                                                         itemLayout="horizontal"
                                                                         dataSource={evaluatePage.content}
@@ -311,6 +304,14 @@ export default class GoodsIndex extends Component {
                                                                                 />
                                                                             </li>
                                                                         )}
+                                                                    />
+                                                                    <Pagination
+                                                                        {...evaluatePage}
+                                                                        size="small"
+                                                                        style={{textAlign: 'right'}}
+                                                                        onChange={(pageIndex, pageSize) =>
+                                                                            this.evaluatePage(goods.id, pageIndex, pageSize)
+                                                                        }
                                                                     />
                                                                 </div> :
                                                                 <Empty description="何もありません"/>

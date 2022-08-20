@@ -295,7 +295,7 @@ export default class OrderConfirm extends Component {
                     close={() => this.setState({addrFormFlag: false})}/>
                 <div className="confirm-panel">
                     <div className='cart-table'>
-                        <h3 style={{fontSize: '13px', fontWeight: 'bold'}}>配送先を選ぶ</h3>
+                        <h3 style={{margin: '10px', fontWeight: 'bold'}}>お届け住所</h3>
                         {addressList.length ?
                             <div className='address-list'
                                  style={!showAllAddr ? {height: '113px'} : null}
@@ -332,16 +332,15 @@ export default class OrderConfirm extends Component {
                             </div> :
                             <Empty description="配送先を配置していません"/>
                         }
-                        <Row type="flex" align="middle" justify={"space-between"} style={{textAlign: "center"}}>
-                            <Col span={3}>
+                        <Row>
+                            <Col span={3}　offset={21}>
                                 {
                                     !addressList.length || showAllAddr ?
-                                        <Button onClick={() => this.openAddrEdit({})}>配送先をクリエート</Button> :
+                                        <Button type="link" onClick={() => this.openAddrEdit({})}>配送先を追加</Button> :
                                         <Button type="link"
-                                                onClick={() => this.setState({showAllAddr: true})}>配送先を広げる</Button>
+                                                onClick={() => this.setState({showAllAddr: true})}>配送先を展示</Button>
                                 }
                             </Col>
-                            <Col span={2}><Button>配送先を管理</Button></Col>
                         </Row>
                     </div>
                     <div className="cart-table">

@@ -15,7 +15,7 @@ import {
     Tag,
     Affix,
     message,
-    Popconfirm
+    Popconfirm, Empty
 } from "antd";
 import IndexHead from "../index/indexHead";
 import TmallFooter from "../components/TmallFooter";
@@ -394,17 +394,16 @@ export default class CartIndex extends Component {
                                             {
                                                 title: (
                                                     <div className="cart-table-head">
-                            <span style={{width: "15%"}}>
-                              <Checkbox
-                                  disabled={!hasValid}
-                                  checked={allChecked}
-                                  onChange={({target: {checked}}) =>
-                                      this.checkGoods(checked)
-                                  }
-                              >
-                                オールチェック
-                              </Checkbox>
-                            </span>
+                                                        <span style={{width: "15%"}}>
+                                                            <Checkbox
+                                                                disabled={!hasValid}
+                                                                checked={allChecked}
+                                                                onChange={({target: {checked}}) =>
+                                                                    this.checkGoods(checked)
+                                                                }>
+                                                            オールチェック
+                                                            </Checkbox>
+                                                        </span>
                                                         <span style={{width: "44%"}}>お宝物</span>
                                                         <span style={{width: "10%"}}>単価</span>
                                                         <span style={{width: "12%"}}>数量</span>
@@ -417,6 +416,7 @@ export default class CartIndex extends Component {
                                         ]}
                                         dataSource={this.renderGoods(storeList)}
                                         pagination={false}
+                                        locale={{emptyText: <Empty description='何もありません'/>}}
                                     />
                                     {storeList && storeList.length ? (
                                         <div>

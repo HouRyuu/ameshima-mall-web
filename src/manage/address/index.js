@@ -1,8 +1,7 @@
 import React, {Component} from "react";
-import {Button, Icon, Table, message, Popconfirm, Alert, Tooltip} from "antd";
+import {Button, Icon, Table, message, Popconfirm, Alert, Tooltip, Row, Col} from "antd";
 import FetchUtil from "../../utils/FetchUtil";
 import AddressForm from "./addressForm";
-import './address.css'
 
 const ButtonGroup = Button.Group;
 export default class Address extends Component {
@@ -156,10 +155,12 @@ export default class Address extends Component {
             <Alert
                 style={{marginBottom: '10px'}}
                 type="info"
-                message={`合計 ${addressList.length} アドレス，最大 ${maxCount} アドレス`}/>
-            <Button shape="circle" className="addBtn" onClick={() => this.openAdd()}>
-                <Icon type="plus"/>
-            </Button>
+                message={<Row style={{lineHeight: '32px'}}>
+                    <Col span={23}>合計 {addressList.length} アドレス，最大 {maxCount} アドレス</Col>
+                    <Col span={1}>
+                        <Button type='primary' onClick={() => this.openAdd()} icon='plus'/>
+                    </Col>
+                </Row>}/>
             <Table
                 pagination={false}
                 columns={this.columns}

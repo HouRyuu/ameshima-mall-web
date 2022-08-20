@@ -4,20 +4,8 @@
     margin-bottom: 10px;
 }
 
-.cart-warp
-.cart-table
-.ant-table-tbody
-> tr:hover:not(.ant-table-expanded-row)
-> td {
+.cart-warp .cart-table .ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
     background: transparent;
-}
-
-.cart-warp
-.cart-goods-table
-.ant-table-tbody
-> tr:hover:not(.ant-table-expanded-row)
-> td {
-    /*background: #e6f7ff;*/
 }
 
 .cart-warp .cart-goods-img {
@@ -83,7 +71,7 @@
     font-weight: 700;
 }
 
-.cart-warp .cart-price-content > span:nth-child(1) {
+.cart-warp .cart-price-content > span:nth-child(2) {
     color: #9c9c9c;
     text-decoration: line-through;
     font-weight: normal;

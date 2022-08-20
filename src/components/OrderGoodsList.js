@@ -4,6 +4,7 @@ import {browserHistory, Link} from "react-router";
 import FetchUtil from "../utils/FetchUtil";
 import UrlUtil from "../utils/UrlUtil";
 
+
 const IconFont = Icon.createFromIconfontCN({
     scriptUrl: '//at.alicdn.com/t/c/font_3587549_fxuwnik34q.js',
 })
@@ -12,13 +13,23 @@ export default class OrderGoodsList extends Component {
     state = {
         orderStateArr: [],
         payWayArr: [],
-        logisticsStateArr: []
+        logisticsStateArr: [],
+        orderList: []
     }
 
     componentWillMount() {
-        this.getOrderStateCfg();
         this.getPayWayCfg();
         this.getLogisticsStateCfg();
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        const {orderStateArr, orderList} = nextProps;
+        if (orderStateArr) {
+            this.setState({orderStateArr, orderList})
+        } else {
+            this.getOrderStateCfg();
+            this.setState({orderList})
+        }
     }
 
     getOrderStateCfg() {
@@ -43,8 +54,7 @@ export default class OrderGoodsList extends Component {
     }
 
     renderGoods() {
-        const {orderList} = this.props;
-        const {orderStateArr, payWayArr, logisticsStateArr} = this.state;
+        const {orderStateArr, payWayArr, logisticsStateArr, orderList} = this.state;
         if (!orderList || !orderList.length || !orderStateArr.length || !payWayArr.length) {
             return [];
         }
@@ -77,6 +87,41 @@ export default class OrderGoodsList extends Component {
                     detailedAddress
                 } = JSON.parse(targetAddress)
                 let totalFreight = 0;
+                let doDom = (<div style={{float: "right"}}>
+                    {
+                        orderState === 1 ? <Tooltip title='支払う方法をお選び下さい'><Button.Group>
+                            {
+                                payWayArr.map(way => <Button shape="circle" key={way}>
+                                    <IconFont key={way} type={`icon-${way}`}/>
+                                </Button>)
+                            }
+                        </Button.Group></Tooltip> : orderState === 3 ? <Popconfirm
+                            title="該当注文の商品は全て届きましたか？"
+                            icon={<Icon type="question-circle-o" style={{color: 'red'}}/>}
+                            onConfirm={() => this.receiveConfirm(orderNo)}
+                            okText="はい"
+                            cancelText="いいえ"
+                        >
+                            <Button>
+                                <Icon type='file-protect'/>
+                            </Button>
+                        </Popconfirm> : null
+                    }
+                    {
+                        0 < orderState && orderState < 4 ? <Popconfirm
+                            title="注文をキャンセルしますか"
+                            icon={<Icon type="question-circle-o" style={{color: 'red'}}/>}
+                            onConfirm={null}
+                            okText="はい"
+                            cancelText="いいえ"
+                        >
+                            <Button style={{marginLeft: '10px'}} type='danger' ghost>
+                                <Icon type='delete' theme='filled'/>
+                            </Button>
+                        </Popconfirm> : null
+                    }
+
+                </div>);
                 goodsList.forEach(({
                                        goodsId,
                                        skuId,
@@ -107,9 +152,8 @@ export default class OrderGoodsList extends Component {
                                 <p>{detailedAddress}</p>
                                 <p>{phone}</p>
                             </div>
-
                             {
-                                orderState > 1 ? <div>
+                                orderState !== 1 ? <div>
                                     <Divider style={{color: "#fff"}}>お支払い情報</Divider>
                                     <p>支払う方法：{payWayArr[payWay]}</p>
                                     <p>請求番号：{payNo}</p>
@@ -123,32 +167,6 @@ export default class OrderGoodsList extends Component {
                     }>
                         <Tag color="blue">{orderStateStr}</Tag>
                     </Tooltip>);
-                    let doDom = (<div style={{fontSize: "20px"}}>
-                        {
-                            orderState === 1 ? <div style={{fontSize: "26px"}}>
-                                {
-                                    payWayArr.map(way => <span><IconFont key={way} type={`icon-${way}`}/></span>)
-                                }
-                            </div> : orderState === 3 ? <Popconfirm
-                                title="該当注文の商品は全て届きましたか？"
-                                icon={<Icon type="question-circle-o" style={{color: 'red'}}/>}
-                                onConfirm={() => this.receiveConfirm(orderNo)}
-                                okText="はい"
-                                cancelText="いいえ"
-                            >
-                                <Button type="dashed" shape="circle" icon="file-protect"/>
-                            </Popconfirm> : null
-                        }
-                        <Popconfirm
-                            title="注文をキャンセルしますか？"
-                            icon={<Icon type="question-circle-o" style={{color: 'red'}}/>}
-                            onConfirm={null}
-                            okText="はい"
-                            cancelText="いいえ"
-                        >
-                            <Button type="danger" ghost shape="circle" icon="close"/>
-                        </Popconfirm>
-                    </div>);
                     dataSource.push({
                         key: skuId,
                         img: (
@@ -167,11 +185,6 @@ export default class OrderGoodsList extends Component {
                                 </div>
                             </div>
                         ),
-                        // attrs: (
-                        //     <div className="cart-attrs-content">
-                        //         {attrDom.map(attr => attr)}
-                        //     </div>
-                        // ),
                         price: (
                             <div className="cart-price-content">
                                 {
@@ -182,22 +195,21 @@ export default class OrderGoodsList extends Component {
                         ),
                         amount: amount,
                         goodsId: (
-                            orderState === 4 ? <div>
+                            orderState === 4 ? <Button.Group>
                                 <Tooltip title="コメント">
-                                    <Link target="_blank" to={`/goods?id=${goodsId}&skuId=${skuId}&orderNo=${orderNo}`}
+                                    <Link to={`/goods?id=${goodsId}&skuId=${skuId}&orderNo=${orderNo}`}
                                           onlyActiveOnIndex>
-                                        <Button type="dashed" shape="circle" icon="highlight"/>
+                                        <Button type='link' icon="highlight"/>
                                     </Link>
                                 </Tooltip>
                                 <Tooltip title="返品">
-                                    <Button type="dashed" shape="circle" icon="rollback"/>
+                                    <Button type='link' icon="rollback"/>
                                 </Tooltip>
-                            </div> : null
+                            </Button.Group> : null
 
                         ),
                         money: <p className="cart-sum">¥{dealPrice}</p>,
                         state: (<div>{stateDom}</div>),
-                        orderNo: (<div>{doDom}</div>)
                     });
                 });
                 result.push({
@@ -207,26 +219,26 @@ export default class OrderGoodsList extends Component {
                             rowKey="id"
                             className="cart-goods-table"
                             title={() => (
-                                <div className="shop-info">
+                                <div className="shop-info" style={{height: '33px', lineHeight: '33px'}}>
                                     <Icon type="shop" style={{margin: "0 8px", fontSize: 16}}/>
                                     <span style={{fontSize: 13}}>
                                                           <Link to={`/store?id=${storeId}`}
                                                                 onlyActiveOnIndex>{storeName}</Link>
                                                     </span>
                                     <span style={{fontSize: 13}}> 注文番号：{orderNo}</span>
+                                    {doDom}
                                 </div>
                             )}
                             showHeader={false}
                             columns={[
                                 {dataIndex: "img", width: "9%"},
-                                {dataIndex: "goodsName", width: "22%"},
-                                // {dataIndex: "attrs", width: "13.5%"},
-                                {dataIndex: "price", width: "12.5%"},
-                                {dataIndex: "amount", width: "12%"},
-                                {dataIndex: "goodsId", width: "13%"},
+                                {dataIndex: "goodsName", width: "35%"},
+                                {dataIndex: "price", width: "15%"},
+                                {dataIndex: "amount", width: "13%"},
+                                {dataIndex: "goodsId", width: "18%"},
                                 {
                                     dataIndex: "money",
-                                    width: "12%",
+                                    width: "13%",
                                     className: "verticalAlignCenter",
                                     render: (value, row, index) => {
                                         return {
@@ -239,7 +251,6 @@ export default class OrderGoodsList extends Component {
                                 },
                                 {
                                     dataIndex: "state",
-                                    width: "12%",
                                     className: "verticalAlignCenter",
                                     render: (value, row, index) => {
                                         return {
@@ -249,19 +260,7 @@ export default class OrderGoodsList extends Component {
                                             },
                                         };
                                     }
-                                },
-                                {
-                                    dataIndex: "orderNo",
-                                    className: "verticalAlignCenter",
-                                    render: (value, row, index) => {
-                                        return {
-                                            children: value,
-                                            props: {
-                                                rowSpan: !index ? goodsList.length : 0
-                                            },
-                                        };
-                                    }
-                                },
+                                }
                             ]}
                             dataSource={dataSource}
                             pagination={false}
@@ -280,10 +279,14 @@ export default class OrderGoodsList extends Component {
                 const {
                     searchParam: {orderNo}
                 } = new UrlUtil(window.location);
-                browserHistory.push({
-                    pathname: '/order/comment',
-                    search: `?orderNo=${orderNo}`
-                });
+                if (orderNo) {
+                    browserHistory.push({
+                        pathname: '/order/comment',
+                        search: `?orderNo=${orderNo}`
+                    });
+                } else if (this.props.call) {
+                    this.props.call();
+                }
             }
         })
         return undefined;
@@ -296,14 +299,12 @@ export default class OrderGoodsList extends Component {
                 {
                     title: (
                         <div className="cart-table-head">
-                            <span style={{width: "32%"}}>お宝物</span>
-                            {/*<span style={{width: "14%"}}>品物属性</span>*/}
-                            <span style={{width: "12%"}}>単価</span>
-                            <span style={{width: "12%"}}>数量</span>
-                            <span style={{width: "13%"}}>単品操作</span>
-                            <span style={{width: "12%"}}>小計</span>
-                            <span style={{width: "12%"}}>状態</span>
-                            <span>操作</span>
+                            <span style={{width: "42%"}}>お宝物</span>
+                            <span style={{width: "13%"}}>単価</span>
+                            <span style={{width: "13%"}}>数量</span>
+                            <span style={{width: "15%"}}>単品操作</span>
+                            <span style={{width: "10%"}}>小計</span>
+                            <span>状態</span>
                         </div>
                     ),
                     dataIndex: "goodsTable"

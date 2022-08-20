@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Breadcrumb, Button, Descriptions, Input, message, Upload, Radio, Form} from "antd";
+import {Button, Descriptions, Input, message, Upload, Radio, Form} from "antd";
 import FetchUtil from "../../utils/FetchUtil";
 import {browserHistory} from "react-router";
 
@@ -104,9 +104,6 @@ class PersonalInfo extends Component {
         const {avatarUpdateFlag, userInfo, updateFlag, submitting, newUserInfo} = this.state;
         const {nickName, account, accountType, avatar, gender} = userInfo;
         return <main>
-            <Breadcrumb>
-                <Breadcrumb.Item>個人情報</Breadcrumb.Item>
-            </Breadcrumb>
             <Form onSubmit={e => {
                 e.preventDefault();
                 this.submitUserInfo();

@@ -54,7 +54,7 @@ export default class AddressForm extends Component {
         return flag;
     }
 
-    sumitAddress(address) {
+    submitAddress(address) {
         if (!this.validation()) {
             return;
         }
@@ -69,7 +69,7 @@ export default class AddressForm extends Component {
         const {name, phone, provinceCode, cityCode, districtCode, detailedAddress} = address;
         const {provinceList, cityList, districtList} = Region;
         return <Drawer
-            title="地址"
+            title="アドレス"
             placement="left"
             width={720}
             onClose={() => this.onClose()}
@@ -79,21 +79,24 @@ export default class AddressForm extends Component {
             <Form layout="vertical">
                 <Row gutter={16}>
                     <Col span={12}>
-                        <Form.Item label="姓名" hasFeedback validateStatus={validateStatus.name}>
-                            <Input placeholder="请输入姓名" value={name}
+                        <Form.Item label="お名前" hasFeedback validateStatus={validateStatus.name}>
+                            <Input placeholder="お名前をご入力下さい" value={name}
                                    maxLength={32}
                                    onChange={({target: {value}}) => {
-                                       address.name = value.trim();
+                                       address.name = value;
                                        validateStatus['name'] = !!address.name ? 'success' : 'error';
                                        this.setState({address, validateStatus});
                                    }}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
-                        <Form.Item label="电话" hasFeedback validateStatus={validateStatus.phone}>
-                            <Input placeholder="请输入电话" value={phone}
+                        <Form.Item label="お電話" hasFeedback validateStatus={validateStatus.phone}>
+                            <Input placeholder="お電話をご入力下さい" value={phone}
                                    maxLength={16}
                                    onChange={({target: {value}}) => {
+                                       if (isNaN(value)) {
+                                           return;
+                                       }
                                        address.phone = value.trim();
                                        validateStatus['phone'] = !!address.phone ? 'success' : 'error';
                                        this.setState({address, validateStatus});
@@ -103,8 +106,8 @@ export default class AddressForm extends Component {
                 </Row>
                 <Row gutter={16}>
                     <Col span={8}>
-                        <Form.Item label="省" hasFeedback validateStatus={validateStatus.provinceCode}>
-                            <Select placeholder="请选择省" value={provinceCode}
+                        <Form.Item label="都道府県" hasFeedback validateStatus={validateStatus.provinceCode}>
+                            <Select placeholder="都道府県をお選び下さい" value={provinceCode}
                                     onChange={(value, option) => {
                                         address.provinceCode = value;
                                         address.province = option.props.children;
@@ -124,7 +127,7 @@ export default class AddressForm extends Component {
                     </Col>
                     <Col span={8}>
                         <Form.Item label="市" hasFeedback validateStatus={validateStatus.cityCode}>
-                            <Select placeholder="请选择市" value={cityCode}
+                            <Select placeholder="市をお選び下さい" value={cityCode}
                                     onChange={(value, option) => {
                                         address.cityCode = value;
                                         address.city = option.props.children;
@@ -142,7 +145,7 @@ export default class AddressForm extends Component {
                     </Col>
                     <Col span={8}>
                         <Form.Item label="区" hasFeedback validateStatus={validateStatus.districtCode}>
-                            <Select placeholder="请选择区" value={districtCode}
+                            <Select placeholder="区をお選び下さい" value={districtCode}
                                     onChange={(value, option) => {
                                         address.districtCode = value;
                                         address.district = option.props.children;
@@ -157,11 +160,11 @@ export default class AddressForm extends Component {
                 </Row>
                 <Row gutter={16}>
                     <Col span={24}>
-                        <Form.Item label="详细地址" hasFeedback validateStatus={validateStatus.detailedAddress}>
-                            <Input.TextArea rows={4} placeholder="请输入详细地址" value={detailedAddress}
+                        <Form.Item label="詳細住所" hasFeedback validateStatus={validateStatus.detailedAddress}>
+                            <Input.TextArea rows={4} placeholder="詳細住所をご入力下さい" value={detailedAddress}
                                             maxLength={128}
                                             onChange={({target: {value}}) => {
-                                                address.detailedAddress = value.trim();
+                                                address.detailedAddress = value;
                                                 validateStatus['detailedAddress'] = !!address.detailedAddress ? 'success' : 'error';
                                                 this.setState({address, validateStatus});
                                             }}/>
@@ -181,8 +184,8 @@ export default class AddressForm extends Component {
                     textAlign: 'right',
                 }}
             >
-                <Button onClick={() => this.onClose()} style={{marginRight: 8}}>取消</Button>
-                <Button type="primary" onClick={() => this.sumitAddress(address)}> 保存</Button>
+                <Button onClick={() => this.onClose()} style={{marginRight: 8}}>取消し</Button>
+                <Button type="primary" onClick={() => this.submitAddress(address)}>セーブ</Button>
             </div>
         </Drawer>
     }
