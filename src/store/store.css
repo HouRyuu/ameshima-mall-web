@@ -32,8 +32,8 @@
 
 .storeInfo-warp .shopdsr-item {
   color: #999;
-  width: 36px;
   line-height: 50px;
+  margin-right: 8px;
 }
 
 .storeInfo-warp .shopdsr-item > div {
@@ -61,7 +61,7 @@
 
 .store-warp .promote-line {
   height: 140px;
-  background: url(https://gdp.alicdn.com/imgextra/i2/1806053478/O1CN01GnZ7Ha1bYy2jD8PVk_!!1806053478.jpg)
+  background: url('https://gdp.alicdn.com/imgextra/i2/1806053478/O1CN01GnZ7Ha1bYy2jD8PVk_!!1806053478.jpg')
     no-repeat 50% 5%;
 }
 

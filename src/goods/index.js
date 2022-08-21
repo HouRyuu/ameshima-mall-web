@@ -8,7 +8,7 @@ import {
     Tabs,
     Descriptions,
     Button,
-    BackTop, List, Comment, Pagination, Empty, Tooltip
+    BackTop, List, Comment, Pagination, Empty, Tooltip, Result
 } from "antd";
 import IndexHead from "../index/indexHead";
 import StoreSearch from "../store/StoreSearch";
@@ -89,6 +89,7 @@ export default class GoodsIndex extends Component {
                 this.getGoodsInfo(goodsComment.goodsId);
                 this.evaluatePage(goodsComment.goodsId, 1, pageSize);
                 this.setState({showEvaluateForm: false});
+                window.history.replaceState(null, null, `/goods?id=${goodsComment.goodsId}`)
             },
             complete: () => this.setState({commentSubmitting: true})
         })
@@ -177,7 +178,11 @@ export default class GoodsIndex extends Component {
                 <Layout>
                     <Content>
                         {!goods ? (
-                            "商品不存在"
+                            <Result
+                                status="404"
+                                title="404"
+                                subTitle="申し訳ない。商品の販売は停止しました。"
+                            />
                         ) : (
                             <Layout>
                                 <Header className="search-warp">
@@ -198,13 +203,13 @@ export default class GoodsIndex extends Component {
                                             <Col span={4} offset={2}>
                                                 <Card title={name}>
                                                     <div className="storeInfo-warp">
-                                                        <div style={{border: "none"}}>
+                                                        <div style={{border: "none", paddingLeft: '13px'}}>
                                                             <div className="shopdsr-item">
-                                                                <div className="shopdsr-title">描述</div>
+                                                                <div className="shopdsr-title">記述</div>
                                                                 <div className="shopdsr-score">{descScore}</div>
                                                             </div>
                                                             <div className="shopdsr-item">
-                                                                <div className="shopdsr-title">服务</div>
+                                                                <div className="shopdsr-title">サービス</div>
                                                                 <div className="shopdsr-score">
                                                                     {serviceScore}
                                                                 </div>
@@ -220,11 +225,11 @@ export default class GoodsIndex extends Component {
                                                     <p>
                                                         <Link to={`/store?id=${goods.storeId}`} onlyActiveOnIndex>
                                                             <Button size="small" type="primary">
-                                                                进店逛逛
+                                                                店に入る
                                                             </Button>
                                                         </Link>
                                                         <Button size="small" style={{marginLeft: 8}}>
-                                                            收藏店铺
+                                                            店を収蔵
                                                         </Button>
                                                     </p>
                                                 </Card>
@@ -232,8 +237,8 @@ export default class GoodsIndex extends Component {
                                             <Col span={18}>
                                                 <Tabs className="goodsDetail-tab" size="large"
                                                       defaultActiveKey={!showEvaluateForm ? "1" : "2"}>
-                                                    <TabPane tab="商品详情" key="1">
-                                                        <Descriptions title="产品参数">
+                                                    <TabPane tab="商品情報" key="1">
+                                                        <Descriptions title="商品の詳細">
                                                             {params.map(({paramName, paramValue}) => (
                                                                 <Descriptions.Item
                                                                     key={paramName}
@@ -257,7 +262,7 @@ export default class GoodsIndex extends Component {
                                                     <TabPane
                                                         tab={
                                                             <div>
-                                                                累计评价
+                                                                累計評判
                                                                 <span
                                                                     style={{
                                                                         display: "inline-block",

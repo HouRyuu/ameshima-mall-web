@@ -47,7 +47,7 @@ export default class GoodsInfo extends Component {
      * @param {*} attrArray 当前已选属性数组
      * @return 可选属性set
      */
-    filterSelectbleAttr(attrArray = []) {
+    filterSelectableAttr(attrArray = []) {
         const {skus} = this.props;
         let attrsTmp, attrArray1, attrArray2;
         // 遍历已选属性，里层遍历sku属性，可选属性为当前已选属性所在行中的sku属性
@@ -114,7 +114,7 @@ export default class GoodsInfo extends Component {
             marketPrice: goods.marketPrice,
             quantity: goods.quantity
         }
-        this.setState({attrSet: this.filterSelectbleAttr(attsArray), curSku});
+        this.setState({attrSet: this.filterSelectableAttr(attsArray), curSku});
     }
 
     findProvinces() {
@@ -266,7 +266,7 @@ export default class GoodsInfo extends Component {
                     <CoverImg coverImgs={coverImgs}/></Col>
                 <Col span={11}>
                     <div className="goodsName">{name}</div>
-                    {simpleDesc ? < p className="goodsDesc"> {simpleDesc} </p> : null}
+                    {simpleDesc ? <p className="goodsDesc"> {simpleDesc} </p> : null}
                     {
                         marketPrice === price ? (<div className="goodsPrice-warp">
                                 <Row type="flex" align="middle">
@@ -292,7 +292,7 @@ export default class GoodsInfo extends Component {
                         style={{marginBottom: 10, borderBottom: "1px solid #c9c9c9"}}>
                         <Col span={3}>送料</Col>
                         <Col span={21}>
-                            {location} から
+                            {location}&nbsp;から
                             <Cascader
                                 fieldNames={{label: "regionName", value: "regionCode"}}
                                 defaultValue={regionCode}
@@ -335,7 +335,6 @@ export default class GoodsInfo extends Component {
                         <Col span={4}>
                             <InputNumber
                                 min={1}
-                                max={quantity}
                                 value={goodsCount > quantity ? quantity : goodsCount}
                                 onChange={value => {
                                     const {curSku} = this.state;
@@ -352,27 +351,24 @@ export default class GoodsInfo extends Component {
                         <Col offset={1}
                              span={4}
                              style={{color: "#878787", fontSize: 12}}>
-                            在庫 {quantity} 件
+                            在庫 {quantity} 点
                         </Col>
                     </Row>
                     {quantity ? (<Row className="bugGoods-warp">
                         <Col offset={3}
                              span={4}>
-                            <Button disabled={!id} size="large" onClick={() => this.toBuy()}>今すぐ買う</Button>
+                            <Button disabled={!id} onClick={() => this.toBuy()}>今すぐ買う</Button>
                         </Col>
                         <Col offset={1} span={4}>
                             <Button disabled={!id || addDis}
                                     type="danger"
-                                    size="large"
                                     onClick={() => this.addCart()}>
                                 カートに入れる
                             </Button>
                         </Col>
                     </Row>) : (<Row className="bugGoods-warp">
                         <Col offset={3} span={4}>
-                            <Button disabled size="large">
-                                売り切れ
-                            </Button>
+                            <Button disabled>売り切れ</Button>
                         </Col>
                     </Row>)}
                 </Col>

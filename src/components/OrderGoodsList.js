@@ -131,7 +131,8 @@ export default class OrderGoodsList extends Component {
                                        price,
                                        marketPrice,
                                        amount,
-                                       freight
+                                       freight,
+                                       state
                                    }) => {
                     totalFreight += freight;
                     const attrObj = JSON.parse(attrsJson);
@@ -187,15 +188,15 @@ export default class OrderGoodsList extends Component {
                         ),
                         price: (
                             <div className="cart-price-content">
+                                <span>¥{price}</span>
                                 {
                                     price !== marketPrice ? <span>¥{marketPrice}</span> : null
                                 }
-                                <span>¥{price}</span>
                             </div>
                         ),
                         amount: amount,
                         goodsId: (
-                            orderState === 4 ? <Button.Group>
+                            state === 4 ? <Button.Group>
                                 <Tooltip title="コメント">
                                     <Link to={`/goods?id=${goodsId}&skuId=${skuId}&orderNo=${orderNo}`}
                                           onlyActiveOnIndex>

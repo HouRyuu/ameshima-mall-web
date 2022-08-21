@@ -63,7 +63,7 @@ export default class Login extends Component {
                                                 message: "携帯番号を入力してください"
                                             },
                                             {
-                                                pattern: /^1[3-8]\d{9}$/,
+                                                pattern: /^\d{1,32}$/,
                                                 message: "携帯番号が違います"
                                             }
                                         ]
@@ -130,7 +130,7 @@ export default class Login extends Component {
                                 </Col>
                             </Row>
                             <div className="more-sign">
-                                <h6>SNS口座で登録</h6>
+                                <h6>外部サイトIDでログイン</h6>
                                 <ul>
                                     <li>
                                         <a

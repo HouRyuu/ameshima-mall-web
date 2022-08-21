@@ -4,15 +4,6 @@ import {Link} from "react-router";
 import {Row, Col, Menu, Dropdown, Icon, message} from "antd";
 import FetchUtil from "../utils/FetchUtil";
 
-const myTmallMenu = (
-    <Menu className="head-menu">
-        <Menu.Item>
-            <Link target="_blank" to="/manage/order" onlyActiveOnIndex>
-                已买到的宝贝
-            </Link>
-        </Menu.Item>
-    </Menu>
-);
 export default class IndexHead extends Component {
     constructor(props) {
         super(props);
@@ -120,7 +111,30 @@ export default class IndexHead extends Component {
                 <Row type="flex" justify="space-between">
                     <Col span={5}>{this.renderLoginInfo()}</Col>
                     <Col span={3}>
-                        <Dropdown overlay={myTmallMenu}>
+                        <Dropdown overlay={
+                            <Menu className="head-menu">
+                                <Menu.Item>
+                                    <Link to={
+                                        loginInfo
+                                            ? "/manage/order"
+                                            : `/login?redirectURL=${escape(
+                                                window.location.origin + "/manage/order"
+                                            )}`
+                                    } onlyActiveOnIndex>
+                                        注文履歴
+                                    </Link>
+                                    <Link to={
+                                        loginInfo
+                                            ? "/manage/address"
+                                            : `/login?redirectURL=${escape(
+                                                window.location.origin + "/manage/address"
+                                            )}`
+                                    } onlyActiveOnIndex>
+                                        アドレス帳
+                                    </Link>
+                                </Menu.Item>
+                            </Menu>
+                        }>
                             <Link className="ant-dropdown-link"
                                   to={
                                       loginInfo

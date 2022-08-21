@@ -26,7 +26,8 @@ export default class OrderConfirm extends Component {
         storeList: [],
         freightMap: {},
         totalPrice: 0,
-        orderTag: false
+        orderTag: false,
+        orderSubmitting: false
     }
 
     findAddressList() {
@@ -110,7 +111,7 @@ export default class OrderConfirm extends Component {
         FetchUtil.post({
             url: `/order/create/${address.cityCode}`,
             data: {address: JSON.stringify(address)},
-            sendBefore: () => this.setState({orderTag: false}),
+            sendBefore: () => this.setState({orderSubmitting: true}),
             success: ({data: orderNo}) => {
                 if (orderNo) {
                     const waitOrder = setInterval(() => {
@@ -118,7 +119,7 @@ export default class OrderConfirm extends Component {
                             url: `/order/created/${orderNo}`,
                             success: ({data: state}) => {
                                 if (state) {
-                                    this.setState({orderTag: false}, () => {
+                                    this.setState({orderSubmitting: false}, () => {
                                         browserHistory.push({
                                             pathname: '/order/confirmDone',
                                             search: `?orderNo=${orderNo}`
@@ -128,7 +129,7 @@ export default class OrderConfirm extends Component {
                                 }
                             },
                             error: ({errMsg}) => {
-                                this.setState({orderTag: true})
+                                this.setState({orderSubmitting: false})
                                 message.error(errMsg);
                                 clearInterval(waitOrder);
                             }
@@ -138,7 +139,7 @@ export default class OrderConfirm extends Component {
             },
             error: ({errMsg}) => {
                 message.error(errMsg);
-                this.setState({orderTag: true})
+                this.setState({orderSubmitting: false})
             }
         })
     }
@@ -148,7 +149,7 @@ export default class OrderConfirm extends Component {
         if (!storeList || !storeList.length) return [];
         let skuFreight;
         const {freightMap, seletedAddrIndex, addressList} = this.state;
-        if (freightMap && seletedAddrIndex > -1) {
+        if (freightMap && addressList.length && seletedAddrIndex > -1) {
             skuFreight = freightMap[addressList[seletedAddrIndex].cityCode];
         }
         storeList.forEach(({storeId, storeName, goodsState, goodsList}) => {
@@ -193,7 +194,7 @@ export default class OrderConfirm extends Component {
                     attrs: (
                         <div className="cart-attrs-content">
                             {attrDom.map(attr => attr)}
-                            <div>在庫{quantity}</div>
+                            <div>在庫{quantity}点</div>
                         </div>
                     ),
                     price:
@@ -254,7 +255,7 @@ export default class OrderConfirm extends Component {
             data: address,
             success: ({data}) => {
                 message.info('セーブ完了^_^');
-                const {addressList, seletedAddrIndex} = this.state;
+                const {storeList, addressList, seletedAddrIndex} = this.state;
                 if (!address.id) {
                     address.id = data;
                     address.isDefault = addressList.length === 0 ? 1 : 0;
@@ -262,7 +263,13 @@ export default class OrderConfirm extends Component {
                 } else {
                     addressList[seletedAddrIndex] = address;
                 }
-                this.setState({addressList, addrFormFlag: false});
+                this.findFreight(address.cityCode)
+                this.setState({
+                    addressList,
+                    seletedAddrIndex: addressList.length - 1,
+                    addrFormFlag: false,
+                    orderTag: storeList && storeList.length
+                });
             }
         })
     }
@@ -276,7 +283,8 @@ export default class OrderConfirm extends Component {
             addrFormFlag,
             storeList,
             totalPrice,
-            orderTag
+            orderTag,
+            orderSubmitting
         } = this.state;
         let goodsCount = 0; // 选中SKU数量
         if (storeList.length) {
@@ -287,7 +295,7 @@ export default class OrderConfirm extends Component {
             })
         }
         return (
-            <Spin size={"large"} tip="注文中" spinning={!orderTag}>
+            <Spin size={"large"} tip="注文中" spinning={orderSubmitting}>
                 <AddressForm
                     visible={addrFormFlag}
                     address={editAddr}
@@ -298,9 +306,7 @@ export default class OrderConfirm extends Component {
                         <h3 style={{margin: '10px', fontWeight: 'bold'}}>お届け住所</h3>
                         {addressList.length ?
                             <div className='address-list'
-                                 style={!showAllAddr ? {height: '113px'} : null}
-                            >
-
+                                 style={!showAllAddr ? {height: '113px'} : null}>
                                 {addressList.map((item, index) => {
                                     const {
                                         name,
@@ -333,7 +339,7 @@ export default class OrderConfirm extends Component {
                             <Empty description="配送先を配置していません"/>
                         }
                         <Row>
-                            <Col span={3}　offset={21}>
+                            <Col span={3} offset={21}>
                                 {
                                     !addressList.length || showAllAddr ?
                                         <Button type="link" onClick={() => this.openAddrEdit({})}>配送先を追加</Button> :
@@ -370,9 +376,12 @@ export default class OrderConfirm extends Component {
                                     <Col span={5} offset={11} style={{textAlign: 'right'}}>
                                         商品<span className="selected-count">{goodsCount}</span>点
                                     </Col>
-                                    <Col span={5} style={{textAlign: 'right'}}>
-                                        合計：{" "}<span className="total-price">¥{totalPrice}</span>(税込)
-                                    </Col>
+                                    {
+                                        orderTag ? <Col span={5} style={{textAlign: 'right'}}>
+                                            合計：{" "}<span className="total-price">¥{totalPrice}</span>(税込)
+                                        </Col> : null
+                                    }
+
                                     <Col span={3} style={{textAlign: 'center'}}>
                                         <Button type="danger" disabled={!orderTag}
                                                 onClick={() => this.order()}>レジに進む</Button>

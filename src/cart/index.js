@@ -211,7 +211,7 @@ export default class CartIndex extends Component {
                     attrs: (
                         <div className="cart-attrs-content">
                             {attrDom.map(attr => attr)}
-                            <div>在庫{quantity}</div>
+                            <div>在庫{quantity}点</div>
                         </div>
                     ),
                     price:

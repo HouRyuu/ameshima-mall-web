@@ -79,7 +79,7 @@ class RegisterForm extends Component {
             <div className="login-page">
                 <Row className="login-logo-row">
                     <Col span={6} offset={4}>
-                        <Link to="/">
+                        <Link to="/" onlyActiveOnIndex>
                             <img
                                 alt="トップページ"
                                 src="//img.alicdn.com/tfs/TB1_Gn8RXXXXXXqaFXXXXXXXXXX-380-54.png"
@@ -100,7 +100,7 @@ class RegisterForm extends Component {
                                                 message: "携帯番号を入力してください"
                                             },
                                             {
-                                                pattern: /^1[3-8]\d{9}$/,
+                                                pattern: /^\d{1,32}$/,
                                                 message: "携帯番号が違います"
                                             }
                                         ]
