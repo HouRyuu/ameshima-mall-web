@@ -82,7 +82,7 @@ class RegisterForm extends Component {
                         <Link to="/" onlyActiveOnIndex>
                             <img
                                 alt="トップページ"
-                                src="//img.alicdn.com/tfs/TB1_Gn8RXXXXXXqaFXXXXXXXXXX-380-54.png"
+                                src="/LOGO.png"
                             />
                         </Link>
                     </Col>

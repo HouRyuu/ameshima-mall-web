@@ -37,7 +37,7 @@ export default class Manage extends Component {
                             <img
                                 className="logo"
                                 alt="トップページ"
-                                src="//img.alicdn.com/tfs/TB1_Gn8RXXXXXXqaFXXXXXXXXXX-380-54.png"
+                                src="/LOGO.png"
                             />
                         </Link>
                     </Col>
@@ -65,7 +65,7 @@ export default class Manage extends Component {
                     <Content className="manage-content">{this.props.children}</Content>
                 </Layout>
             </Content>
-            <Footer style={{textAlign: 'center'}}>Ant Design ©2018 Created by Ant UED</Footer>
+            <Footer style={{textAlign: 'center'}}>雨島MALL ©2022 Created by 雨島</Footer>
         </Layout>;
     }
 }

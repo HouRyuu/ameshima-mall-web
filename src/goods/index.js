@@ -179,8 +179,8 @@ export default class GoodsIndex extends Component {
                     <Content>
                         {!goods ? (
                             <Result
-                                status="404"
-                                title="404"
+                                status="403"
+                                title="403"
                                 subTitle="申し訳ない。商品の販売は停止しました。"
                             />
                         ) : (

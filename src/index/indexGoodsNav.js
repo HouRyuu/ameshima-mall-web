@@ -49,10 +49,10 @@ export default class IndexGoodsNav extends Component {
         return (
             <div className="goods-nav-warp">
                 <img
-                    alt="理想生活上天猫"
-                    src="https://img.alicdn.com/tfs/TB1MaLKRXXXXXaWXFXXXXXXXXXX-480-260.png"
+                    alt="雨島で理想的な生活を"
+                    src="/LOGO.png"
                     width="240"
-                    height="129"
+                    style={{margin: "30px 0"}}
                 />
                 <div className="goods-nav-head">
                     <Icon type="unordered-list"/>

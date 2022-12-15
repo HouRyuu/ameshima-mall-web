@@ -4,27 +4,30 @@ class Region {
     provinceList = [];
     cityList = [];
     districtList = [];
+
     constructor() {
         this.initRegion(this.setProvinceList);
     }
+
     setProvinceList = (code, parentCode, provinceList) => {
         this.provinceList = provinceList;
     }
     setCityList = (provinceCode, parentCode, cityList) => {
-        this.provinceList.find(({ regionCode }) => `${regionCode}` === `${provinceCode}`).children = cityList;
+        this.provinceList.find(({regionCode}) => `${regionCode}` === `${provinceCode}`).children = cityList;
         this.cityList = cityList;
     }
     setDistrictList = (code, parentCode, districtList, outCallback) => {
-        this.provinceList.find(({ regionCode }) => `${regionCode}` === `${parentCode}`)
-            .children.find(({ regionCode }) => `${regionCode}` === `${code}`).children = districtList;
+        this.provinceList.find(({regionCode}) => `${regionCode}` === `${parentCode}`)
+            .children.find(({regionCode}) => `${regionCode}` === `${code}`).children = districtList;
         this.districtList = districtList;
         if (outCallback) outCallback();
     }
+
     hasChildren(code, parentCode, level) {
         if (level < 2) {
             return false;
         }
-        const province = this.provinceList.find(({ regionCode }) =>
+        const province = this.provinceList.find(({regionCode}) =>
             `${regionCode}` === (level === 2 ? `${code}` : `${parentCode}`)
         );
         let result = !!province && !!province.children;
@@ -35,11 +38,12 @@ class Region {
             }
             return result;
         }
-        const city = province.children.find(({ regionCode }) => `${regionCode}` === `${code}`);
+        const city = province.children.find(({regionCode}) => `${regionCode}` === `${code}`);
         result = !!city && !!city.children;
         if (result) this.districtList = city.children;
         return result;
     }
+
     initRegion(inCallback, code = 999999, parentCode, level = 1, outCallback) {
         if (level < 4) {
             if (this.hasChildren(code, parentCode, level)) {
@@ -48,7 +52,7 @@ class Region {
             }
             FetchUtil.get({
                 url: `/basic/region/${code}/findByParent`,
-                success: ({ data }) => {
+                success: ({data}) => {
                     if (inCallback)
                         inCallback(code, parentCode, data, outCallback);
                     level++;
@@ -65,4 +69,4 @@ class Region {
     }
 }
 
-export default Region = new Region();
+export default Region;

@@ -74,7 +74,7 @@ export default class SearchIndex extends Component {
                       <img
                         className="tmall-logo"
                         alt="トップページ"
-                        src="//img.alicdn.com/tfs/TB1_Gn8RXXXXXXqaFXXXXXXXXXX-380-54.png"
+                        src="/LOGO.png"
                       />
                     </Link>
                   </Col>
@@ -83,7 +83,7 @@ export default class SearchIndex extends Component {
                       className="global-search"
                       size="large"
                       style={{ width: "100%" }}
-                      placeholder="検索 天猫 商品/ブランド/店舗"
+                      placeholder="検索 雨島 商品/ブランド/店舗"
                       defaultValue={queryParam.word}
                       onSearch={value => {
                         value = value.trim();

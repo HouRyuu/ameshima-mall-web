@@ -5,6 +5,7 @@ import {LocaleProvider} from "antd";
 import zh_CN from "antd/lib/locale-provider/zh_CN";
 import Index from "./index/";
 import Error from "./error/Error";
+import NotFound from "./error/NotFound";
 import Login from "./login/";
 import ForgetPwd from "./login/ForgetPwd";
 import AliPayLogin from "./login/alipay";
@@ -51,6 +52,7 @@ ReactDOM.render(
                 <Route path="/order/receiveConfirm" component={OrderReceiveConfirm}/>
                 <Route path="/order/comment" component={OrderComment}/>
             </Route>
+            <Route path="*" component={NotFound}/>
         </Router>
     </LocaleProvider>,
     document.getElementById("root")
@@ -59,4 +61,4 @@ ReactDOM.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.register();

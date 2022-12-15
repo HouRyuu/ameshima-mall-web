@@ -88,7 +88,7 @@ class FetchUtil {
             if (complete && completeFlag) {
                 complete(undefined, e);
             }
-            browserHistory.push({pathname: "/error"})
+            // browserHistory.push({pathname: "/error"})
         });
     }
 

@@ -62,7 +62,7 @@ export default class IndexHead extends Component {
         if (loginInfo == null) {
             return (
                 <p className="sn-login-info">
-                    <em>ニヤー天猫へようこそ</em>
+                    <em>ニヤー雨島へようこそ</em>
                     <Link
                         className="sn-login"
                         to={`/login?redirectURL=${escape(window.location)}`}
@@ -144,7 +144,7 @@ export default class IndexHead extends Component {
                                           )}`
                                   }
                                   onlyActiveOnIndex>
-                                マイ天猫
+                                マイ雨島
                                 <Icon type="down"/>
                             </Link>
                         </Dropdown>
