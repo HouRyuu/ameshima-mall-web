@@ -123,6 +123,10 @@ export default class IndexHead extends Component {
                                     } onlyActiveOnIndex>
                                         注文履歴
                                     </Link>
+
+
+                                </Menu.Item>
+                                <Menu.Item>
                                     <Link to={
                                         loginInfo
                                             ? "/manage/address"
@@ -164,6 +168,7 @@ export default class IndexHead extends Component {
                     </Col>
                 </Row>
             </div>
-        );
+        )
+            ;
     }
 }

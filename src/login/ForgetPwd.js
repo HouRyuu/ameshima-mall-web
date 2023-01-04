@@ -90,17 +90,19 @@ class ForgetForm extends Component {
                                         rules: [
                                             {
                                                 required: true,
-                                                message: "携帯番号を入力してください"
+                                                message: "メールアドレスを入力してください"
                                             },
                                             {
-                                                pattern: /^\d{1,32}$/,
-                                                message: "携帯番号が違います"
+                                                type: 'email',
+                                                message: "正しいメールアドレスを入力してください"
                                             }
                                         ]
                                     })(
                                         <Input
-                                            prefix={<Icon type="mobile"/>}
-                                            placeholder="携帯番号"
+                                            prefix={
+                                                <Icon type="mail"/>
+                                            }
+                                            placeholder="メールアドレス"
                                         />
                                     )}
                                 </Form.Item>
@@ -114,7 +116,7 @@ class ForgetForm extends Component {
                                             {
                                                 min: 6,
                                                 max: 32,
-                                                message: "長さは6かさ32までです"
+                                                message: "長さは6桁かさ32桁までです"
                                             },
                                             {
                                                 validator: (rule, value, callback) => {

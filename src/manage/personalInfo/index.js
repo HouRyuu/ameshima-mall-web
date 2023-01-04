@@ -120,7 +120,7 @@ class PersonalInfo extends Component {
                             )}
                         </Form.Item> : nickName}
                     </Descriptions.Item>
-                    <Descriptions.Item label="お電話">
+                    <Descriptions.Item label="メールアドレス">
                         {/*{updateFlag ? <Form.Item>
                             {getFieldDecorator('account', {
                                 rules: [{required: true, message: 'お電話を入力してください'},

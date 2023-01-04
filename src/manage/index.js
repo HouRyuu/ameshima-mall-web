@@ -5,15 +5,46 @@ import UrlUtil from "../utils/UrlUtil";
 import "antd/dist/antd.css";
 import './manage.css'
 import FetchUtil from "../utils/FetchUtil";
+import SubMenu from "antd/es/menu/SubMenu";
 
 const {Header, Content, Footer, Sider} = Layout;
 export default class Manage extends Component {
     defaultSelectedKeys = ['personalInfo'];
 
+    state = {
+        menuList: [{
+            menu: "個人情報",
+            menuUrl: "personalInfo"
+        }, {
+            menu: "注文履歴",
+            menuUrl: "order"
+        }, {
+            menu: "アドレス帳",
+            menuUrl: "address"
+        }, {
+            menu: "店舗管理",
+            childrenMenus: [{
+                menu: "店舗ページ",
+                menuUrl: "store"
+            }]
+        }]
+    }
+
     constructor(props) {
         super(props);
         const {pathname} = new UrlUtil(window.location);
         this.defaultSelectedKeys = [pathname[1]];
+    }
+
+    componentDidMount() {
+        this.findMenu();
+    }
+
+    findMenu() {
+        FetchUtil.get({
+            url: "/user/menu",
+            success: ({data: menuList}) => this.setState({menuList})
+        })
     }
 
     logout() {
@@ -29,6 +60,7 @@ export default class Manage extends Component {
     }
 
     render() {
+        const {menuList} = this.state;
         return <Layout>
             <Header className="header">
                 <Row>
@@ -57,9 +89,19 @@ export default class Manage extends Component {
                                 browserHistory.push(`/manage/${item.key}`);
                             }}
                         >
-                            <Menu.Item key="personalInfo">個人情報</Menu.Item>
-                            <Menu.Item key="order">注文履歴</Menu.Item>
-                            <Menu.Item key="address">アドレス帳</Menu.Item>
+                            {
+                                menuList.map(({ menu, menuUrl, childrenMenus}) => {
+                                    if (childrenMenus && childrenMenus.length) {
+                                        return <SubMenu title={menu}>
+                                            {childrenMenus.map(menuItem => {
+                                                return <Menu.Item key={menuItem.menuUrl} >{menuItem.menu}</Menu.Item>
+                                            })}
+                                        </SubMenu>
+                                    } else {
+                                        return <Menu.Item key={menuUrl}>{menu}</Menu.Item>
+                                    }
+                                })
+                            }
                         </Menu>
                     </Sider>
                     <Content className="manage-content">{this.props.children}</Content>

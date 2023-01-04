@@ -71,8 +71,9 @@ export default class AddressForm extends Component {
             visible,
             address,
             validateStatus,
-            region: {provinceList = [], cityList = [], districtList = []}
+            region
         } = this.state;
+        const {provinceList = [], cityList = [], districtList = []} = region;
         const {name, phone, provinceCode, cityCode, districtCode, detailedAddress} = address;
         return <Drawer
             title="アドレス"
@@ -122,7 +123,7 @@ export default class AddressForm extends Component {
                                         address.city = undefined;
                                         address.districtCode = undefined;
                                         address.district = undefined;
-                                        Region.initRegion(Region.setCityList, value, undefined, 2, () =>
+                                        region.initRegion(region.setCityList, value, undefined, 2, () =>
                                             this.setState({address, validateStatus})
                                         );
                                     }}>
@@ -140,7 +141,7 @@ export default class AddressForm extends Component {
                                         address.districtCode = undefined;
                                         address.district = undefined;
                                         validateStatus['cityCode'] = !!address.cityCode ? 'success' : 'error';
-                                        Region.initRegion(Region.setDistrictList, value, provinceCode, 3, () =>
+                                        region.initRegion(region.setDistrictList, value, provinceCode, 3, () =>
                                             this.setState({address, validateStatus})
                                         );
                                     }}>

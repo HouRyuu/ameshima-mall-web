@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import {Router, Route, browserHistory, IndexRoute} from "react-router";
 import {LocaleProvider} from "antd";
-import zh_CN from "antd/lib/locale-provider/zh_CN";
+import ja_JP from "antd/lib/locale-provider/ja_JP";
 import Index from "./index/";
 import Error from "./error/Error";
 import NotFound from "./error/NotFound";
@@ -25,9 +25,12 @@ import OrderPay from "./order/pay";
 import OrderReceiveConfirm from "./order/receiveConfirm";
 import OrderComment from "./order/comment";
 import * as serviceWorker from "./serviceWorker";
+import StoreManageIndex from "./manage/store";
+import StoreManageGoods from "./manage/store/Goods";
+import StoreManageOrder from "./manage/store/Order";
 
 ReactDOM.render(
-    <LocaleProvider locale={zh_CN}>
+    <LocaleProvider locale={ja_JP}>
         <Router history={browserHistory}>
             <Route path="/" component={Index}/>
             <Route path="/error" component={Error}/>
@@ -44,6 +47,9 @@ ReactDOM.render(
                 <Route path="/manage/personalInfo" component={PersonalInfo}/>
                 <Route path="/manage/order" component={Order}/>
                 <Route path="/manage/address" component={Address}/>
+                <Route path="/manage/store" component={StoreManageIndex}/>
+                <Route path="/manage/store/goods" component={StoreManageGoods}/>
+                <Route path="/manage/store/order" component={StoreManageOrder}/>
             </Route>
             <Route path="/order" component={OrderSubmit}>
                 <Route path="/order/confirm" component={OrderConfirm} key='confirm'/>
