@@ -34,7 +34,7 @@ class Region {
         if (!result || level === 2) {
             if (result) {
                 this.cityList = province.children;
-                this.districtList = this.cityList[0].children;
+                this.districtList = this.cityList.length ? this.cityList[0].children : [];
             }
             return result;
         }
@@ -46,8 +46,16 @@ class Region {
 
     initRegion(inCallback, code = 999999, parentCode, level = 1, outCallback) {
         if (level < 4) {
+            if (!code) {
+                if (outCallback) {
+                    outCallback()
+                }
+                return;
+            }
             if (this.hasChildren(code, parentCode, level)) {
-                if (outCallback) outCallback();
+                if (outCallback) {
+                    outCallback()
+                }
                 return;
             }
             FetchUtil.get({
@@ -58,8 +66,8 @@ class Region {
                     level++;
                     this.initRegion(
                         level === 2 ? this.setCityList : this.setDistrictList,
-                        data[0].regionCode,
-                        data[0].parentCode,
+                        data.length ? data[0].regionCode : null,
+                        data.length ? data[0].parentCode : null,
                         level,
                         outCallback
                     );

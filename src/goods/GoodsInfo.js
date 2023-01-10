@@ -49,7 +49,7 @@ export default class GoodsInfo extends Component {
      */
     filterSelectableAttr(attrArray = []) {
         const {skus} = this.props;
-        let attrsTmp, attrArray1, attrArray2;
+        let attrsTmp = [], attrArray1 = [], attrArray2 = [];
         // 遍历已选属性，里层遍历sku属性，可选属性为当前已选属性所在行中的sku属性
         // 如当前行未选择属性，则表示sku中所有属性都可选择
         // 从sku中筛选包含当前行已选属性，则该sku中所有属性可选

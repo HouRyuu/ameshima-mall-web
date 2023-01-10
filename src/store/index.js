@@ -50,7 +50,7 @@ export default class StoreIndex extends Component {
     }
 
     render() {
-        const {id, bannerGoods, promoteGoods} = this.state;
+        const {id, bannerGoods = [], promoteGoods = []} = this.state;
         return (
             <Layout className="store-warp">
                 <Header className="site-nav">
@@ -66,8 +66,8 @@ export default class StoreIndex extends Component {
                                     <StoreSearch id={id}/>
                                 </Header>
                                 <Content>
-                                    <GoodsBanner goodsList={bannerGoods}/>
-                                    <GoodsPromote goodsList={promoteGoods}/>
+                                    {bannerGoods.length ? <GoodsBanner goodsList={bannerGoods}/> : null}
+                                    {promoteGoods.length ? <GoodsPromote goodsList={promoteGoods}/> : null}
                                 </Content>
                             </Layout>
                         )}

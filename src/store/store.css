@@ -7,7 +7,7 @@
   padding: 10px;
 }
 
-.storeHead-warp .storeInfo-warp a {
+.storeHead-warp .storeInfo-warp em {
   font-size: 12px;
   font-family: "\5b8b\4f53";
   color: #333;
@@ -52,7 +52,8 @@
 
 .store-warp .storeBanner-warp .slick-track,
 .store-warp .storeBanner-warp .bannerImg {
-  height: 690px;
+  height: 600px;
+  margin: auto;
 }
 
 .store-warp .storePromote-warp {
@@ -76,6 +77,7 @@
 
 .store-warp .goodsGrid-warp .goodsGrid-img {
   max-height: 258px;
+  height: 258px;
 }
 
 .store-warp .promoteList-line {

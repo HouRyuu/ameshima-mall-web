@@ -17,11 +17,18 @@ import FileUtil from "../../utils/FileUtil";
 import FetchUtil from "../../utils/FetchUtil";
 
 const Option = Select.Option;
-export default class GoodsEdit extends Component {
+
+/**
+ * 商品の基本情報を編集
+ * @param goodsId
+ * @param visible 展示スイッチ
+ * @param isEdit 編集スイッチ
+ * @param onClose 閉じるコールバック
+ * @param saveCallback 保存成功のコールバック
+ */
+class GoodsEdit extends Component {
     state = {
         region: new Region(),
-        visible: false,
-        isEdit: false,
         bannerLoading: false,
         address: {},
         validateStatus: {},
@@ -40,32 +47,39 @@ export default class GoodsEdit extends Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        const {goodsId,isEdit} = nextProps;
-        this.setState({isEdit})
-        this.goodsInfo(goodsId);
+        if (nextProps.visible) {
+            this.goodsInfo(nextProps.goodsId);
+        }
         return true;
     }
 
     goodsInfo(goodsId) {
-        if (goodsId > 0) {
-            FetchUtil.get({
-                url: `/goods/store/${goodsId}/detail`,
-                success: ({data: goods}) => {
-                    const {
-                        categoryId,
-                        categoryId2,
-                        categoryId3
-                    } = goods;
-                    this.findCategoryList(categoryId, 2);
-                    this.findCategoryList(categoryId2, 3);
-                    this.findCategoryList(categoryId3, 4);
-                    this.setState({goods, visible: true});
-                    this.imgClassify(goods.imgList);
-                }
+        if (!goodsId) {
+            this.setState({
+                address: {},
+                validateStatus: {},
+                goods: {},
+                banner: [],
+                imgs: [],
+                detailImgs: []
             })
             return;
         }
-        this.setState({visible: false})
+        FetchUtil.get({
+            url: `/goods/store/${goodsId}/detail`,
+            success: ({data: goods}) => {
+                const {
+                    categoryId,
+                    categoryId2,
+                    categoryId3
+                } = goods;
+                this.findCategoryList(categoryId, 2);
+                this.findCategoryList(categoryId2, 3);
+                this.findCategoryList(categoryId3, 4);
+                this.setState({goods});
+                this.imgClassify(goods.imgList);
+            }
+        });
     }
 
     imgClassify(imgList = []) {
@@ -86,24 +100,33 @@ export default class GoodsEdit extends Component {
     }
 
     submitGoods() {
-        this.props.form.validateFields(err => {
+        this.props.form.validateFields(async err => {
             if (!err) {
                 const {
                     goods, banner, imgs, detailImgs
                 } = this.state;
                 const imgList = [];
                 if (imgs.length) {
-                    imgs.forEach(({url: imgUrl}) => {
-                        imgList.push({imgUrl, imgType: 13});
-                    })
+                    for (const file of imgs) {
+                        imgList.push({
+                            imgUrl: file.url ? file.url : await FileUtil.getBase64(file.originFileObj),
+                            imgType: 13
+                        });
+                    }
                 }
                 if (detailImgs.length) {
-                    detailImgs.forEach(({url: imgUrl}) => {
-                        imgList.push({imgUrl, imgType: 14});
-                    })
+                    for (const file of detailImgs) {
+                        imgList.push({
+                            imgUrl: file.url ? file.url : await FileUtil.getBase64(file.originFileObj),
+                            imgType: 14
+                        });
+                    }
                 }
                 if (banner.length) {
-                    imgList.push({imgUrl: banner[0].url, imgType: 16});
+                    imgList.push({
+                        imgUrl: banner[0].url ? banner[0].url : await FileUtil.getBase64(banner[0].originFileObj),
+                        imgType: 16
+                    });
                 }
                 goods.imgList = imgList;
                 FetchUtil.put({
@@ -182,10 +205,9 @@ export default class GoodsEdit extends Component {
     }
 
     render() {
+        const {isEdit = false, visible = false, onClose} = this.props;
         const {
             region,
-            visible,
-            isEdit,
             validateStatus,
             categoryList,
             categoryLevel2List,
@@ -204,15 +226,17 @@ export default class GoodsEdit extends Component {
             categoryId2,
             categoryId3,
             categoryId4,
+            skuId,
             name,
             simpleDesc,
             price,
             promoPrice,
             isShowBanner,
-            isPromote
+            isPromote,
+            skuList = []
         } = goods;
-        const {provinceList = [], cityList = [], districtList = []} = region;
-        const {provinceCode, cityCode, districtCode} = address;
+        const {provinceList = [], cityList = []} = region;
+        const {provinceCode, cityCode} = address;
         const categoryList2 = !!categoryLevel2List[categoryId] ? categoryLevel2List[categoryId] : [];
         const categoryList3 = !!categoryLevel3List[categoryId2] ? categoryLevel3List[categoryId2] : [];
         const categoryList4 = !!categoryLevel4List[categoryId3] ? categoryLevel4List[categoryId3] : [];
@@ -222,7 +246,7 @@ export default class GoodsEdit extends Component {
             placement="left"
             width={720}
             keyboard={false}
-            onClose={() => this.props.onClose()}
+            onClose={() => onClose()}
             visible={visible}
             bodyStyle={{paddingBottom: 80}}
         >
@@ -230,7 +254,7 @@ export default class GoodsEdit extends Component {
                 <Row gutter={16}>
                     <Col span={6}>
                         <Form.Item hasFeedback validateStatus={validateStatus.category}>
-                            <Select placeholder="カテゴリ" value={categoryId}
+                            <Select disabled={!isEdit} placeholder="カテゴリ" value={categoryId}
                                     onChange={(pid) => {
                                         goods.categoryId = pid;
                                         goods.categoryId2 = null;
@@ -246,7 +270,7 @@ export default class GoodsEdit extends Component {
                     </Col>
                     <Col span={6}>
                         <Form.Item hasFeedback validateStatus={validateStatus.category}>
-                            <Select placeholder="レベル2" value={categoryId2}
+                            <Select disabled={!isEdit} placeholder="レベル2" value={categoryId2}
                                     onChange={(pid) => {
                                         goods.categoryId2 = pid;
                                         goods.categoryId3 = null;
@@ -261,7 +285,7 @@ export default class GoodsEdit extends Component {
                     </Col>
                     <Col span={6}>
                         <Form.Item hasFeedback validateStatus={validateStatus.category}>
-                            <Select placeholder="レベル3" value={categoryId3}
+                            <Select disabled={!isEdit} placeholder="レベル3" value={categoryId3}
                                     onChange={(pid) => {
                                         goods.categoryId3 = pid;
                                         goods.categoryId4 = null;
@@ -275,7 +299,7 @@ export default class GoodsEdit extends Component {
                     </Col>
                     <Col span={6}>
                         <Form.Item hasFeedback validateStatus={validateStatus.category}>
-                            <Select placeholder="レベル4" value={categoryId4}
+                            <Select disabled={!isEdit} placeholder="レベル4" value={categoryId4}
                                     onChange={(pid) => {
                                         goods.categoryId4 = pid;
                                         this.setState({goods});
@@ -289,18 +313,18 @@ export default class GoodsEdit extends Component {
                 <Row gutter={16}>
                     <Col span={12}>
                         <Form.Item label="商品名" hasFeedback validateStatus={validateStatus.name}>
-                            <Input.TextArea rows={4} placeholder="商品詳細画面に表示" value={name}
+                            <Input.TextArea disabled={!isEdit} rows={4} placeholder="商品詳細画面に表示" value={name}
                                             maxLength={128}
                                             onChange={({target: {value}}) => {
-                                                address.name = value;
+                                                goods.name = value;
                                                 validateStatus['name'] = !!value ? 'success' : 'error';
-                                                this.setState({address, validateStatus});
+                                                this.setState({goods, validateStatus});
                                             }}/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item label="シンプルデスクリプション" hasFeedback validateStatus={validateStatus.simpleDesc}>
-                            <Input.TextArea rows={4} placeholder="商品カードに表示" value={simpleDesc}
+                            <Input.TextArea disabled={!isEdit} rows={4} placeholder="商品カードに表示" value={simpleDesc}
                                             maxLength={64}
                                             onChange={({target: {value}}) => {
                                                 goods.simpleDesc = value;
@@ -311,21 +335,21 @@ export default class GoodsEdit extends Component {
                     </Col>
                 </Row>
                 <Row gutter={16}>
-                    <Col span={12}>
+                    <Col span={6}>
                         <Form.Item label="原価" hasFeedback validateStatus={validateStatus.price}>
-                            <InputNumber style={{width: "65%"}}
+                            <InputNumber disabled={!isEdit} style={{width: "100%"}}
                                          formatter={value => `¥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                          value={price}
                                          onChange={(value) => {
-                                             address.price = value;
+                                             goods.price = value;
                                              validateStatus['price'] = !!value ? 'success' : 'error';
                                              this.setState({address, validateStatus});
                                          }}/>
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col span={6}>
                         <Form.Item label="価格" hasFeedback validateStatus={validateStatus.promoPrice}>
-                            <InputNumber style={{width: "65%"}}
+                            <InputNumber disabled={!isEdit} style={{width: "100%"}}
                                          formatter={value => `¥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                          value={promoPrice}
                                          onChange={(value) => {
@@ -335,19 +359,35 @@ export default class GoodsEdit extends Component {
                                          }}/>
                         </Form.Item>
                     </Col>
+                    <Col span={12}>
+                        <Form.Item label="デフォルトSKU">
+                            <Select value={skuId}
+                                    onChange={(value) => {
+                                        goods.skuId = value;
+                                        this.setState({})
+                                    }}>
+                                {skuList.map(({id, attrs}) =>
+                                    <Option key={id} value={id}>{attrs}</Option>)}
+                            </Select>
+                        </Form.Item>
+                    </Col>
                 </Row>
                 <Row gutter={16}>
                     <Col span={8}>
+                        <Form.Item label="倉庫所在地" hasFeedback validateStatus={validateStatus.location}>
+                            <Input readOnly value={goods.location}/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
                         <Form.Item label="都道府県" hasFeedback validateStatus={validateStatus.provinceCode}>
-                            <Select placeholder="都道府県をお選び下さい" value={provinceCode}
+                            <Select disabled={!isEdit} placeholder="都道府県をお選び下さい" value={provinceCode}
                                     onChange={(value, option) => {
                                         address.provinceCode = value;
                                         address.province = option.props.children;
                                         validateStatus['provinceCode'] = !!address.provinceCode ? 'success' : 'error';
                                         address.cityCode = undefined;
                                         address.city = undefined;
-                                        address.districtCode = undefined;
-                                        address.district = undefined;
+                                        goods.location = `${address.province}`;
                                         region.initRegion(region.setCityList, value, undefined, 2, () =>
                                             this.setState({address, validateStatus})
                                         );
@@ -359,32 +399,15 @@ export default class GoodsEdit extends Component {
                     </Col>
                     <Col span={8}>
                         <Form.Item label="市" hasFeedback validateStatus={validateStatus.cityCode}>
-                            <Select placeholder="市をお選び下さい" value={cityCode}
+                            <Select disabled={!isEdit} placeholder="市をお選び下さい" value={cityCode}
                                     onChange={(value, option) => {
                                         address.cityCode = value;
                                         address.city = option.props.children;
-                                        address.districtCode = undefined;
-                                        address.district = undefined;
                                         validateStatus['cityCode'] = !!address.cityCode ? 'success' : 'error';
-                                        region.initRegion(region.setDistrictList, value, provinceCode, 3, () =>
-                                            this.setState({address, validateStatus})
-                                        );
+                                        goods.location = `${address.province}${address.city}`;
+                                        this.setState({})
                                     }}>
                                 {cityList.map(({regionCode, regionName}) =>
-                                    <Option key={regionCode} value={regionCode}>{regionName}</Option>)}
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item label="区" hasFeedback validateStatus={validateStatus.districtCode}>
-                            <Select placeholder="区をお選び下さい" value={districtCode}
-                                    onChange={(value, option) => {
-                                        address.districtCode = value;
-                                        address.district = option.props.children;
-                                        validateStatus['districtCode'] = !!address.districtCode ? 'success' : 'error';
-                                        this.setState({address, validateStatus});
-                                    }}>
-                                {districtList.map(({regionCode, regionName}) =>
                                     <Option key={regionCode} value={regionCode}>{regionName}</Option>)}
                             </Select>
                         </Form.Item>
@@ -394,6 +417,7 @@ export default class GoodsEdit extends Component {
                     <Col span={8}>
                         <Form.Item label="店舗ページに展示">
                             <Switch
+                                disabled={!isEdit}
                                 checked={!!isPromote}
                                 checkedChildren={<Icon type="check"/>}
                                 unCheckedChildren={<Icon type="close"/>}
@@ -407,6 +431,7 @@ export default class GoodsEdit extends Component {
                     <Col span={8}>
                         <Form.Item label="店舗ページのバナーに展示">
                             <Switch
+                                disabled={!isEdit}
                                 checked={!!isShowBanner}
                                 checkedChildren={<Icon type="check"/>}
                                 unCheckedChildren={<Icon type="close"/>}
@@ -425,13 +450,14 @@ export default class GoodsEdit extends Component {
                     <Col span={8}>
                         <Form.Item label="写真" hasFeedback validateStatus={validateStatus.banner}>
                             <Upload
-                                disabled={!isShowBanner}
+                                disabled={!isEdit || !isShowBanner}
+                                accept=".png,.jpg,.jpeg"
                                 listType="picture-card"
                                 fileList={banner}
                                 beforeUpload={(file) => this.beforeUploadImg(file)}
-                                onChange={({file, fileList}) => {
-                                    if (!file.status) {
-                                        if ((file.type !== 'image/jpeg' && file.type !== 'image/png') || file.size / 1024 / 1024 > 2) {
+                                onChange={async ({file: {status, type, size}, fileList}) => {
+                                    if (!status) {
+                                        if ((type !== 'image/jpeg' && type !== 'image/png') || size / 1024 / 1024 > 2) {
                                             return;
                                         }
                                     }
@@ -451,8 +477,10 @@ export default class GoodsEdit extends Component {
                     </Col>
                 </Row>
                 <Row gutter={16}>
-                    <Form.Item label="カバー(最大4枚)" hasFeedback validateStatus={validateStatus.imgs}>
+                    <Form.Item label="カバー(最大6枚)" hasFeedback validateStatus={validateStatus.imgs}>
                         <Upload
+                            disabled={!isEdit}
+                            accept=".png,.jpg,.jpeg"
                             listType="picture-card"
                             fileList={imgs}
                             beforeUpload={(file) => this.beforeUploadImg(file)}
@@ -477,8 +505,10 @@ export default class GoodsEdit extends Component {
                     </Form.Item>
                 </Row>
                 <Row gutter={16}>
-                    <Form.Item label="紹介写真(最大10枚)" hasFeedback validateStatus={validateStatus.detailImgs}>
+                    <Form.Item label="紹介写真(最大20枚)" hasFeedback validateStatus={validateStatus.detailImgs}>
                         <Upload
+                            disabled={!isEdit}
+                            accept=".png,.jpg,.jpeg"
                             listType="picture-card"
                             fileList={detailImgs}
                             beforeUpload={(file) => this.beforeUploadImg(file)}
@@ -519,11 +549,14 @@ export default class GoodsEdit extends Component {
                     textAlign: 'right',
                 }}
             >
-                <Button disabled={!!this.state.submitting} onClick={() => this.setState({visible: false})}
-                        style={{marginRight: 8}}>取消し</Button>
+                <Button disabled={!!this.state.submitting} onClick={() => onClose()}
+                        style={{marginRight: 8}}>取消</Button>
                 <Button disabled={!!this.state.submitting} type="primary"
-                        onClick={() => this.submitGoods()}>セーブ</Button>
+                        onClick={() => this.submitGoods()}>保存</Button>
             </div> : null}
         </Drawer>
     }
 }
+
+const GoodsEditFrom = Form.create()(GoodsEdit);
+export default GoodsEditFrom;

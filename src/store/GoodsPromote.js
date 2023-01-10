@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import GoodsGrid from "../components/GoodsGrid";
+import {Button, Divider, Icon, Tooltip} from "antd";
 
 export default class GoodsPromote extends Component {
     convertGoodList() {
@@ -18,7 +19,10 @@ export default class GoodsPromote extends Component {
         const goodsList = this.convertGoodList();
         return (
             <div className="storePromote-warp">
-                <div className="promote-line"></div>
+                <Divider orientation="center" style={{fontSize: '30px', padding: '30px'}}>
+                    <Icon type="heart" style={{color: '#ff0036', marginRight: '4px'}}/>
+                    おすすめ
+                </Divider>
                 <div className="promoteList-panel">
                     {goodsList.map((goodsArray, index) => {
                         return (

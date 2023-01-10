@@ -8,7 +8,7 @@ import {
     Tabs,
     Descriptions,
     Button,
-    BackTop, List, Comment, Pagination, Empty, Tooltip, Result
+    BackTop, List, Comment, Pagination, Empty, Tooltip, Result, Badge
 } from "antd";
 import IndexHead from "../index/indexHead";
 import StoreSearch from "../store/StoreSearch";
@@ -262,16 +262,8 @@ export default class GoodsIndex extends Component {
                                                     <TabPane
                                                         tab={
                                                             <div>
-                                                                累計評判
-                                                                <span
-                                                                    style={{
-                                                                        display: "inline-block",
-                                                                        marginLeft: 10,
-                                                                        color: "#38b"
-                                                                    }}
-                                                                >
-                                                                {goods.evaluateCount}
-                                                              </span>
+                                                                コメント
+                                                                <Badge count={goods.evaluateCount} style={{ backgroundColor: '#1890ff',marginLeft:'2px' }} />
                                                             </div>
                                                         }
                                                         key="2"

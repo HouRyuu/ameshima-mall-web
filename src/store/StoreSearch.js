@@ -34,7 +34,7 @@ export default class StoreSearch extends Component {
                 <Col span={4}>
                     <Link to="/" onlyActiveOnIndex>
                         <img
-                            className="tmall-logo"
+                            width={200}
                             alt="トップページ"
                             src="/LOGO.png"
                         />
@@ -42,9 +42,9 @@ export default class StoreSearch extends Component {
                 </Col>
                 <Col span={3} className="storeInfo-warp">
                     <div>
-                        <Link to={`/store?id=${storeId}`} title={name} onlyActiveOnIndex>
-                            {name}
-                        </Link>
+                        {/*<Link to={`/store?id=${storeId}`} title={name} onlyActiveOnIndex>*/}
+                        <em title={name}>{name}</em>
+                        {/*</Link>*/}
                     </div>
                 </Col>
                 <Col span={4} className="storeInfo-warp">

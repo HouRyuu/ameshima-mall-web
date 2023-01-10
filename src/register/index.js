@@ -108,7 +108,7 @@ class RegisterForm extends Component {
                                         <Input
                                             maxLength={16}
                                             prefix={<Icon type="mail"/>}
-                                            placeholder="携帯番号"
+                                            placeholder="メールアドレス"
                                         />
                                     )}
                                 </Form.Item>
