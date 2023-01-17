@@ -27,7 +27,7 @@ export default class StoreSearch extends Component {
 
     render() {
         const {
-            evaluate: {storeId, name, descScore, serviceScore, logisticsScore}
+            evaluate: {name, descScore, serviceScore, logisticsScore}
         } = this.state;
         return (
             <Row type="flex" align="middle" className="storeHead-warp">

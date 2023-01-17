@@ -1,16 +1,29 @@
 import React, {Component} from "react";
-import {Affix, Button, Col, Row} from "antd";
+import {Affix, Button, Col, message, Row} from "antd";
 import UrlUtil from "../../utils/UrlUtil";
 import FetchUtil from "../../utils/FetchUtil";
 import OrderGoodsList from "../../components/OrderGoodsList";
+import {browserHistory} from "react-router";
 
 export default class OrderConfirmDone extends Component {
 
     state = {
-        orderList: []
+        orderList: [],
+        paying: false
+    }
+
+    constructor(props) {
+        super(props);
+        const {
+            searchParam: {orderNo}
+        } = new UrlUtil(window.location);
+        this.setState({parentOrderNo: orderNo})
     }
 
     componentWillMount() {
+    }
+
+    componentDidMount() {
         this.findOrderGoodsList();
     }
 
@@ -28,8 +41,27 @@ export default class OrderConfirmDone extends Component {
         }
     }
 
+    payOrder() {
+        const {
+            searchParam: {orderNo}
+        } = new UrlUtil(window.location);
+        FetchUtil.put({
+            url: `/order/${orderNo}/pay`,
+            sendBefore: () => this.setState({paying: true}),
+            success: () => {
+                message.info("支払い完了", () => {
+                    browserHistory.push({
+                        pathname: '/order/pay',
+                        search: `?orderNo=${orderNo}`
+                    });
+                })
+            },
+            complete: () => this.setState({paying: false})
+        })
+    }
+
     render() {
-        const {orderList} = this.state;
+        const {orderList, paying} = this.state;
         let goodsCount = 0, totalPrice = 0;
         orderList.forEach(({orderPay: {dealPrice}, logisticsGoodsList}) => {
             totalPrice += dealPrice;
@@ -53,9 +85,8 @@ export default class OrderConfirmDone extends Component {
                                     合計：{" "}<span className="total-price">¥{totalPrice}</span>(税込)
                                 </Col>
                                 <Col span={3} style={{textAlign: 'center'}}>
-                                    <Button type="danger"
-                                            onClick={() => {
-                                            }}>支払う</Button>
+                                    <Button type="danger" disabled={paying}
+                                            onClick={() => this.payOrder()}>支払う</Button>
                                 </Col>
                             </Row>
                         </Affix>

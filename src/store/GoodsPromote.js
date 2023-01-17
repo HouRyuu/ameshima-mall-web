@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import GoodsGrid from "../components/GoodsGrid";
-import {Button, Divider, Icon, Tooltip} from "antd";
+import {Divider, Icon} from "antd";
 
 export default class GoodsPromote extends Component {
     convertGoodList() {

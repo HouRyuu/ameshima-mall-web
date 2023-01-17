@@ -26,7 +26,7 @@ const Option = Select.Option;
  * @param onClose 閉じるコールバック
  * @param saveCallback 保存成功のコールバック
  */
-class GoodsEdit extends Component {
+export default class GoodsEdit extends Component {
     state = {
         region: new Region(),
         bannerLoading: false,
@@ -99,53 +99,54 @@ class GoodsEdit extends Component {
         this.setState({banner, imgs, detailImgs});
     }
 
-    submitGoods() {
-        this.props.form.validateFields(async err => {
-            if (!err) {
-                const {
-                    goods, banner, imgs, detailImgs
-                } = this.state;
-                const imgList = [];
-                if (imgs.length) {
-                    for (const file of imgs) {
-                        imgList.push({
-                            imgUrl: file.url ? file.url : await FileUtil.getBase64(file.originFileObj),
-                            imgType: 13
-                        });
-                    }
-                }
-                if (detailImgs.length) {
-                    for (const file of detailImgs) {
-                        imgList.push({
-                            imgUrl: file.url ? file.url : await FileUtil.getBase64(file.originFileObj),
-                            imgType: 14
-                        });
-                    }
-                }
-                if (banner.length) {
-                    imgList.push({
-                        imgUrl: banner[0].url ? banner[0].url : await FileUtil.getBase64(banner[0].originFileObj),
-                        imgType: 16
-                    });
-                }
-                goods.imgList = imgList;
-                FetchUtil.put({
-                        url: '/goods/store/save',
-                        data: goods,
-                        sendBefore: () => this.setState({submitting: true}),
-                        success: () => {
-                            message.info("操作が完了しました");
-                            this.setState({visible: false})
-                            const {saveCallback} = this.props;
-                            if (saveCallback) {
-                                saveCallback();
-                            }
-                        },
-                        complete: () => this.setState({submitting: false})
-                    }
-                );
+    async submitGoods() {
+        const {
+            validateStatus, goods, banner, imgs, detailImgs
+        } = this.state;
+        for (const valKey in validateStatus) {
+            if (validateStatus[valKey] === 'error') {
+                return;
             }
-        });
+        }
+        const imgList = [];
+        if (imgs.length) {
+            for (const file of imgs) {
+                imgList.push({
+                    imgUrl: file.url ? file.url : await FileUtil.getBase64(file.originFileObj),
+                    imgType: 13
+                });
+            }
+        }
+        if (detailImgs.length) {
+            for (const file of detailImgs) {
+                imgList.push({
+                    imgUrl: file.url ? file.url : await FileUtil.getBase64(file.originFileObj),
+                    imgType: 14
+                });
+            }
+        }
+        if (banner.length) {
+            imgList.push({
+                imgUrl: banner[0].url ? banner[0].url : await FileUtil.getBase64(banner[0].originFileObj),
+                imgType: 16
+            });
+        }
+        goods.imgList = imgList;
+        FetchUtil.put({
+                url: '/goods/store/save',
+                data: goods,
+                sendBefore: () => this.setState({submitting: true}),
+                success: () => {
+                    message.info("保存が完了しました");
+                    this.setState({visible: false})
+                    const {saveCallback} = this.props;
+                    if (saveCallback) {
+                        saveCallback();
+                    }
+                },
+                complete: () => this.setState({submitting: false})
+            }
+        );
     }
 
     findCategoryList(pid = 0, level = 1) {
@@ -180,7 +181,7 @@ class GoodsEdit extends Component {
     }
 
     beforeUploadImg(file) {
-        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif';
         if (!isJpgOrPng) {
             message.error('JPG/PNGの写真だけアップロードできます!');
             return false;
@@ -219,7 +220,8 @@ class GoodsEdit extends Component {
             imgs,
             detailImgs,
             previewVisible,
-            previewImage
+            previewImage,
+            submitting
         } = this.state;
         const {
             categoryId,
@@ -245,6 +247,7 @@ class GoodsEdit extends Component {
             title="アドレス"
             placement="left"
             width={720}
+            maskClosable={false}
             keyboard={false}
             onClose={() => onClose()}
             visible={visible}
@@ -379,15 +382,15 @@ class GoodsEdit extends Component {
                         </Form.Item>
                     </Col>
                     <Col span={8}>
-                        <Form.Item label="都道府県" hasFeedback validateStatus={validateStatus.provinceCode}>
+                        <Form.Item label="都道府県">
                             <Select disabled={!isEdit} placeholder="都道府県をお選び下さい" value={provinceCode}
                                     onChange={(value, option) => {
                                         address.provinceCode = value;
                                         address.province = option.props.children;
-                                        validateStatus['provinceCode'] = !!address.provinceCode ? 'success' : 'error';
                                         address.cityCode = undefined;
                                         address.city = undefined;
                                         goods.location = `${address.province}`;
+                                        validateStatus['location'] = !!goods.location ? 'success' : 'error';
                                         region.initRegion(region.setCityList, value, undefined, 2, () =>
                                             this.setState({address, validateStatus})
                                         );
@@ -398,13 +401,13 @@ class GoodsEdit extends Component {
                         </Form.Item>
                     </Col>
                     <Col span={8}>
-                        <Form.Item label="市" hasFeedback validateStatus={validateStatus.cityCode}>
+                        <Form.Item label="市">
                             <Select disabled={!isEdit} placeholder="市をお選び下さい" value={cityCode}
                                     onChange={(value, option) => {
                                         address.cityCode = value;
                                         address.city = option.props.children;
-                                        validateStatus['cityCode'] = !!address.cityCode ? 'success' : 'error';
                                         goods.location = `${address.province}${address.city}`;
+                                        validateStatus['location'] = !!goods.location ? 'success' : 'error';
                                         this.setState({})
                                     }}>
                                 {cityList.map(({regionCode, regionName}) =>
@@ -451,13 +454,13 @@ class GoodsEdit extends Component {
                         <Form.Item label="写真" hasFeedback validateStatus={validateStatus.banner}>
                             <Upload
                                 disabled={!isEdit || !isShowBanner}
-                                accept=".png,.jpg,.jpeg"
+                                accept=".png,.jpg,.jpeg,.gif"
                                 listType="picture-card"
                                 fileList={banner}
                                 beforeUpload={(file) => this.beforeUploadImg(file)}
                                 onChange={async ({file: {status, type, size}, fileList}) => {
                                     if (!status) {
-                                        if ((type !== 'image/jpeg' && type !== 'image/png') || size / 1024 / 1024 > 2) {
+                                        if ((type !== 'image/jpeg' && type !== 'image/png' && type !== 'image/gif') || size / 1024 / 1024 > 2) {
                                             return;
                                         }
                                     }
@@ -480,13 +483,13 @@ class GoodsEdit extends Component {
                     <Form.Item label="カバー(最大6枚)" hasFeedback validateStatus={validateStatus.imgs}>
                         <Upload
                             disabled={!isEdit}
-                            accept=".png,.jpg,.jpeg"
+                            accept=".png,.jpg,.jpeg,.gif"
                             listType="picture-card"
                             fileList={imgs}
                             beforeUpload={(file) => this.beforeUploadImg(file)}
                             onChange={({file, fileList}) => {
                                 if (!file.status) {
-                                    if ((file.type !== 'image/jpeg' && file.type !== 'image/png') || file.size / 1024 / 1024 > 2) {
+                                    if ((file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') || file.size / 1024 / 1024 > 2) {
                                         return;
                                     }
                                 }
@@ -508,13 +511,13 @@ class GoodsEdit extends Component {
                     <Form.Item label="紹介写真(最大20枚)" hasFeedback validateStatus={validateStatus.detailImgs}>
                         <Upload
                             disabled={!isEdit}
-                            accept=".png,.jpg,.jpeg"
+                            accept=".png,.jpg,.jpeg,.gif"
                             listType="picture-card"
                             fileList={detailImgs}
                             beforeUpload={(file) => this.beforeUploadImg(file)}
                             onChange={({file, fileList}) => {
                                 if (!file.status) {
-                                    if ((file.type !== 'image/jpeg' && file.type !== 'image/png') || file.size / 1024 / 1024 > 2) {
+                                    if ((file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') || file.size / 1024 / 1024 > 2) {
                                         return;
                                     }
                                 }
@@ -549,14 +552,11 @@ class GoodsEdit extends Component {
                     textAlign: 'right',
                 }}
             >
-                <Button disabled={!!this.state.submitting} onClick={() => onClose()}
+                <Button disabled={!!submitting} onClick={() => onClose()}
                         style={{marginRight: 8}}>取消</Button>
-                <Button disabled={!!this.state.submitting} type="primary"
+                <Button disabled={!!submitting} type="primary"
                         onClick={() => this.submitGoods()}>保存</Button>
             </div> : null}
         </Drawer>
     }
 }
-
-const GoodsEditFrom = Form.create()(GoodsEdit);
-export default GoodsEditFrom;

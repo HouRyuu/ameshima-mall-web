@@ -8,7 +8,7 @@ import {
     Tabs,
     Descriptions,
     Button,
-    BackTop, List, Comment, Pagination, Empty, Tooltip, Result, Badge
+    BackTop, List, Comment, Pagination, Empty, Tooltip, Result, Badge, Rate
 } from "antd";
 import IndexHead from "../index/indexHead";
 import StoreSearch from "../store/StoreSearch";
@@ -263,7 +263,10 @@ export default class GoodsIndex extends Component {
                                                         tab={
                                                             <div>
                                                                 コメント
-                                                                <Badge count={goods.evaluateCount} style={{ backgroundColor: '#1890ff',marginLeft:'2px' }} />
+                                                                <Badge count={goods.evaluateCount} style={{
+                                                                    backgroundColor: '#1890ff',
+                                                                    marginLeft: '2px'
+                                                                }}/>
                                                             </div>
                                                         }
                                                         key="2"
@@ -285,15 +288,20 @@ export default class GoodsIndex extends Component {
                                                                                 <Comment
                                                                                     author={item.nickName}
                                                                                     avatar={item.avatar}
-                                                                                    content={<div>
-                                                                                        <p>{item.evaluateText}</p>
-                                                                                        <p>
-                                                                                            {
-                                                                                                this.renderEvaluateAttrs(item.attrsJson)
-                                                                                                    .map(attr => attr)
-                                                                                            }
-                                                                                        </p>
-                                                                                    </div>}
+                                                                                    content={<div>{item.evaluateText}</div>}
+                                                                                    actions={[
+                                                                                        <div>
+                                                                                            <div>
+                                                                                                {this.renderEvaluateAttrs(item.attrsJson)
+                                                                                                    .map(attr => attr)}
+                                                                                            </div>
+                                                                                            <Rate
+                                                                                                style={{marginRight: "10px"}}
+                                                                                                allowHalf
+                                                                                                tooltips={["悪い", "良くない", "普通", "良い", "素晴らしい"]}
+                                                                                                value={item.descScore}
+                                                                                                disabled/>
+                                                                                        </div>]}
                                                                                     datetime={<Tooltip
                                                                                         title={moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')}>
                                                                                         <span>{moment(item.createTime).fromNow()}</span>

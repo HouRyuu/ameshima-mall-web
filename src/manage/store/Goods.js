@@ -24,7 +24,7 @@ export default class StoreManageGoods extends Component {
                     placement="right"
                     content={<img alt="" width="320" src={imgUrl}/>}
                 >
-                    <img alt="" width="88" className="cart-goods-img" src={imgUrl}/>
+                    <img alt="" width="88" height="88" className="cart-goods-img" src={imgUrl}/>
                 </Popover>)
             }
         }, {
