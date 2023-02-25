@@ -46,7 +46,7 @@ export default class OrderConfirmDone extends Component {
             searchParam: {orderNo}
         } = new UrlUtil(window.location);
         FetchUtil.put({
-            url: `/order/${orderNo}/pay`,
+            url: `/order/${orderNo}/0/pay`,
             sendBefore: () => this.setState({paying: true}),
             success: () => {
                 message.info("支払い完了", () => {

@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Divider, Empty, Icon, Popconfirm, Popover, Table, Tag, Tooltip} from "antd";
+import {Button, Divider, Empty, Icon, message, Popconfirm, Popover, Table, Tag, Tooltip} from "antd";
 import {browserHistory, Link} from "react-router";
 import FetchUtil from "../utils/FetchUtil";
 import UrlUtil from "../utils/UrlUtil";
@@ -14,10 +14,11 @@ export default class OrderGoodsList extends Component {
         orderStateArr: [],
         payWayArr: [],
         logisticsStateArr: [],
-        orderList: []
+        orderList: [],
+        payingIndex: -1
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.getPayWayCfg();
         this.getLogisticsStateCfg();
     }
@@ -53,8 +54,23 @@ export default class OrderGoodsList extends Component {
         });
     }
 
+    payOrder(orderNo, index) {
+        FetchUtil.put({
+            url: `/order/0/${orderNo}/pay`,
+            sendBefore: () => this.setState({payingIndex: index}),
+            success: () => {
+                message.info("支払い完了");
+                const {refresh} = this.props;
+                if (refresh) {
+                    refresh();
+                }
+            },
+            complete: () => this.setState({payingIndex: -1})
+        })
+    }
+
     renderGoods() {
-        const {orderStateArr, payWayArr, logisticsStateArr, orderList} = this.state;
+        const {orderStateArr, payWayArr, logisticsStateArr, orderList, payingIndex} = this.state;
         if (!orderList || !orderList.length || !orderStateArr.length || !payWayArr.length) {
             return [];
         }
@@ -66,7 +82,7 @@ export default class OrderGoodsList extends Component {
                                orderState,
                                logisticsGoodsList,
                                orderPay: {payNo, dealPrice, payWay}
-                           }) => {
+                           }, index) => {
             const dataSource = [];
             const orderStateStr = orderStateArr[orderState];
             logisticsGoodsList.forEach(({
@@ -91,7 +107,8 @@ export default class OrderGoodsList extends Component {
                     {
                         orderState === 1 ? <Tooltip title='支払う方法をお選び下さい'><Button.Group>
                             {
-                                payWayArr.map(way => <Button shape="circle" key={way}>
+                                payWayArr.map(way => <Button disabled={index === payingIndex} shape="circle" key={way}
+                                                             onClick={() => this.payOrder(orderNo, index)}>
                                     <IconFont key={way} type={`icon-${way}`}/>
                                 </Button>)
                             }
@@ -285,8 +302,8 @@ export default class OrderGoodsList extends Component {
                         pathname: '/order/comment',
                         search: `?orderNo=${orderNo}`
                     });
-                } else if (this.props.call) {
-                    this.props.call();
+                } else if (this.props.refresh) {
+                    this.props.refresh();
                 }
             }
         })

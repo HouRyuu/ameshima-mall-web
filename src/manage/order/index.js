@@ -89,7 +89,7 @@ export default class Order extends Component {
             <div className="cart-warp confirm-panel">
                 <div className="cart-table">
                     <OrderGoodsList orderStateArr={orderStateArr} orderList={orderList}
-                                    call={() => this.orderPage(pageIndex)}/>
+                                    refresh={() => this.orderPage(pageIndex)}/>
                     <Pagination
                         style={{textAlign: 'right', marginTop: '12px'}}
                         pageSize={pageSize}
