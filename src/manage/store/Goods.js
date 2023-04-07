@@ -223,6 +223,7 @@ export default class StoreManageGoods extends Component {
                 </Descriptions.Item>
                 <Descriptions.Item label="商品リスト">
                     <Table
+                        rowKey="id"
                         columns={this.columns}
                         dataSource={goodsList}
                         pagination={{

@@ -71,7 +71,6 @@ class PersonalInfo extends Component {
 
     toUpdateOrCancel() {
         const {updateFlag, userInfo} = this.state;
-        console.log(userInfo)
         this.setState({updateFlag: !updateFlag, newUserInfo: {...userInfo}});
     }
 

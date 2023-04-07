@@ -202,8 +202,8 @@ export default class OrderConfirm extends Component {
                             <span className="cart-price-content">¥{price}</span>
                         ) : (
                             <div className="cart-price-content">
-                                <span>¥{marketPrice}</span>
                                 <span>¥{price}</span>
+                                <span>¥{marketPrice}</span>
                             </div>
                         ),
                     amount: amount,
@@ -318,7 +318,7 @@ export default class OrderConfirm extends Component {
                                         phone,
                                         isDefault
                                     } = item;
-                                    return <div
+                                    return <div key={index}
                                         className={`addr-item-wrapper ${seletedAddrIndex === index ? 'addr-selected' : ''}`}
                                         onClick={() => this.selectAddress(cityCode, index)}>
                                         <div className="inner-infos">

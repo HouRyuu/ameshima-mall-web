@@ -61,7 +61,6 @@ export default class Order extends Component {
             querying,
             orderPage: {total, content: orderList}
         } = this.state;
-        console.log(pageIndex, pageSize, total)
         return <main>
             <Row style={{margin: "10px 0 20px 0"}}>
                 <Col span={4} offset={1}><Input placeholder="商品名" allowClear value={goodsName}
@@ -89,7 +88,7 @@ export default class Order extends Component {
             <div className="cart-warp confirm-panel">
                 <div className="cart-table">
                     <OrderGoodsList orderStateArr={orderStateArr} orderList={orderList}
-                                    refresh={() => this.orderPage(pageIndex)}/>
+                                    refresh={() => this.orderPage(pageIndex)} showPay/>
                     <Pagination
                         style={{textAlign: 'right', marginTop: '12px'}}
                         pageSize={pageSize}
@@ -99,7 +98,6 @@ export default class Order extends Component {
                     />
                 </div>
             </div>
-
         </main>;
     }
 }

@@ -1,12 +1,12 @@
 import React, {Component} from "react";
-import {Button, Divider, Empty, Icon, message, Popconfirm, Popover, Table, Tag, Tooltip} from "antd";
+import {Button, Divider, Empty, Icon, message, Popconfirm, Popover, Spin, Table, Tag, Tooltip} from "antd";
 import {browserHistory, Link} from "react-router";
 import FetchUtil from "../utils/FetchUtil";
 import UrlUtil from "../utils/UrlUtil";
 
 
 const IconFont = Icon.createFromIconfontCN({
-    scriptUrl: '//at.alicdn.com/t/c/font_3587549_fxuwnik34q.js',
+    scriptUrl: '//at.alicdn.com/t/c/font_3587549_38byjo3ae9j.js',
 })
 export default class OrderGoodsList extends Component {
 
@@ -15,7 +15,7 @@ export default class OrderGoodsList extends Component {
         payWayArr: [],
         logisticsStateArr: [],
         orderList: [],
-        payingIndex: -1
+        paying: false
     }
 
     componentDidMount() {
@@ -41,10 +41,13 @@ export default class OrderGoodsList extends Component {
     }
 
     getPayWayCfg() {
-        FetchUtil.get({
-            url: '/basic/pay/way',
-            success: ({data}) => this.setState({payWayArr: JSON.parse(data)})
-        });
+        const {showPay} = this.props;
+        if (showPay) {
+            FetchUtil.get({
+                url: '/basic/pay/way',
+                success: ({data}) => this.setState({payWayArr: JSON.parse(data)})
+            });
+        }
     }
 
     getLogisticsStateCfg() {
@@ -54,25 +57,86 @@ export default class OrderGoodsList extends Component {
         });
     }
 
-    payOrder(orderNo, index) {
+    showPay(orderNo, payWay) {
+        const {refresh} = this.props;
+        if ('paypay' === payWay) {
+            FetchUtil.get({
+                url: `/order/0/${orderNo}/paypay/code`,
+                sendBefore: () => this.setState({paying: true}),
+                success: ({data}) => {
+                    if (data) {
+                        window.open(data, "Paypay", "height=820, width=820, left=360");
+                        this.showPayCountDown(orderNo);
+                    }
+                },
+                error: ({errCode, errMsg}) => {
+                    this.setState({paying: false});
+                    if (errCode === 600) {
+                        message.info(errMsg);
+                        if (refresh) {
+                            refresh();
+                        }
+                        return;
+                    }
+                    message.error(errMsg)
+                }
+            })
+        }
+    }
+
+    showPayCountDown(orderNo) {
+        let secondsToGo = 240;
+        const timer = setInterval(() => {
+            this.paypayStatus(orderNo, timer);
+        }, 5000);
+        setTimeout(() => {
+            clearInterval(timer);
+        }, secondsToGo * 1000);
+    }
+
+    paypayStatus(orderNo, timer) {
         FetchUtil.put({
-            url: `/order/0/${orderNo}/pay`,
-            sendBefore: () => this.setState({payingIndex: index}),
-            success: () => {
-                message.info("支払い完了");
-                const {refresh} = this.props;
-                if (refresh) {
-                    refresh();
+            url: `/order/0/${orderNo}/paypay/status`,
+            success: ({data}) => {
+                if (!data) {
+                    if (timer) {
+                        clearInterval(timer);
+                    }
+                    this.setState({paying: false})
+                    message.info("支払い完了", () => {
+                        browserHistory.push({
+                            pathname: '/order/pay',
+                            search: `?orderNo=${orderNo}`
+                        });
+                    })
+                    return;
+                }
+                if (!!data && 'CREATED' !== data) {
+                    if (timer) {
+                        clearInterval(timer);
+                    }
+                    this.setState({paying: false})
+                    message.error('支払が失敗してしまいました😔')
                 }
             },
-            complete: () => this.setState({payingIndex: -1})
+            error: ({errMsg}) => {
+                if (timer) {
+                    clearInterval(timer);
+                }
+                this.setState({paying: false})
+                message.error(errMsg)
+            }
         })
     }
 
     renderGoods() {
-        const {orderStateArr, payWayArr, logisticsStateArr, orderList, payingIndex} = this.state;
-        if (!orderList || !orderList.length || !orderStateArr.length || !payWayArr.length) {
+        const {showPay} = this.props;
+        const {orderStateArr, payWayArr, logisticsStateArr, orderList} = this.state;
+        if (!orderList || !orderList.length || !orderStateArr.length) {
             return [];
+        }
+        if (!showPay) {
+            payWayArr.slice(0, payWayArr.length);
         }
         const result = [];
         orderList.forEach(({
@@ -82,7 +146,7 @@ export default class OrderGoodsList extends Component {
                                orderState,
                                logisticsGoodsList,
                                orderPay: {payNo, dealPrice, payWay}
-                           }, index) => {
+                           }) => {
             const dataSource = [];
             const orderStateStr = orderStateArr[orderState];
             logisticsGoodsList.forEach(({
@@ -107,8 +171,8 @@ export default class OrderGoodsList extends Component {
                     {
                         orderState === 1 ? <Tooltip title='支払う方法をお選び下さい'><Button.Group>
                             {
-                                payWayArr.map(way => <Button disabled={index === payingIndex} shape="circle" key={way}
-                                                             onClick={() => this.payOrder(orderNo, index)}>
+                                payWayArr.map(way => <Button shape="circle" key={way}
+                                                             onClick={() => this.showPay(orderNo, way)}>
                                     <IconFont key={way} type={`icon-${way}`}/>
                                 </Button>)
                             }
@@ -231,7 +295,7 @@ export default class OrderGoodsList extends Component {
                     });
                 });
                 result.push({
-                    key: `${storeId}`,
+                    key: `${orderNo}`,
                     goodsTable: (
                         <Table
                             rowKey="id"
@@ -311,27 +375,29 @@ export default class OrderGoodsList extends Component {
     }
 
     render() {
-        return <Table
-            rowKey="key"
-            columns={[
-                {
-                    title: (
-                        <div className="cart-table-head">
-                            <span style={{width: "42%"}}>お宝物</span>
-                            <span style={{width: "13%"}}>単価</span>
-                            <span style={{width: "13%"}}>数量</span>
-                            <span style={{width: "15%"}}>単品操作</span>
-                            <span style={{width: "10%"}}>小計</span>
-                            <span>状態</span>
-                        </div>
-                    ),
-                    dataIndex: "goodsTable"
-                }
-            ]}
-            dataSource={this.renderGoods()}
-            pagination={false}
-            locale={{emptyText: <Empty description='何もありません'/>}}
-        />
+        const {paying} = this.state;
+        return <Spin size={"large"} tip="支払い中" spinning={paying}>
+            <Table rowKey="key"
+                   columns={[
+                       {
+                           title: (
+                               <div className="cart-table-head">
+                                   <span style={{width: "42%"}}>お宝物</span>
+                                   <span style={{width: "13%"}}>単価</span>
+                                   <span style={{width: "13%"}}>数量</span>
+                                   <span style={{width: "15%"}}>単品操作</span>
+                                   <span style={{width: "10%"}}>小計</span>
+                                   <span>状態</span>
+                               </div>
+                           ),
+                           dataIndex: "goodsTable"
+                       }
+                   ]}
+                   dataSource={this.renderGoods()}
+                   pagination={false}
+                   locale={{emptyText: <Empty description='何もありません'/>}}
+            />
+        </Spin>
     }
 
 }

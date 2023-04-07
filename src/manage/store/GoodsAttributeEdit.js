@@ -243,6 +243,7 @@ export default class GoodsAttributeEdit extends Component {
                 </Tooltip>
             </Divider>
             <Table
+                rowKey="id"
                 columns={this.attrColumn}
                 dataSource={attrMapList}
                 pagination={false}/>
@@ -253,6 +254,7 @@ export default class GoodsAttributeEdit extends Component {
                 </Tooltip>
             </Divider>
             <Table
+                rowKey="id"
                 columns={this.paramColumn}
                 dataSource={paramList}
                 pagination={false}/>

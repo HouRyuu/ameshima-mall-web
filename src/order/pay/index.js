@@ -30,7 +30,7 @@ export default class OrderPay extends Component {
         return (
             <div className="confirm-panel">
                 <div className="cart-table">
-                    <OrderGoodsList orderList={this.state.orderList}/>
+                    <OrderGoodsList showPay orderList={this.state.orderList}/>
                 </div>
             </div>
         );
