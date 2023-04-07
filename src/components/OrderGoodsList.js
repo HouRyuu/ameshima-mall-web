@@ -64,7 +64,7 @@ export default class OrderGoodsList extends Component {
                 url: `/order/0/${orderNo}/paypay/code`,
                 sendBefore: () => this.setState({paying: true}),
                 success: ({data}) => {
-                    if (data) {
+                    if (data && data.indexOf('http') > 0) {
                         window.open(data, "Paypay", "height=820, width=820, left=360");
                         this.showPayCountDown(orderNo);
                     }
@@ -103,12 +103,7 @@ export default class OrderGoodsList extends Component {
                         clearInterval(timer);
                     }
                     this.setState({paying: false})
-                    message.info("支払い完了", () => {
-                        browserHistory.push({
-                            pathname: '/order/pay',
-                            search: `?orderNo=${orderNo}`
-                        });
-                    })
+                    this.props.refresh();
                     return;
                 }
                 if (!!data && 'CREATED' !== data) {
