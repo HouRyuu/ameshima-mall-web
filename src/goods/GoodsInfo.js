@@ -308,7 +308,7 @@ export default class GoodsInfo extends Component {
                     </Row>
                     <div>
                         {attrs.map(({key, value}, index) =>
-                            <Row key={key}>
+                            <Row key={index}>
                                 <Col span={3}>{key}</Col>
                                 <Col span={21}>
                                     <ul className="goodsAttrList">

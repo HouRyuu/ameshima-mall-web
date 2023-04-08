@@ -54,7 +54,7 @@ export default class OrderConfirmDone extends Component {
                 url: `/order/${this.orderNo}/0/paypay/code`,
                 sendBefore: () => this.setState({paying: true}),
                 success: ({data}) => {
-                    if (data && data.indexOf('http') > 0) {
+                    if (data && data.indexOf('http') > -1) {
                         window.open(data, "Paypay", "height=820, width=820, left=360");
                         this.showPayCountDown();
                     }

@@ -239,9 +239,9 @@ export default class GoodsIndex extends Component {
                                                       defaultActiveKey={!showEvaluateForm ? "1" : "2"}>
                                                     <TabPane tab="商品情報" key="1">
                                                         <Descriptions title="商品の詳細">
-                                                            {params.map(({paramName, paramValue}) => (
+                                                            {params.map(({paramName, paramValue}, index) => (
                                                                 <Descriptions.Item
-                                                                    key={paramName}
+                                                                    key={index}
                                                                     label={paramName}
                                                                 >
                                                                     {paramValue}
@@ -249,8 +249,8 @@ export default class GoodsIndex extends Component {
                                                             ))}
                                                         </Descriptions>
                                                         <div className="detailImg-warp">
-                                                            {detailImgs.map(img => (
-                                                                <img key={img} alt="" src={img}/>
+                                                            {detailImgs.map((img, index) => (
+                                                                <img key={index} alt="" src={img}/>
                                                             ))}
                                                             <img
                                                                 alt=""

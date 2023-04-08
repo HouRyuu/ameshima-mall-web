@@ -40,7 +40,7 @@ export default class BrandPromote extends Component {
                 {brands.map(({storeId, brandName, logoUrl}, index) => {
                     if (index < (curPage - 1) * 29 || index >= curPage * 29) return null;
                     return (
-                        <Card.Grid key={storeId + brandName} className="brand-item">
+                        <Card.Grid key={index} className="brand-item">
                             <div className="brand-img">
                                 <img alt="" src={logoUrl}/>
                             </div>

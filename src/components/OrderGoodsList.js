@@ -64,7 +64,7 @@ export default class OrderGoodsList extends Component {
                 url: `/order/0/${orderNo}/paypay/code`,
                 sendBefore: () => this.setState({paying: true}),
                 success: ({data}) => {
-                    if (data && data.indexOf('http') > 0) {
+                    if (data && data.indexOf('http') > -1) {
                         window.open(data, "Paypay", "height=820, width=820, left=360");
                         this.showPayCountDown(orderNo);
                     }

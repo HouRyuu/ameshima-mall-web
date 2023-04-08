@@ -20,7 +20,7 @@ export default class GoodsList extends Component {
         {goodsLines.map((goodsArray, index) => {
           return (
             <ul key={index} className="wonderful-line">
-              {goodsArray.map(goods => {
+              {goodsArray.map((goods) => {
                 return (
                   <li key={goods.id} className="wonderful-item">
                     <GoodsGrid {...goods} />
