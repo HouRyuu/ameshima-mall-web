@@ -219,8 +219,8 @@ export default class CartIndex extends Component {
                             <span className="cart-price-content">¥{price}</span>
                         ) : (
                             <div className="cart-price-content">
-                                <span>¥{marketPrice}</span>
                                 <span>¥{price}</span>
+                                <span>¥{marketPrice}</span>
                             </div>
                         ),
                     amount: goodsState ? (
@@ -401,7 +401,7 @@ export default class CartIndex extends Component {
                                                                 onChange={({target: {checked}}) =>
                                                                     this.checkGoods(checked)
                                                                 }>
-                                                            オールチェック
+                                                            全件選択
                                                             </Checkbox>
                                                         </span>
                                                         <span style={{width: "44%"}}>お宝物</span>
@@ -469,19 +469,19 @@ export default class CartIndex extends Component {
                                                             ) : null}
                                                         </Row>
                                                     </Col>
-                                                    <Col span={10}>
+                                                    <Col span={12}>
                                                         <Row
                                                             type="flex"
                                                             justify="space-between"
                                                             align="middle"
                                                         >
-                                                            <Col span={8}>
+                                                            <Col span={6}>
                                                                 選んだ宝物
                                                                 <span className="selected-count">{goodsCount}</span>
                                                                 点
                                                             </Col>
                                                             <Col span={12}>
-                                                                合計（送料抜き）：{" "}
+                                                                合計（税込・送料抜き）：{" "}
                                                                 <span className="total-price">¥{totalPrice}</span>
                                                             </Col>
                                                             <Col span={4}>

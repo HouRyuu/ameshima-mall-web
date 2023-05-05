@@ -142,7 +142,7 @@ export default class OrderConfirmDone extends Component {
                                         商品<span className="selected-count">{goodsCount}</span>点
                                     </Col>
                                     <Col span={5} style={{textAlign: 'right'}}>
-                                        合計：{" "}<span className="total-price">¥{totalPrice}</span>(税込)
+                                        合計(税込)：{" "}<span className="total-price">¥{totalPrice}</span>
                                     </Col>
 
                                     <Col span={3} style={{textAlign: 'center'}}>

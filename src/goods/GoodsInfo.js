@@ -270,18 +270,18 @@ export default class GoodsInfo extends Component {
                     {
                         marketPrice === price ? (<div className="goodsPrice-warp">
                                 <Row type="flex" align="middle">
-                                    <Col span={3}>単価</Col>
-                                    <Col span={21} className="price"> ¥{price}</Col>
+                                    <Col span={4}>単価(税込)</Col>
+                                    <Col span={20} className="price"> ¥{price}</Col>
                                 </Row>
                             </div>
                         ) : (<div className="goodsPrice-warp">
                                 <Row>
-                                    <Col span={3}>単価</Col>
-                                    <Col span={21} className="marketPrice">¥{marketPrice}</Col>
+                                    <Col span={4}>単価(税込)</Col>
+                                    <Col span={20} className="marketPrice">¥{marketPrice}</Col>
                                 </Row>
                                 <Row type="flex" align="middle">
-                                    <Col span={3}>割引価格</Col>
-                                    <Col span={21} className="price">¥{price}</Col>
+                                    <Col span={4}>割引価格(税込)</Col>
+                                    <Col span={20} className="price">¥{price}</Col>
                                 </Row>
                             </div>
                         )
@@ -290,8 +290,8 @@ export default class GoodsInfo extends Component {
                         type="flex"
                         align="middle"
                         style={{marginBottom: 10, borderBottom: "1px solid #c9c9c9"}}>
-                        <Col span={3}>送料</Col>
-                        <Col span={21}>
+                        <Col span={4}>送料</Col>
+                        <Col span={20}>
                             {location}&nbsp;から
                             <Cascader
                                 fieldNames={{label: "regionName", value: "regionCode"}}
@@ -309,8 +309,8 @@ export default class GoodsInfo extends Component {
                     <div>
                         {attrs.map(({key, value}, index) =>
                             <Row key={index}>
-                                <Col span={3}>{key}</Col>
-                                <Col span={21}>
+                                <Col span={4}>{key}</Col>
+                                <Col span={20}>
                                     <ul className="goodsAttrList">
                                         {value.map(({id, txtValue, imgValue}) => {
                                             const attrClassName = this.getAttrClass(id, attrArray, attrSet);
@@ -331,7 +331,7 @@ export default class GoodsInfo extends Component {
                             </Row>)}
                     </div>
                     <Row type="flex" align="middle">
-                        <Col span={3}>数量</Col>
+                        <Col span={4}>数量</Col>
                         <Col span={4}>
                             <InputNumber
                                 min={1}
@@ -355,7 +355,7 @@ export default class GoodsInfo extends Component {
                         </Col>
                     </Row>
                     {quantity ? (<Row className="bugGoods-warp">
-                        <Col offset={3}
+                        <Col offset={4}
                              span={4}>
                             <Button disabled={!id} onClick={() => this.toBuy()}>今すぐ買う</Button>
                         </Col>

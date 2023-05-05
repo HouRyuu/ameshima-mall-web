@@ -378,7 +378,7 @@ export default class OrderConfirm extends Component {
                                     </Col>
                                     {
                                         orderTag ? <Col span={5} style={{textAlign: 'right'}}>
-                                            合計：{" "}<span className="total-price">¥{totalPrice}</span>(税込)
+                                            合計(税込)：{" "}<span className="total-price">¥{totalPrice}</span>
                                         </Col> : null
                                     }
 
