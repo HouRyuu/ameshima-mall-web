@@ -224,7 +224,7 @@ export default class CartIndex extends Component {
                             </div>
                         ),
                     amount: goodsState ? (
-                        <InputNumber bordered={false} min={1} max={quantity} defaultValue={amount}
+                        <InputNumber bordered={false} min={1} max={quantity} value={amount}
                                      onChange={(value) => {
                                          if (value !== amount) {
                                              this.updateAmount(value, quantity, id)
