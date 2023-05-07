@@ -39,8 +39,6 @@ export default class Condition extends Component {
     }
 
     componentWillReceiveProps(props) {
-        const {queryParam, callQuery, goodsPage} = props;
-        this.setState({queryParam: {...queryParam}, callQuery, goodsPage});
         this.findBrandsAndCategories(props.queryParam);
     }
 
@@ -55,7 +53,7 @@ export default class Condition extends Component {
     }
 
     selectBrandOrCategory(checked, value, type) {
-        const {queryParam, callQuery} = this.state;
+        const {queryParam, callQuery} = this.props;
         queryParam.pageIndex = 0;
         if (type === "brand" && checked) {
             queryParam.brand = value;
@@ -70,7 +68,7 @@ export default class Condition extends Component {
     }
 
     order(field) {
-        const {queryParam, callQuery} = this.state;
+        const {queryParam, callQuery} = this.props;
         const {orderField, orderType} = queryParam;
         if (!field && !orderField) return;
         if (!field) {
@@ -100,11 +98,11 @@ export default class Condition extends Component {
                 orderType,
                 minPrice,
                 maxPrice
-            },
+            }, callQuery, goodsPage
+        } = this.props;
+        const {
             brands,
             categories,
-            callQuery,
-            goodsPage
         } = this.state;
         const {pageSize, pageIndex, total} = goodsPage;
         return (
@@ -128,7 +126,7 @@ export default class Condition extends Component {
                             </CheckableTag>
                         ))}
                     </Descriptions.Item>
-                    <Descriptions.Item label="種類">
+                    <Descriptions.Item label="分類">
                         {categories.map((item, index) => (
                             <CheckableTag
                                 key={index}
@@ -149,7 +147,7 @@ export default class Condition extends Component {
                 onClick={() => this.order()}
                 title="デフォルトの順に戻す"
             >
-              综合
+              薦め
               <Icon type="arrow-down"/>
             </span>
                         <span
@@ -157,11 +155,11 @@ export default class Condition extends Component {
                             onClick={() => this.order("salesVolume")}
                             title={
                                 "salesVolume" === orderField
-                                    ? "点击后恢复默认排序"
-                                    : "点击后按销量从高到低"
+                                    ? "デフォルトの順に戻す"
+                                    : "売り行き順"
                             }
                         >
-              销量
+              売行
               <Icon type="arrow-down"/>
             </span>
                         <span
@@ -175,13 +173,13 @@ export default class Condition extends Component {
                             onClick={() => this.order("price")}
                             title={
                                 "price" === orderField && "DESC" === orderType
-                                    ? "点击后恢复默认排序"
+                                    ? "デフォルトの順に戻す"
                                     : "price" === orderField && "ASC" === orderType
-                                        ? "点击后按价格降序"
-                                        : "点击后按价格升序"
+                                        ? "価格:高い順"
+                                        : "価格:安い順"
                             }
                         >
-              价格
+              価格
               <Icon type="caret-up" style={{top: 2}}/>
               <Icon type="caret-down" style={{top: 10}}/>
             </span>
@@ -191,7 +189,7 @@ export default class Condition extends Component {
                             <InputNumber
                                 allowClear
                                 style={{width: 86, textAlign: "center"}}
-                                placeholder="最低价"
+                                placeholder="最安値"
                                 step={0.1}
                                 min={0}
                                 max={maxPrice ? maxPrice : 999999999}
@@ -213,7 +211,7 @@ export default class Condition extends Component {
                             <InputNumber
                                 allowClear
                                 style={{width: 86, textAlign: "center"}}
-                                placeholder="最高价"
+                                placeholder="最高値"
                                 step={0.1}
                                 min={minPrice ? minPrice : 0}
                                 onChange={value => {
@@ -229,7 +227,7 @@ export default class Condition extends Component {
                                     callQuery(queryParam);
                                 }}
                             >
-                                确定
+                                検索
                             </Button>
                         </Input.Group>
                     </Col>

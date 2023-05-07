@@ -44,22 +44,28 @@ export default class GoodsInfo extends Component {
 
     /**
      * 根据已选属性过滤可选属性
+     * @param {*} skus
      * @param {*} attrArray 当前已选属性数组
-     * @return 可选属性set
+     * * @return 可选属性set
      */
-    filterSelectableAttr(attrArray = []) {
-        const {skus} = this.props;
-        let attrsTmp = [], attrArray1 = [], attrArray2 = [];
+    filterSelectableAttr(skus, attrArray = []) {
+        let attrsTmp, attrArray1, attrArray2;
         // 遍历已选属性，里层遍历sku属性，可选属性为当前已选属性所在行中的sku属性
         // 如当前行未选择属性，则表示sku中所有属性都可选择
         // 从sku中筛选包含当前行已选属性，则该sku中所有属性可选
         // 将每行已选属性对应的可选属性取交集，则可筛选出剩余可选属性
         attrArray.forEach((attrId, index) => {
-            attrId = attrArray[index];
             attrArray2 = [];
+            let attrIndex;
+            for (let i = 0; i < skus.length; i++) {
+                let attrs = skus[i].attrs.split(',');
+                attrIndex = attrs.indexOf(attrId + '');
+                if (attrIndex > -1) break;
+            }
+            console.log(index, ',', attrIndex)
             skus.forEach(({attrs}) => {
                 attrsTmp = attrs.split(',');
-                attrArray2.push(attrsTmp[index]);
+                attrArray2.push(attrsTmp[attrIndex]);
                 if (!attrId || attrsTmp.indexOf(`${attrId}`) > -1) {
                     attrArray2 = attrArray2.concat(attrsTmp);
                 }
@@ -76,6 +82,7 @@ export default class GoodsInfo extends Component {
                 attrArray1 = attrArray1.concat(attrs.split(','));
             })
         }
+        console.log(new Set(attrArray1))
         return new Set(attrArray1);
     }
 
@@ -93,13 +100,15 @@ export default class GoodsInfo extends Component {
         const {skus} = this.props;
         let goods, skuId;
         if (skus[0].attrs.split(",").length === attsArray.filter(id => !!id).length) {
-            const attrsStr = attsArray.join(',');
-            const sku = skus.find(({attrs}) => attrs === attrsStr);
-            if (!sku) {
+            let sku = skus;
+            for (let i = 0; i < attsArray.length; i++) {
+                sku = sku.filter(({attrs}) => attrs.split(',').indexOf(attsArray[i] + '') > -1);
+            }
+            if (!sku || !sku.length) {
                 return;
             }
-            goods = sku;
-            skuId = sku.id;
+            goods = sku[0];
+            skuId = goods.id;
         } else {
             goods = this.props.goods;
         }
@@ -114,7 +123,7 @@ export default class GoodsInfo extends Component {
             marketPrice: goods.marketPrice,
             quantity: goods.quantity
         }
-        this.setState({attrSet: this.filterSelectableAttr(attsArray), curSku});
+        this.setState({attrSet: this.filterSelectableAttr(skus, attsArray), curSku});
     }
 
     findProvinces() {
@@ -181,8 +190,8 @@ export default class GoodsInfo extends Component {
      * @param {*} city 当前选中城市
      */
     getFreight(id, targetCity, city) {
-        if (!id) return;
         const regionCode = targetCity.regionCode[1];
+        if (!id || !regionCode) return;
         FetchUtil.post({
             url: `/goods/${regionCode}/freight`,
             data: [id],

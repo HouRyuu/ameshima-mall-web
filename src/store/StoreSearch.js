@@ -1,6 +1,6 @@
 import React, {Component} from "react";
-import {Link} from "react-router";
-import {Row, Col, Icon, Input, AutoComplete} from "antd";
+import {browserHistory, Link} from "react-router";
+import {Row, Col, Input} from "antd";
 import FetchUtil from "../utils/FetchUtil";
 
 export default class StoreSearch extends Component {
@@ -18,7 +18,7 @@ export default class StoreSearch extends Component {
 
     componentWillReceiveProps(props) {
         const {id, evaluate} = props;
-        if (id) {
+        if (!evaluate) {
             this.getEvaluate(id);
         } else {
             this.setState({evaluate});
@@ -64,17 +64,20 @@ export default class StoreSearch extends Component {
                     </div>
                 </Col>
                 <Col span={8} offset={5}>
-                    <AutoComplete
+                    <Input.Search
                         className="global-search"
                         size="large"
                         style={{width: "100%"}}
                         placeholder="検索 当店 商品/ブランド"
-                        optionLabelProp="text"
-                    >
-                        <Input
-                            suffix={<Icon type="search" className="certain-category-icon"/>}
-                        />
-                    </AutoComplete>
+                        onSearch={value => {
+                            value = value.trim();
+                            if (!value) return;
+                            browserHistory.push({
+                                pathname: "/search",
+                                search: `?q=${value}&s=${this.props.id}`
+                            });
+                        }}
+                    />
                 </Col>
             </Row>
         );

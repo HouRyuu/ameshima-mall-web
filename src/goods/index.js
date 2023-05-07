@@ -54,20 +54,22 @@ export default class GoodsIndex extends Component {
         }
     };
 
-    getGoodsInfo(id) {
-        FetchUtil.get({
-            url: `/goods/${id}/detail`,
-            success: ({data}) => {
-                this.setState({...data});
-                const {
-                    goods: {storeId}
-                } = data;
-                this.getEvaluate(storeId);
-            },
-            error: () => {
-                this.setState({goods: null});
-            }
-        });
+    getGoodsInfo(id, callback) {
+        if (id) {
+            FetchUtil.get({
+                url: `/goods/${id}/detail`,
+                success: ({data}) => {
+                    this.setState({...data}, () => callback ? callback() : null);
+                    const {
+                        goods: {storeId}
+                    } = data;
+                    this.getEvaluate(storeId);
+                },
+                error: () => {
+                    this.setState({goods: null});
+                }
+            });
+        }
     }
 
     getEvaluate(storeId) {
@@ -96,17 +98,19 @@ export default class GoodsIndex extends Component {
     }
 
     evaluatePage(goodsId, pageIndex, pageSize) {
-        FetchUtil.post({
-            url: "/order/evaluate/page",
-            data: {
-                pageIndex,
-                pageSize,
-                goodsId
-            },
-            success: ({data: evaluatePage}) => {
-                this.setState({evaluatePage});
-            }
-        })
+        if (goodsId) {
+            FetchUtil.post({
+                url: "/order/evaluate/page",
+                data: {
+                    pageIndex,
+                    pageSize,
+                    goodsId
+                },
+                success: ({data: evaluatePage}) => {
+                    this.setState({evaluatePage});
+                }
+            })
+        }
     }
 
     renderEvaluateAttrs(attrsJson) {
@@ -121,15 +125,13 @@ export default class GoodsIndex extends Component {
         return attrsDom;
     }
 
-
     componentWillMount() {
         const {
             searchParam: {id, skuId, orderNo}
         } = new UrlUtil(window.location);
-        if (orderNo) {
-            window.scroll({
-                top: 300
-            });
+        if (isNaN(id) || id < 1) {
+            this.setState({goods: null});
+            return;
         }
         this.setState({
             showEvaluateForm: !!orderNo,
@@ -141,18 +143,15 @@ export default class GoodsIndex extends Component {
                 evaluateText: null
             }
         });
-        this.getGoodsInfo(parseInt(id));
+        this.getGoodsInfo(parseInt(id), () => {
+            window.scroll({
+                top: orderNo ? 300 : 0
+            });
+        });
         const {evaluatePage: {pageIndex, pageSize}} = this.state;
         this.evaluatePage(parseInt(id), pageIndex, pageSize);
     }
 
-    componentDidMount() {
-        // if (this.state.showEvaluateForm) {
-        window.scroll({
-            top: 300
-        });
-        // }
-    }
 
     render() {
         const {
@@ -182,11 +181,11 @@ export default class GoodsIndex extends Component {
                                 status="403"
                                 title="403"
                                 subTitle="申し訳ない。商品の販売は停止しました。"
-                            />
+                                extra={<Link to="/" onlyActiveOnIndex><Button type="primary">ホームに帰る</Button></Link>}/>
                         ) : (
                             <Layout>
                                 <Header className="search-warp">
-                                    <StoreSearch evaluate={evaluate}/>
+                                    <StoreSearch id={goods.storeId} evaluate={evaluate}/>
                                 </Header>
                                 <Content>
                                     <div className="goodsInfo-warp">

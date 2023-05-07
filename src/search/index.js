@@ -21,14 +21,14 @@ export default class SearchIndex extends Component {
         goodsPage: {
             pageSize: 60,
             pageIndex: 0,
-            total: 0,
+            total: 1,
             content: []
         }
     };
 
     initQ() {
         const {
-            searchParam: {q: word}
+            searchParam: {q: word, s: storeId}
         } = new UrlUtil(window.location);
         if (!word) {
             browserHistory.push("/");
@@ -36,6 +36,7 @@ export default class SearchIndex extends Component {
         }
         const queryParam = {
             word,
+            storeId: isNaN(storeId) ? '' : storeId,
             pageIndex: 0
         };
         this.setState({queryParam});
@@ -94,10 +95,9 @@ export default class SearchIndex extends Component {
                                             onSearch={value => {
                                                 value = value.trim();
                                                 if (!value) return;
-                                                // window.location.search = `?q=${value}`;
                                                 browserHistory.push({
                                                     pathname: "/search",
-                                                    search: `?q=${value}`
+                                                    search: `?q=${value}&s=${queryParam.storeId ? queryParam.storeId : ''}`
                                                 });
                                             }}
                                         />

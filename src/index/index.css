@@ -185,7 +185,7 @@
   }
 
   50% {
-    width: 0%;
+    width: 0;
   }
 
   100% {
@@ -301,8 +301,8 @@
 }
 
 .goodsPromote-warp .floor-banner {
-  min-width: 235px;
-  width: 235px;
+  min-width: 236px;
+  width: 236px;
   height: 618px;
 }
 

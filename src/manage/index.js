@@ -93,12 +93,12 @@ export default class Manage extends Component {
                                 menuList.map(({menu, menuUrl, childrenMenus}, index) => {
                                     if (childrenMenus && childrenMenus.length) {
                                         return <SubMenu title={menu} key={index}>
-                                            {childrenMenus.map((menuItem, miIndex) => {
-                                                return <Menu.Item key={miIndex}>{menuItem.menu}</Menu.Item>
+                                            {childrenMenus.map((menuItem) => {
+                                                return <Menu.Item key={menuItem.menuUrl}>{menuItem.menu}</Menu.Item>
                                             })}
                                         </SubMenu>
                                     } else {
-                                        return <Menu.Item key={index}>{menu}</Menu.Item>
+                                        return <Menu.Item key={menuUrl}>{menu}</Menu.Item>
                                     }
                                 })
                             }

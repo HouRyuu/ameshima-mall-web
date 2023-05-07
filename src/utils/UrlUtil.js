@@ -16,7 +16,11 @@ export default class UrlUtil {
             search = search.replace(/\?/, '"');
             search = search.replace(/=/g, '":"');
             search = search.replace(/&/g, '","');
-            this.searchParam = JSON.parse(`{${search}"}`);
+            try{
+                this.searchParam = JSON.parse(`{${search}"}`);
+            }catch (e) {
+                console.error('不法url')
+            }
         }
     }
 }
