@@ -27,6 +27,7 @@ export default class Order extends Component {
         this.getOrderStateCfg();
     }
 
+
     getOrderStateCfg() {
         FetchUtil.get({
             url: '/basic/order/state',
@@ -38,7 +39,7 @@ export default class Order extends Component {
         const {condition} = this.state;
         condition.pageIndex = pageIndex;
         FetchUtil.post({
-            url: '/order/page',
+            url: this.props.storeFlag ? '/order/store/page' : '/order/page',
             data: condition,
             success: ({data: orderPage}) => this.setState({condition, orderPage})
         })
@@ -88,7 +89,8 @@ export default class Order extends Component {
             <div className="cart-warp confirm-panel">
                 <div className="cart-table">
                     <OrderGoodsList orderStateArr={orderStateArr} orderList={orderList}
-                                    refresh={() => this.orderPage(pageIndex)} showPay/>
+                                    refresh={() => this.orderPage(pageIndex)} showPay={!this.props.storeFlag}
+                                    storeFlag={this.props.storeFlag}/>
                     <Pagination
                         style={{textAlign: 'right', marginTop: '12px'}}
                         pageSize={pageSize}

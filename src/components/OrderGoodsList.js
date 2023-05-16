@@ -1,5 +1,19 @@
 import React, {Component} from "react";
-import {Button, Divider, Empty, Icon, message, Popconfirm, Popover, Spin, Table, Tag, Tooltip} from "antd";
+import {
+    Button,
+    Divider,
+    Empty,
+    Icon,
+    Input,
+    message,
+    Popconfirm,
+    Popover,
+    Select,
+    Spin,
+    Table,
+    Tag,
+    Tooltip
+} from "antd";
 import {browserHistory, Link} from "react-router";
 import FetchUtil from "../utils/FetchUtil";
 import UrlUtil from "../utils/UrlUtil";
@@ -15,12 +29,16 @@ export default class OrderGoodsList extends Component {
         payWayArr: [],
         logisticsStateArr: [],
         orderList: [],
-        paying: false
+        paying: false,
+        showDeliveryForm: false,
+        deliveryList: [],
+        delivery: {}
     }
 
     componentDidMount() {
         this.getPayWayCfg();
         this.getLogisticsStateCfg();
+        this.deliveryList();
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -54,6 +72,13 @@ export default class OrderGoodsList extends Component {
         FetchUtil.get({
             url: '/basic/logistics/state',
             success: ({data}) => this.setState({logisticsStateArr: JSON.parse(data)})
+        });
+    }
+
+    deliveryList() {
+        FetchUtil.get({
+            url: '/basic/delivery/trader',
+            success: ({data}) => this.setState({deliveryList: JSON.parse(data)})
         });
     }
 
@@ -124,9 +149,41 @@ export default class OrderGoodsList extends Component {
         })
     }
 
+    clickDeliver(orderNo) {
+        const {delivery} = this.state;
+        if (delivery.orderNo === orderNo) { // 配送フォームをサブミット
+            FetchUtil.put({
+                url: '/order/delivery',
+                data: delivery,
+                success: () => {
+                    this.setState({delivery: {}})
+                    message.info("出荷完了")
+                    if (this.props.refresh) {
+                        this.props.refresh();
+                    }
+                }
+            })
+        } else {　// 配送フォームを展示
+            this.setState({delivery: {orderNo}});
+        }
+    }
+
+    changeDelivery(attrName, value) {
+        const {delivery} = this.state;
+        delivery[attrName] = value;
+        this.setState({delivery});
+    }
+
     renderGoods() {
         const {showPay} = this.props;
-        const {orderStateArr, payWayArr, logisticsStateArr, orderList} = this.state;
+        const {
+            orderStateArr,
+            payWayArr,
+            logisticsStateArr,
+            orderList,
+            delivery: {orderNo: deOrderNo, logisticsCompany: dLogisticsCompany, trackingNo: dTrackingNo},
+            deliveryList
+        } = this.state;
         if (!orderList || !orderList.length || !orderStateArr.length) {
             return [];
         }
@@ -150,7 +207,8 @@ export default class OrderGoodsList extends Component {
                                                 goodsLocation,
                                                 targetAddress,
                                                 trackingNo,
-                                                logisticsState
+                                                logisticsState,
+                                                logisticsCompany
                                             }
                                         }) => {
                 const {
@@ -181,7 +239,10 @@ export default class OrderGoodsList extends Component {
                             <Button>
                                 <Icon type='file-protect'/>
                             </Button>
-                        </Popconfirm> : null
+                        </Popconfirm> : orderState === 2 ?
+                            <Tooltip title='出荷'>
+                                <Button onClick={() => this.clickDeliver(orderNo)} icon='car'/>
+                            </Tooltip> : null
                     }
                     {
                         0 < orderState && orderState < 4 ? <Popconfirm
@@ -237,7 +298,10 @@ export default class OrderGoodsList extends Component {
                                     <Divider style={{color: "#fff"}}>発送の詳細</Divider>
                                     <p>倉庫所在地：{goodsLocation}</p>
                                     <p>状態：{logisticsStateArr[logisticsState]}</p>
-                                    {logisticsState ? <p>配送番号：{trackingNo}</p> : null}
+                                    {logisticsState ? <>
+                                        <p>配送業者：{deliveryList[logisticsCompany]}</p>
+                                        <p>配送番号：{trackingNo}</p>
+                                    </> : null}
                                 </div> : null
                             }
                         </div>
@@ -296,13 +360,33 @@ export default class OrderGoodsList extends Component {
                             rowKey="id"
                             className="cart-goods-table"
                             title={() => (
-                                <div className="shop-info" style={{height: '33px', lineHeight: '33px'}}>
-                                    <Icon type="shop" style={{margin: "0 8px", fontSize: 16}}/>
-                                    <span style={{fontSize: 13}}>
-                                                          <Link to={`/store?id=${storeId}`}
-                                                                onlyActiveOnIndex>{storeName}</Link>
-                                                    </span>
-                                    <span style={{fontSize: 13}}> 注文番号：{orderNo}</span>
+                                <div className="shop-info">
+                                    <div>
+                                        <Icon type="shop" style={{margin: "0 8px", fontSize: 16}}/>
+                                        <span style={{fontSize: 13}}>
+                                            <Link to={`/store?id=${storeId}`} onlyActiveOnIndex>{storeName}</Link>
+                                        </span>
+                                        <span style={{fontSize: 13}}> 注文番号：{orderNo}</span>
+                                    </div>
+                                    {
+                                        orderNo === deOrderNo ? <div>
+                                            <Select
+                                                style={{width: 114}}
+                                                value={dLogisticsCompany}
+                                                placeholder="配送業者"
+                                                onChange={(lValue) => this.changeDelivery('logisticsCompany', lValue)}>
+                                                {deliveryList.map((deliveryTrader, dIndex) =>
+                                                    <Select.Option key={dIndex}
+                                                                   value={dIndex}>{deliveryTrader}</Select.Option>)}
+                                            </Select>
+                                            <Input
+                                                style={{width: 320, marginLeft: 20}}
+                                                placeholder="トラッキングID"
+                                                maxLength={32}
+                                                value={dTrackingNo}
+                                                onChange={({target: {value: tValue}}) => this.changeDelivery('trackingNo', tValue)}/>
+                                        </div> : null
+                                    }
                                     {doDom}
                                 </div>
                             )}

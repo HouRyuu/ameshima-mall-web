@@ -218,13 +218,15 @@ export default class OrderConfirm extends Component {
                         className="cart-goods-table"
                         title={() => (
                             <div className="shop-info">
-                                {goodsState === 0 ? null : (
-                                    <Tag>無効</Tag>
-                                )}
-                                <Icon type="shop" style={{margin: "0 8px", fontSize: 16}}/>
-                                <span style={{fontSize: 13}}>
+                                <div>
+                                    {goodsState === 0 ? null : (
+                                        <Tag>無効</Tag>
+                                    )}
+                                    <Icon type="shop" style={{margin: "0 8px", fontSize: 16}}/>
+                                    <span style={{fontSize: 13}}>
                                     <Link to={`/store?id=${storeId}`} onlyActiveOnIndex>{storeName}</Link>
                                 </span>
+                                </div>
                             </div>
                         )}
                         showHeader={false}
@@ -319,8 +321,8 @@ export default class OrderConfirm extends Component {
                                         isDefault
                                     } = item;
                                     return <div key={index}
-                                        className={`addr-item-wrapper ${seletedAddrIndex === index ? 'addr-selected' : ''}`}
-                                        onClick={() => this.selectAddress(cityCode, index)}>
+                                                className={`addr-item-wrapper ${seletedAddrIndex === index ? 'addr-selected' : ''}`}
+                                                onClick={() => this.selectAddress(cityCode, index)}>
                                         <div className="inner-infos">
                                             <div className="addr-hd">{`${province + city + district}(${name})`}</div>
                                             <div className="addr-bd">

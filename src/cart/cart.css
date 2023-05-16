@@ -96,3 +96,10 @@
     font-size: 20px;
     margin: 0 8px;
 }
+
+.shop-info {
+    height: 33px;
+    line-height: 33px;
+    display: flex;
+    justify-content: space-between;
+}
