@@ -101,8 +101,12 @@ class PersonalInfo extends Component {
     render() {
         const {getFieldDecorator} = this.props.form;
         const {avatarUpdateFlag, userInfo, updateFlag, submitting, newUserInfo} = this.state;
-        const {nickName, account, accountType, avatar, gender} = userInfo;
+        const {nickName, account, accountType, avatar, gender, storeId} = userInfo;
         return <main>
+            {storeId ?
+                <div style={{textAlign: 'right'}}>
+                    <Button type='link'>経営者の貴方、店舗登録をしませんか</Button>
+                </div> : null}
             <Form onSubmit={e => {
                 e.preventDefault();
                 this.submitUserInfo();

@@ -62,7 +62,6 @@ export default class GoodsInfo extends Component {
                 attrIndex = attrs.indexOf(attrId + '');
                 if (attrIndex > -1) break;
             }
-            console.log(index, ',', attrIndex)
             skus.forEach(({attrs}) => {
                 attrsTmp = attrs.split(',');
                 attrArray2.push(attrsTmp[attrIndex]);
@@ -82,7 +81,6 @@ export default class GoodsInfo extends Component {
                 attrArray1 = attrArray1.concat(attrs.split(','));
             })
         }
-        console.log(new Set(attrArray1))
         return new Set(attrArray1);
     }
 

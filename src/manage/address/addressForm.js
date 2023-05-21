@@ -11,7 +11,7 @@ export default class AddressForm extends Component {
         visible: false,
         address: {},
         validateStatus: {},
-        region: new Region()
+        region: Region.INSTANCE
     }
 
     componentWillReceiveProps(props) {
@@ -23,12 +23,13 @@ export default class AddressForm extends Component {
         })
         if (address.id) {
             const {region} = this.state;
-            region.initRegion(region.setCityList, address.provinceCode, undefined, 2, () =>
-                this.setState({})
-            );
-            region.initRegion(region.setDistrictList, address.cityCode, address.provinceCode, 3, () =>
-                this.setState({})
-            );
+            setTimeout(() => {
+                region.initRegion(region.setCityList, address.provinceCode, undefined, 2, () => {
+                    region.initRegion(region.setDistrictList, address.cityCode, address.provinceCode, 3, () =>
+                        this.setState({})
+                    );
+                });
+            }, 100);
         }
     }
 
@@ -133,8 +134,8 @@ export default class AddressForm extends Component {
                         </Form.Item>
                     </Col>
                     <Col span={8}>
-                        <Form.Item label="市" hasFeedback validateStatus={validateStatus.cityCode}>
-                            <Select placeholder="市をお選び下さい" value={cityCode}
+                        <Form.Item label="市区村" hasFeedback validateStatus={validateStatus.cityCode}>
+                            <Select placeholder="お選び下さい" value={cityCode}
                                     onChange={(value, option) => {
                                         address.cityCode = value;
                                         address.city = option.props.children;
@@ -151,8 +152,8 @@ export default class AddressForm extends Component {
                         </Form.Item>
                     </Col>
                     <Col span={8}>
-                        <Form.Item label="区" hasFeedback validateStatus={validateStatus.districtCode}>
-                            <Select placeholder="区をお選び下さい" value={districtCode}
+                        <Form.Item label="町" hasFeedback validateStatus={validateStatus.districtCode}>
+                            <Select placeholder="お選び下さい" value={districtCode}
                                     onChange={(value, option) => {
                                         address.districtCode = value;
                                         address.district = option.props.children;

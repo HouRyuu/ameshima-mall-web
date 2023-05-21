@@ -165,7 +165,7 @@ class ForgetForm extends Component {
                                 </Form.Item>
                                 <Form.Item>
                                     <Row gutter={8}>
-                                        <Col span={12}>
+                                        <Col span={14}>
                                             {getFieldDecorator("captcha", {
                                                 rules: [
                                                     {
@@ -185,7 +185,7 @@ class ForgetForm extends Component {
                                                 />
                                             )}
                                         </Col>
-                                        <Col span={12}>
+                                        <Col span={10}>
                                             <Button
                                                 disabled={captchaBtnDis}
                                                 onClick={this.sendCaptcha}
@@ -204,7 +204,7 @@ class ForgetForm extends Component {
                                 >
                                     パスワードを修正
                                 </Button>
-                                <Row type="flex" justify="end" className="other-link-warp">
+                                <Row type="flex" justify="end" className="other-link-warp" style={{textAlign: 'right'}}>
                                     <Col span={6}>
                                         <Link
                                             to={`/login${

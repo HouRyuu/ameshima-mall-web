@@ -109,8 +109,8 @@ export default class Login extends Component {
                                     ログイン
                                 </Button>
                             </Form>
-                            <Row type="flex" justify="end" className="other-link-warp">
-                                <Col span={12}>
+                            <Row type="flex" justify="end" className="other-link-warp" style={{textAlign: 'right'}}>
+                                <Col span={11}>
                                     <Link
                                         to={`/forgetPwd${
                                             redirectURL ? `?redirectURL=${redirectURL}` : ""
@@ -119,7 +119,7 @@ export default class Login extends Component {
                                         パスワードを忘れた
                                     </Link>
                                 </Col>
-                                <Col span={5}>
+                                <Col span={6}>
                                     <Link
                                         to={`/register${
                                             redirectURL ? `?redirectURL=${redirectURL}` : ""

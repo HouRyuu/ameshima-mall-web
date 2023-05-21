@@ -1,6 +1,9 @@
 import FetchUtil from './FetchUtil';
 
 class Region {
+
+    static INSTANCE = new Region();
+
     provinceList = [];
     cityList = [];
     districtList = [];

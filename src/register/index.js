@@ -190,7 +190,7 @@ class RegisterForm extends Component {
                                 </Form.Item>
                                 <Form.Item>
                                     <Row gutter={8}>
-                                        <Col span={12}>
+                                        <Col span={14}>
                                             {getFieldDecorator("captcha", {
                                                 rules: [
                                                     {
@@ -210,7 +210,7 @@ class RegisterForm extends Component {
                                                 />
                                             )}
                                         </Col>
-                                        <Col span={12}>
+                                        <Col span={10}>
                                             <Button
                                                 disabled={captchaBtnDis}
                                                 onClick={this.sendCaptcha}
@@ -230,34 +230,40 @@ class RegisterForm extends Component {
                                     登録
                                 </Button>
                                 <Form.Item>
-                                    {getFieldDecorator("agreement", {
-                                        valuePropName: "checked",
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message: "協議を同意してください"
-                                            }
-                                        ]
-                                    })(
-                                        <Checkbox style={{fontSize: 12}}>
-                                            <Button
-                                                type="link"
-                                                style={{padding: 0, fontSize: 12}}
-                                                onClick={() => this.setState({protocolVisible: true})}
-                                            >
-                                                入会協議
-                                            </Button>
-                                            を読んで認めた
-                                        </Checkbox>
-                                    )}
-                                    <Link
-                                        className="toLogin-link"
-                                        to={`/login${
-                                            redirectURL ? `?redirectURL=${redirectURL}` : ""
-                                        }`}
-                                        onlyActiveOnIndex>
-                                        ログイン
-                                    </Link>
+                                    <Row>
+                                        <Col span={18}>
+                                            {getFieldDecorator("agreement", {
+                                                valuePropName: "checked",
+                                                rules: [
+                                                    {
+                                                        required: true,
+                                                        message: "協議を同意してください"
+                                                    }
+                                                ]
+                                            })(
+                                                <Checkbox style={{fontSize: 12}}>
+                                                    <Button
+                                                        type="link"
+                                                        style={{padding: 0, fontSize: 12}}
+                                                        onClick={() => this.setState({protocolVisible: true})}
+                                                    >
+                                                        入会協議
+                                                    </Button>
+                                                    を読んで認めた
+                                                </Checkbox>
+                                            )}
+                                        </Col>
+                                        <Col span={6} style={{textAlign: 'right'}}>
+                                            <Link
+                                                className="toLogin-link"
+                                                to={`/login${
+                                                    redirectURL ? `?redirectURL=${redirectURL}` : ""
+                                                }`}
+                                                onlyActiveOnIndex>
+                                                ログイン
+                                            </Link>
+                                        </Col>
+                                    </Row>
                                 </Form.Item>
                             </Form>
                             <Protocol

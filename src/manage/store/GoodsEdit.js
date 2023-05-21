@@ -27,8 +27,9 @@ const Option = Select.Option;
  * @param saveCallback 保存成功のコールバック
  */
 export default class GoodsEdit extends Component {
+
     state = {
-        region: new Region(),
+        region: Region.INSTANCE,
         bannerLoading: false,
         address: {},
         validateStatus: {},
