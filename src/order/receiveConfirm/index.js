@@ -15,7 +15,7 @@ export default class OrderReceiveConfirm extends Component {
     findOrderGoodsList() {
         const {
             searchParam: {orderNo}
-        } = new UrlUtil(window.location);
+        } = new UrlUtil();
         if (orderNo) {
             FetchUtil.get({
                 url: `/order/${orderNo}/goods/3`,

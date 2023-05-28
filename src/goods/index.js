@@ -128,7 +128,7 @@ export default class GoodsIndex extends Component {
     componentWillMount() {
         const {
             searchParam: {id, skuId, orderNo}
-        } = new UrlUtil(window.location);
+        } = new UrlUtil();
         if (isNaN(id) || id < 1) {
             this.setState({goods: null});
             return;

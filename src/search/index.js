@@ -29,7 +29,7 @@ export default class SearchIndex extends Component {
     initQ() {
         const {
             searchParam: {q: word, s: storeId}
-        } = new UrlUtil(window.location);
+        } = new UrlUtil();
         if (!word) {
             browserHistory.push("/");
             return;
@@ -81,7 +81,7 @@ export default class SearchIndex extends Component {
                                             <img
                                                 className="tmall-logo"
                                                 alt="トップページ"
-                                                src="/LOGO.png"
+                                                src={`${window.origin}/LOGO.png`}
                                             />
                                         </Link>
                                     </Col>
@@ -96,7 +96,7 @@ export default class SearchIndex extends Component {
                                                 value = value.trim();
                                                 if (!value) return;
                                                 browserHistory.push({
-                                                    pathname: "/search",
+                                                    pathname: "/#/search",
                                                     search: `?q=${value}&s=${queryParam.storeId ? queryParam.storeId : ''}`
                                                 });
                                             }}

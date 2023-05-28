@@ -118,7 +118,7 @@ export default class IndexHead extends Component {
                                         loginInfo
                                             ? "/manage/order"
                                             : `/login?redirectURL=${escape(
-                                                window.location.origin + "/manage/order"
+                                                window.origin + "/manage/order"
                                             )}`
                                     } onlyActiveOnIndex>
                                         注文履歴
@@ -131,7 +131,7 @@ export default class IndexHead extends Component {
                                         loginInfo
                                             ? "/manage/address"
                                             : `/login?redirectURL=${escape(
-                                                window.location.origin + "/manage/address"
+                                                window.origin + "/manage/address"
                                             )}`
                                     } onlyActiveOnIndex>
                                         アドレス帳
@@ -144,7 +144,7 @@ export default class IndexHead extends Component {
                                       loginInfo
                                           ? "/manage/personalInfo"
                                           : `/login?redirectURL=${escape(
-                                              window.location.origin + "/manage/personalInfo"
+                                              window.origin + "/manage/personalInfo"
                                           )}`
                                   }
                                   onlyActiveOnIndex>
@@ -158,7 +158,7 @@ export default class IndexHead extends Component {
                                 loginInfo
                                     ? "/shoppingCart"
                                     : `/login?redirectURL=${escape(
-                                        window.location.origin + "/shoppingCart"
+                                        window.origin + "/shoppingCart"
                                     )}`
                             }
                             onlyActiveOnIndex>

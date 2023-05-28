@@ -10,7 +10,7 @@ class ForgetForm extends Component {
         super(props);
         const {
             searchParam: {redirectURL}
-        } = new UrlUtil(window.location);
+        } = new UrlUtil();
         this.state = {
             redirectURL,
             captchaBtnText: "キャプチャ",
@@ -75,7 +75,7 @@ class ForgetForm extends Component {
                         <Link to="/" onlyActiveOnIndex>
                             <img
                                 alt="トップページ"
-                                src="/LOGO.png"
+                                src={`${window.origin}/LOGO.png`}
                             />
                         </Link>
                     </Col>

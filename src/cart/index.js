@@ -24,6 +24,7 @@ import "antd/dist/antd.css";
 import "../style.css";
 import "../index/index.css";
 import "./cart.css";
+import UrlUtil from "../utils/UrlUtil";
 
 const {Header, Footer, Content} = Layout;
 export default class CartIndex extends Component {
@@ -366,7 +367,7 @@ export default class CartIndex extends Component {
                                             <img
                                                 className="tmall-logo"
                                                 alt="トップページ"
-                                                src="/LOGO.png"
+                                                src={`${UrlUtil.ORIGIN}/LOGO.png`}
                                             />
                                         </Link>
                                     </Col>

@@ -10,7 +10,7 @@ export default class Login extends Component {
         super(props);
         const {
             searchParam: {redirectURL}
-        } = new UrlUtil(window.location);
+        } = new UrlUtil();
         this.state = {
             redirectURL,
             loginBtnDis: false
@@ -45,7 +45,7 @@ export default class Login extends Component {
                         <Link to="/" onlyActiveOnIndex>
                             <img
                                 alt="トップページ"
-                                src="/LOGO.png"
+                                src={`${window.origin}/LOGO.png`}
                             />
                         </Link>
                     </Col>

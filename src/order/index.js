@@ -34,7 +34,7 @@ export default class OrderSubmit extends Component {
                                             <img
                                                 className="tmall-logo"
                                                 alt="トップページ"
-                                                src="/LOGO.png"
+                                                src={`${window.origin}/LOGO.png`}
                                             />
                                         </Link>
                                     </Col>

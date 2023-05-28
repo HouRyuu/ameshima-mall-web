@@ -18,7 +18,7 @@ export default class StoreIndex extends Component {
     state = {};
 
     findStordGoods() {
-        const urlUtil = new UrlUtil(window.location);
+        const urlUtil = new UrlUtil();
         const {
             searchParam: {id}
         } = urlUtil;

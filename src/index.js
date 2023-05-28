@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {Router, Route, browserHistory, IndexRoute} from "react-router";
+import {Router, Route, browserHistory, IndexRoute, hashHistory} from "react-router";
 import {LocaleProvider} from "antd";
 import ja_JP from "antd/lib/locale-provider/ja_JP";
 import Index from "./index/";

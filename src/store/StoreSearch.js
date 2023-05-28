@@ -36,7 +36,7 @@ export default class StoreSearch extends Component {
                         <img
                             width={200}
                             alt="トップページ"
-                            src="/LOGO.png"
+                            src={`${window.origin}/LOGO.png`}
                         />
                     </Link>
                 </Col>

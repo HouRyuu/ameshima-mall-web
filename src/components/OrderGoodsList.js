@@ -20,7 +20,7 @@ import UrlUtil from "../utils/UrlUtil";
 
 
 const IconFont = Icon.createFromIconfontCN({
-    scriptUrl: '//at.alicdn.com/t/c/font_3587549_38byjo3ae9j.js',
+    scriptUrl: 'https://at.alicdn.com/t/c/font_3587549_38byjo3ae9j.js',
 })
 export default class OrderGoodsList extends Component {
 
@@ -175,7 +175,7 @@ export default class OrderGoodsList extends Component {
     }
 
     renderGoods() {
-        const {showPay} = this.props;
+        const {showPay, storeFlag} = this.props;
         const {
             orderStateArr,
             payWayArr,
@@ -229,7 +229,7 @@ export default class OrderGoodsList extends Component {
                                     <IconFont key={way} type={`icon-${way}`}/>
                                 </Button>)
                             }
-                        </Button.Group></Tooltip> : orderState === 3 ? <Popconfirm
+                        </Button.Group></Tooltip> : orderState === 3 && !storeFlag ? <Popconfirm
                             title="該当注文の商品は全て届きましたか？"
                             icon={<Icon type="question-circle-o" style={{color: 'red'}}/>}
                             onConfirm={() => this.receiveConfirm(orderNo)}
@@ -239,24 +239,24 @@ export default class OrderGoodsList extends Component {
                             <Button>
                                 <Icon type='file-protect'/>
                             </Button>
-                        </Popconfirm> : orderState === 2 ?
+                        </Popconfirm> : orderState === 2 && storeFlag ?
                             <Tooltip title='出荷'>
                                 <Button onClick={() => this.clickDeliver(orderNo)} icon='car'/>
                             </Tooltip> : null
                     }
-                    {
-                        0 < orderState && orderState < 4 ? <Popconfirm
-                            title="注文をキャンセルしますか"
-                            icon={<Icon type="question-circle-o" style={{color: 'red'}}/>}
-                            onConfirm={null}
-                            okText="はい"
-                            cancelText="いいえ"
-                        >
-                            <Button style={{marginLeft: '10px'}} type='danger' ghost>
-                                <Icon type='delete' theme='filled'/>
-                            </Button>
-                        </Popconfirm> : null
-                    }
+                    {/*{*/}
+                    {/*    0 < orderState && orderState < 4 ? <Popconfirm*/}
+                    {/*        title="注文をキャンセルしますか"*/}
+                    {/*        icon={<Icon type="question-circle-o" style={{color: 'red'}}/>}*/}
+                    {/*        onConfirm={null}*/}
+                    {/*        okText="はい"*/}
+                    {/*        cancelText="いいえ"*/}
+                    {/*    >*/}
+                    {/*        <Button style={{marginLeft: '10px'}} type='danger' ghost>*/}
+                    {/*            <Icon type='delete' theme='filled'/>*/}
+                    {/*        </Button>*/}
+                    {/*    </Popconfirm> : null*/}
+                    {/*}*/}
 
                 </div>);
                 goodsList.forEach(({
@@ -439,7 +439,7 @@ export default class OrderGoodsList extends Component {
             success: () => {
                 const {
                     searchParam: {orderNo}
-                } = new UrlUtil(window.location);
+                } = new UrlUtil();
                 if (orderNo) {
                     browserHistory.push({
                         pathname: '/order/comment',

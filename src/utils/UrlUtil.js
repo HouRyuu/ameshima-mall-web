@@ -3,8 +3,8 @@ export default class UrlUtil {
     searchParam = {};
     pathname = [];
 
-    constructor(url) {
-        this.url = url;
+    constructor() {
+        this.url = window.location;
         this.analyzeSearchParam();
     }
 

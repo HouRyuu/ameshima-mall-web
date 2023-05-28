@@ -50,7 +50,7 @@ export default class IndexGoodsNav extends Component {
             <div className="goods-nav-warp">
                 <img
                     alt="雨島で理想的な生活を"
-                    src="/LOGO.png"
+                    src={`${window.origin}/LOGO.png`}
                     width="240"
                     style={{margin: "30px 0"}}
                 />

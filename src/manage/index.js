@@ -32,7 +32,7 @@ export default class Manage extends Component {
 
     constructor(props) {
         super(props);
-        const {pathname} = new UrlUtil(window.location);
+        const {pathname} = new UrlUtil();
         this.defaultSelectedKeys = [pathname[1]];
     }
 
@@ -69,7 +69,7 @@ export default class Manage extends Component {
                             <img
                                 className="logo"
                                 alt="トップページ"
-                                src="/LOGO.png"
+                                src={`${window.origin}/LOGO.png`}
                             />
                         </Link>
                     </Col>

@@ -6,10 +6,10 @@ import OrderGoodsList from "../../components/OrderGoodsList";
 import {browserHistory} from "react-router";
 
 const IconFont = Icon.createFromIconfontCN({
-    scriptUrl: '//at.alicdn.com/t/c/font_3587549_38byjo3ae9j.js',
+    scriptUrl: 'https://at.alicdn.com/t/c/font_3587549_38byjo3ae9j.js',
 })
 export default class OrderConfirmDone extends Component {
-    orderNo = new UrlUtil(window.location).searchParam.orderNo;
+    orderNo = new UrlUtil().searchParam.orderNo;
     state = {
         orderStateArr: [],
         orderList: [],
