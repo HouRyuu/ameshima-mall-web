@@ -106,7 +106,7 @@ class RegisterForm extends Component {
                                         ]
                                     })(
                                         <Input
-                                            maxLength={16}
+                                            maxLength={32}
                                             prefix={<Icon type="mail"/>}
                                             placeholder="メールアドレス"
                                         />

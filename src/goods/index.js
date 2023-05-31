@@ -251,11 +251,11 @@ export default class GoodsIndex extends Component {
                                                             {detailImgs.map((img, index) => (
                                                                 <img key={index} alt="" src={img}/>
                                                             ))}
-                                                            <img
-                                                                alt=""
-                                                                style={{marginTop: 20}}
-                                                                src="https://img.alicdn.com/tfs/TB1.CUdsY9YBuNjy0FgXXcxcXXa-1572-394.png"
-                                                            />
+                                                            {/*<img*/}
+                                                            {/*    alt=""*/}
+                                                            {/*    style={{marginTop: 20}}*/}
+                                                            {/*    src="https://img.alicdn.com/tfs/TB1.CUdsY9YBuNjy0FgXXcxcXXa-1572-394.png"*/}
+                                                            {/*/>*/}
                                                         </div>
                                                     </TabPane>
                                                     <TabPane

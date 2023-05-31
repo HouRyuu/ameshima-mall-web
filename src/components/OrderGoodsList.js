@@ -59,13 +59,10 @@ export default class OrderGoodsList extends Component {
     }
 
     getPayWayCfg() {
-        const {showPay} = this.props;
-        if (showPay) {
-            FetchUtil.get({
-                url: '/basic/pay/way',
-                success: ({data}) => this.setState({payWayArr: JSON.parse(data)})
-            });
-        }
+        FetchUtil.get({
+            url: '/basic/pay/way',
+            success: ({data}) => this.setState({payWayArr: JSON.parse(data)})
+        });
     }
 
     getLogisticsStateCfg() {
