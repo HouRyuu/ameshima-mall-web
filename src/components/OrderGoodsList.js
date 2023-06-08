@@ -188,6 +188,7 @@ export default class OrderGoodsList extends Component {
             payWayArr.slice(0, payWayArr.length);
         }
         const result = [];
+        console.log(orderList.length)
         orderList.forEach(({
                                orderNo,
                                storeId,
@@ -198,6 +199,47 @@ export default class OrderGoodsList extends Component {
                            }) => {
             const dataSource = [];
             const orderStateStr = orderStateArr[orderState];
+            let doDom = (<div style={{float: "right"}}>
+                {
+                    orderState === 1 ? <Tooltip title='支払う方法をお選び下さい'><Button.Group>
+                        {
+                            payWayArr.map(way => <Button shape="circle" key={way}
+                                                         onClick={() => this.showPay(orderNo, way)}>
+                                <IconFont key={way} type={`icon-${way}`}/>
+                            </Button>)
+                        }
+                    </Button.Group></Tooltip> : orderState === 3 && !storeFlag ? <Popconfirm
+                        title="該当注文の商品は全て届きましたか？"
+                        icon={<Icon type="question-circle-o" style={{color: 'red'}}/>}
+                        onConfirm={() => this.receiveConfirm(orderNo)}
+                        okText="はい"
+                        cancelText="いいえ"
+                    >
+                        <Button>
+                            <Icon type='file-protect'/>
+                        </Button>
+                    </Popconfirm> : orderState === 2 && storeFlag ?
+                        <Tooltip title='出荷'>
+                            <Button onClick={() => this.clickDeliver(orderNo)} icon='car'/>
+                        </Tooltip> : null
+                }
+                {/*{*/}
+                {/*    0 < orderState && orderState < 4 ? <Popconfirm*/}
+                {/*        title="注文をキャンセルしますか"*/}
+                {/*        icon={<Icon type="question-circle-o" style={{color: 'red'}}/>}*/}
+                {/*        onConfirm={null}*/}
+                {/*        okText="はい"*/}
+                {/*        cancelText="いいえ"*/}
+                {/*    >*/}
+                {/*        <Button style={{marginLeft: '10px'}} type='danger' ghost>*/}
+                {/*            <Icon type='delete' theme='filled'/>*/}
+                {/*        </Button>*/}
+                {/*    </Popconfirm> : null*/}
+                {/*}*/}
+
+            </div>);
+            let totalFreight = 0;
+
             logisticsGoodsList.forEach(({
                                             goodsList,
                                             orderLogistics: {
@@ -216,46 +258,6 @@ export default class OrderGoodsList extends Component {
                     district,
                     detailedAddress
                 } = JSON.parse(targetAddress)
-                let totalFreight = 0;
-                let doDom = (<div style={{float: "right"}}>
-                    {
-                        orderState === 1 ? <Tooltip title='支払う方法をお選び下さい'><Button.Group>
-                            {
-                                payWayArr.map(way => <Button shape="circle" key={way}
-                                                             onClick={() => this.showPay(orderNo, way)}>
-                                    <IconFont key={way} type={`icon-${way}`}/>
-                                </Button>)
-                            }
-                        </Button.Group></Tooltip> : orderState === 3 && !storeFlag ? <Popconfirm
-                            title="該当注文の商品は全て届きましたか？"
-                            icon={<Icon type="question-circle-o" style={{color: 'red'}}/>}
-                            onConfirm={() => this.receiveConfirm(orderNo)}
-                            okText="はい"
-                            cancelText="いいえ"
-                        >
-                            <Button>
-                                <Icon type='file-protect'/>
-                            </Button>
-                        </Popconfirm> : orderState === 2 && storeFlag ?
-                            <Tooltip title='出荷'>
-                                <Button onClick={() => this.clickDeliver(orderNo)} icon='car'/>
-                            </Tooltip> : null
-                    }
-                    {/*{*/}
-                    {/*    0 < orderState && orderState < 4 ? <Popconfirm*/}
-                    {/*        title="注文をキャンセルしますか"*/}
-                    {/*        icon={<Icon type="question-circle-o" style={{color: 'red'}}/>}*/}
-                    {/*        onConfirm={null}*/}
-                    {/*        okText="はい"*/}
-                    {/*        cancelText="いいえ"*/}
-                    {/*    >*/}
-                    {/*        <Button style={{marginLeft: '10px'}} type='danger' ghost>*/}
-                    {/*            <Icon type='delete' theme='filled'/>*/}
-                    {/*        </Button>*/}
-                    {/*    </Popconfirm> : null*/}
-                    {/*}*/}
-
-                </div>);
                 goodsList.forEach(({
                                        goodsId,
                                        skuId,
@@ -305,6 +307,7 @@ export default class OrderGoodsList extends Component {
                     }>
                         <Tag color="blue">{orderStateStr}</Tag>
                     </Tooltip>);
+                    console.log(orderState)
                     dataSource.push({
                         key: skuId,
                         img: (
@@ -315,6 +318,7 @@ export default class OrderGoodsList extends Component {
                                 <img alt="" className="cart-goods-img" src={imgUrl}/>
                             </Popover>
                         ),
+                        goodsCount: goodsList.length,
                         goodsName: (
                             <div>
                                 <span style={{wordWrap: 'break-word', wordBreak: 'break-word'}}>{goodsName}</span>
@@ -350,81 +354,82 @@ export default class OrderGoodsList extends Component {
                         state: (<div>{stateDom}</div>),
                     });
                 });
-                result.push({
-                    key: `${orderNo}`,
-                    goodsTable: (
-                        <Table
-                            rowKey="id"
-                            className="cart-goods-table"
-                            title={() => (
-                                <div className="shop-info">
-                                    <div>
-                                        <Icon type="shop" style={{margin: "0 8px", fontSize: 16}}/>
-                                        <span style={{fontSize: 13}}>
+
+            });
+            result.push({
+                key: `${orderNo}`,
+                goodsTable: (
+                    <Table
+                        rowKey="id"
+                        className="cart-goods-table"
+                        title={() => (
+                            <div className="shop-info">
+                                <div>
+                                    <Icon type="shop" style={{margin: "0 8px", fontSize: 16}}/>
+                                    <span style={{fontSize: 13}}>
                                             <Link to={`/store?id=${storeId}`} onlyActiveOnIndex>{storeName}</Link>
                                         </span>
-                                        <span style={{fontSize: 13}}> 注文番号：{orderNo}</span>
-                                    </div>
-                                    {
-                                        orderNo === deOrderNo ? <div>
-                                            <Select
-                                                style={{width: 114}}
-                                                value={dLogisticsCompany}
-                                                placeholder="配送業者"
-                                                onChange={(lValue) => this.changeDelivery('logisticsCompany', lValue)}>
-                                                {deliveryList.map((deliveryTrader, dIndex) =>
-                                                    <Select.Option key={dIndex}
-                                                                   value={dIndex}>{deliveryTrader}</Select.Option>)}
-                                            </Select>
-                                            <Input
-                                                style={{width: 320, marginLeft: 20}}
-                                                placeholder="トラッキングID"
-                                                maxLength={32}
-                                                value={dTrackingNo}
-                                                onChange={({target: {value: tValue}}) => this.changeDelivery('trackingNo', tValue)}/>
-                                        </div> : null
-                                    }
-                                    {doDom}
+                                    <span style={{fontSize: 13}}> 注文番号：{orderNo}</span>
                                 </div>
-                            )}
-                            showHeader={false}
-                            columns={[
-                                {dataIndex: "img", width: "9%"},
-                                {dataIndex: "goodsName", width: "35%"},
-                                {dataIndex: "price", width: "15%"},
-                                {dataIndex: "amount", width: "13%"},
-                                {dataIndex: "goodsId", width: "18%"},
                                 {
-                                    dataIndex: "money",
-                                    width: "13%",
-                                    className: "verticalAlignCenter",
-                                    render: (value, row, index) => {
-                                        return {
-                                            children: <div>{value}<p>(送料：¥{totalFreight})</p></div>,
-                                            props: {
-                                                rowSpan: !index ? goodsList.length : 0
-                                            },
-                                        };
-                                    }
-                                },
-                                {
-                                    dataIndex: "state",
-                                    className: "verticalAlignCenter",
-                                    render: (value, row, index) => {
-                                        return {
-                                            children: value,
-                                            props: {
-                                                rowSpan: !index ? goodsList.length : 0
-                                            },
-                                        };
-                                    }
+                                    orderNo === deOrderNo ? <div>
+                                        <Select
+                                            style={{width: 114}}
+                                            value={dLogisticsCompany}
+                                            placeholder="配送業者"
+                                            onChange={(lValue) => this.changeDelivery('logisticsCompany', lValue)}>
+                                            {deliveryList.map((deliveryTrader, dIndex) =>
+                                                <Select.Option key={dIndex}
+                                                               value={dIndex}>{deliveryTrader}</Select.Option>)}
+                                        </Select>
+                                        <Input
+                                            style={{width: 320, marginLeft: 20}}
+                                            placeholder="トラッキングID"
+                                            maxLength={32}
+                                            value={dTrackingNo}
+                                            onChange={({target: {value: tValue}}) => this.changeDelivery('trackingNo', tValue)}/>
+                                    </div> : null
                                 }
-                            ]}
-                            dataSource={dataSource}
-                            pagination={false}
-                        />
-                    )
-                });
+                                {doDom}
+                            </div>
+                        )}
+                        showHeader={false}
+                        columns={[
+                            {dataIndex: "img", width: "9%"},
+                            {dataIndex: "goodsName", width: "35%"},
+                            {dataIndex: "price", width: "15%"},
+                            {dataIndex: "amount", width: "13%"},
+                            {dataIndex: "goodsId", width: "18%"},
+                            {
+                                dataIndex: "money",
+                                width: "13%",
+                                className: "verticalAlignCenter",
+                                render: (value, row, index) => {
+                                    return {
+                                        children: <div>{value}<p>(送料：¥{totalFreight})</p></div>,
+                                        props: {
+                                            rowSpan: !index ? row.goodsCount : 0
+                                        },
+                                    };
+                                }
+                            },
+                            {
+                                dataIndex: "state",
+                                className: "verticalAlignCenter",
+                                render: (value, row, index) => {
+                                    return {
+                                        children: value,
+                                        props: {
+                                            rowSpan: !index ? row.goodsCount : 0
+                                        },
+                                    };
+                                }
+                            }
+                        ]}
+                        dataSource={dataSource}
+                        pagination={false}
+                    />
+                )
             });
         });
         return result;

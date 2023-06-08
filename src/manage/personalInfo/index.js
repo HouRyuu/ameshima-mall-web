@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {Button, Descriptions, Input, message, Upload, Radio, Form} from "antd";
 import FetchUtil from "../../utils/FetchUtil";
 import {browserHistory} from "react-router";
+import StoreForm from "../store/StoreForm";
 
 const ButtonGroup = Button.Group;
 
@@ -12,7 +13,8 @@ class PersonalInfo extends Component {
         userInfo: {},
         updateFlag: false,
         submitting: false,
-        newUserInfo: {}
+        newUserInfo: {},
+        storeFormFlag: false
     }
 
     componentWillMount() {
@@ -98,15 +100,20 @@ class PersonalInfo extends Component {
         });
     }
 
+    openStoreForm() {
+        this.setState({storeFormFlag: true})
+    }
+
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {avatarUpdateFlag, userInfo, updateFlag, submitting, newUserInfo} = this.state;
+        const {avatarUpdateFlag, userInfo, updateFlag, submitting, newUserInfo, storeFormFlag} = this.state;
         const {nickName, account, accountType, avatar, gender, storeId} = userInfo;
         return <main>
-            {storeId ?
+            {!storeId ?
                 <div style={{textAlign: 'right'}}>
-                    <Button type='link'>経営者の貴方、店舗登録をしませんか</Button>
+                    <Button type='link' onClick={() => this.openStoreForm()}>経営者の貴方、店舗を登録しませんか</Button>
                 </div> : null}
+            <StoreForm visible={storeFormFlag} close={() => this.setState({storeFormFlag: false})}/>
             <Form onSubmit={e => {
                 e.preventDefault();
                 this.submitUserInfo();

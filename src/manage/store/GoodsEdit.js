@@ -317,7 +317,7 @@ export default class GoodsEdit extends Component {
                 <Row gutter={16}>
                     <Col span={12}>
                         <Form.Item label="商品名" hasFeedback validateStatus={validateStatus.name}>
-                            <Input.TextArea disabled={!isEdit} rows={4} placeholder="商品詳細画面に表示" value={name}
+                            <Input.TextArea disabled={!isEdit} rows={4} placeholder="商品カードに表示" value={name}
                                             maxLength={128}
                                             onChange={({target: {value}}) => {
                                                 goods.name = value;
@@ -328,7 +328,7 @@ export default class GoodsEdit extends Component {
                     </Col>
                     <Col span={12}>
                         <Form.Item label="シンプルデスクリプション" hasFeedback validateStatus={validateStatus.simpleDesc}>
-                            <Input.TextArea disabled={!isEdit} rows={4} placeholder="商品カードに表示" value={simpleDesc}
+                            <Input.TextArea disabled={!isEdit} rows={4} placeholder="商品詳細画面に表示" value={simpleDesc}
                                             maxLength={64}
                                             onChange={({target: {value}}) => {
                                                 goods.simpleDesc = value;
