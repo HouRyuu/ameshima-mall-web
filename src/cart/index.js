@@ -367,7 +367,7 @@ export default class CartIndex extends Component {
                                             <img
                                                 className="tmall-logo"
                                                 alt="トップページ"
-                                                src={`${UrlUtil.ORIGIN}/LOGO.png`}
+                                                src={`${window.origin}/LOGO.png`}
                                             />
                                         </Link>
                                     </Col>

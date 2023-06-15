@@ -33,7 +33,7 @@ export default class GoodsGrid extends Component {
                     this.addLikeCategory(categoryId);
                 }}
                 onlyActiveOnIndex>
-                <div className="goodsGrid-warp">
+                <div className="goodsGrid-warp" style={this.props.style}>
                     <img alt="" className="goodsGrid-img" src={imgUrl}/>
                     <div className="goodsGrid-title">{name}</div>
                     <div className="goodsGrid-price">¥{price}</div>

@@ -148,7 +148,7 @@ class PersonalInfo extends Component {
                         <Upload
                             disabled={!!accountType || avatarUpdateFlag}
                             accept=".png,.jpg,.jpeg"
-                            action="//localhost:8080/user/avatar/upload"
+                            action="/api/user/avatar/upload"
                             headers={{token: localStorage.getItem("token")}}
                             name="avatarFile"
                             listType="picture-card"

@@ -188,7 +188,6 @@ export default class OrderGoodsList extends Component {
             payWayArr.slice(0, payWayArr.length);
         }
         const result = [];
-        console.log(orderList.length)
         orderList.forEach(({
                                orderNo,
                                storeId,
@@ -307,7 +306,6 @@ export default class OrderGoodsList extends Component {
                     }>
                         <Tag color="blue">{orderStateStr}</Tag>
                     </Tooltip>);
-                    console.log(orderState)
                     dataSource.push({
                         key: skuId,
                         img: (

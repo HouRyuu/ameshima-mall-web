@@ -30,7 +30,7 @@ export default class GoodsPromote extends Component {
                                 {goodsArray.map(goods => {
                                     return (
                                         <li key={goods.id} className="wonderful-item">
-                                            <GoodsGrid {...goods} />
+                                            <GoodsGrid {...goods} style={{width:320}}/>
                                         </li>
                                     );
                                 })}
