@@ -24,7 +24,6 @@ import "antd/dist/antd.css";
 import "../style.css";
 import "../index/index.css";
 import "./cart.css";
-import UrlUtil from "../utils/UrlUtil";
 
 const {Header, Footer, Content} = Layout;
 export default class CartIndex extends Component {
