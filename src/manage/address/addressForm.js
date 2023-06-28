@@ -98,7 +98,7 @@ export default class AddressForm extends Component {
                         </Form.Item>
                     </Col>
                     <Col span={12}>
-                        <Form.Item label="お電話" hasFeedback validateStatus={validateStatus.phone}>
+                        <Form.Item label="お電話(ハイフォンなし)" hasFeedback validateStatus={validateStatus.phone}>
                             <Input placeholder="お電話をご入力下さい" value={phone}
                                    maxLength={16}
                                    onChange={({target: {value}}) => {

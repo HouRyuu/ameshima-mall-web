@@ -113,7 +113,10 @@ class PersonalInfo extends Component {
                 <div style={{textAlign: 'right'}}>
                     <Button type='link' onClick={() => this.openStoreForm()}>経営者の貴方、店舗を登録しませんか</Button>
                 </div> : null}
-            <StoreForm visible={storeFormFlag} close={() => this.setState({storeFormFlag: false})}/>
+            <StoreForm
+                visible={storeFormFlag}
+                close={() => this.setState({storeFormFlag: false})}
+            />
             <Form onSubmit={e => {
                 e.preventDefault();
                 this.submitUserInfo();
@@ -148,7 +151,7 @@ class PersonalInfo extends Component {
                         <Upload
                             disabled={!!accountType || avatarUpdateFlag}
                             accept=".png,.jpg,.jpeg"
-                            action="/api/user/avatar/upload"
+                            action="//www.ameshima-mall.com/api/user/avatar/upload"
                             headers={{token: localStorage.getItem("token")}}
                             name="avatarFile"
                             listType="picture-card"

@@ -12,7 +12,7 @@ class FetchUtil {
             error,
             complete
         } = params;
-        url = `/api${url}`;
+        url = `//www.ameshima-mall.com/api${url}`;
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json;charset=UTF-8");
@@ -58,12 +58,13 @@ class FetchUtil {
             if (error) {
                 error(result);
             } else if (result.errMsg) {
-                if (errCode === 201 || errCode === 202) {
+                if (errCode === 401 || errCode === 402) {
                     if (complete) {
                         complete(result);
                     }
                     completeFlag = false;
                     message.error(result.errMsg, () => {
+                        localStorage.removeItem("token");
                         browserHistory.push({
                             pathname: "/login",
                             search: `?redirectURL=${escape(window.location)}`
