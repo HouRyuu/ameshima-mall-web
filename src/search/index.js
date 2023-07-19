@@ -96,7 +96,7 @@ export default class SearchIndex extends Component {
                                                 value = value.trim();
                                                 if (!value) return;
                                                 browserHistory.push({
-                                                    pathname: "/#/search",
+                                                    pathname: "/search",
                                                     search: `?q=${value}&s=${queryParam.storeId ? queryParam.storeId : ''}`
                                                 });
                                             }}

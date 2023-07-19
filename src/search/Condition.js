@@ -9,7 +9,7 @@ import {
     Input,
     Button,
     Pagination,
-    InputNumber
+    InputNumber, message
 } from "antd";
 import FetchUtil from "../utils/FetchUtil";
 
@@ -70,6 +70,11 @@ export default class Condition extends Component {
     order(field) {
         const {queryParam, callQuery} = this.props;
         const {orderField, orderType} = queryParam;
+        const {queryParam: {minPrice, maxPrice}} = this.state;
+        if (minPrice > maxPrice) {
+            message.warn('最安値が最高値より高くないように');
+            return;
+        }
         if (!field && !orderField) return;
         if (!field) {
             queryParam.orderField = field;
@@ -86,23 +91,24 @@ export default class Condition extends Component {
                 queryParam.orderField = null;
             }
         }
+        queryParam.minPrice = minPrice;
+        queryParam.maxPrice = maxPrice;
         callQuery(queryParam);
     }
 
     render() {
         const {
-            queryParam: {
-                brand,
-                category,
-                orderField,
-                orderType,
-                minPrice,
-                maxPrice
-            }, callQuery, goodsPage
+            queryParam, callQuery, goodsPage
         } = this.props;
         const {
+            brand,
+            category,
+            orderField,
+            orderType,
+        } = queryParam;
+        const {
             brands,
-            categories,
+            categories
         } = this.state;
         const {pageSize, pageIndex, total} = goodsPage;
         return (
@@ -190,9 +196,8 @@ export default class Condition extends Component {
                                 allowClear
                                 style={{width: 86, textAlign: "center"}}
                                 placeholder="最安値"
-                                step={0.1}
+                                step={1}
                                 min={0}
-                                max={maxPrice ? maxPrice : 999999999}
                                 onChange={value => {
                                     const {queryParam} = this.state;
                                     queryParam.minPrice = value;
@@ -212,8 +217,7 @@ export default class Condition extends Component {
                                 allowClear
                                 style={{width: 86, textAlign: "center"}}
                                 placeholder="最高値"
-                                step={0.1}
-                                min={minPrice ? minPrice : 0}
+                                step={1}
                                 onChange={value => {
                                     const {queryParam} = this.state;
                                     queryParam.maxPrice = value;
@@ -223,7 +227,13 @@ export default class Condition extends Component {
                             <Button
                                 type="primary"
                                 onClick={() => {
-                                    const {queryParam} = this.state;
+                                    const {queryParam: {minPrice, maxPrice}} = this.state;
+                                    if (minPrice > maxPrice) {
+                                        message.warn('最安値が最高値より高くないように');
+                                        return;
+                                    }
+                                    queryParam.minPrice = minPrice;
+                                    queryParam.maxPrice = maxPrice;
                                     callQuery(queryParam);
                                 }}
                             >
